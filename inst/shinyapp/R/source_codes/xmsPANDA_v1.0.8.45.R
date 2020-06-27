@@ -35466,7 +35466,7 @@ quant<- function(Xmat=NA,Ymat=NA,Wmat=NA,Zmat=NA,feature_table,class_file,ref_li
 
 .onAttach <- function(libname, pkgname) {
   # to show a startup message
-  packageStartupMessage("xmsPANDA v1.1.52 successfully loaded.")
+  packageStartupMessage("xmsPANDA v1.1.56 successfully loaded.")
 
   suppressMessages(library(RColorBrewer))
   #suppressMessages(library(data.table))
@@ -35479,7 +35479,7 @@ quant<- function(Xmat=NA,Ymat=NA,Wmat=NA,Zmat=NA,feature_table,class_file,ref_li
 
 .onLoad <- function(libname, pkgname) {
       # something to run
-      packageStartupMessage("xmsPANDA v1.1.52 successfully loaded.")
+      packageStartupMessage("xmsPANDA v1.1.56 successfully loaded.")
       suppressMessages(library(RColorBrewer))
       #suppressMessages(library(data.table))
       suppressMessages(library(plyr))
