@@ -13,6 +13,7 @@ install.packages(c('rgl', 'snow', 'doSNOW', 'foreach', 'e1071', 'WGCNA','reshape
                  repos="https://cran.r-project.org")
 
 library(devtools); install_github("kuppal2/xmsPANDA")
+
 #launch xmsPANDA
 library(xmsPANDA)
 runApp.xmsPANDA()
