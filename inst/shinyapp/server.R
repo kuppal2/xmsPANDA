@@ -7,8 +7,9 @@ library('xmsPANDA')
 #.libPaths("R/source_codes/library/")
 library(shiny)
 library(shinyjs)
+library(shinyBS)
 library(DT)
-source("R/source_codes/xmsPANDA_v1.0.8.47.R")
+#source("R/source_codes/xmsPANDA_v1.0.8.47.R")
 #source("R/source_codes/xMSquant_v0.0.3.R")
 
 
