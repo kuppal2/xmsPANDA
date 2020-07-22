@@ -1,0 +1,186 @@
+h3 {
+  font-family: 'Lobster';
+  font-weight: 500;
+  font-style: italic;
+  line-height: 1.5;
+  color: #85144b;
+}
+
+#maindiv{
+  padding-left:20px;
+}
+
+hr {
+  margin-top:4px;
+}
+
+.inline label{ 
+  display: table-cell; 
+  text-align: left; 
+  vertical-align: middle; 
+  
+} 
+.inline .form-group{
+  display: table-row;
+  
+}
+
+.form-group.shiny-input-container{
+  margin-bottom:5px;
+}
+
+.navbar-brand {
+  font-size:16px;
+  font-weight:bold;
+  padding-right:0;
+  padding-left:0;
+}
+
+#siderbar .col-sm-3{
+  padding-left:0;
+}
+
+#nText {
+  background-color: silver;
+  color: blue;
+  font-size: 12px;
+}
+
+
+#nText2 {
+  background-color: silver;
+  color: red;
+  font-size: 12px;
+}
+
+#nText3 {
+  background-color: silver;
+  color: red;
+  font-size: 12px;
+}
+
+#nText4 {
+  background-color: silver;
+  color: red;
+  font-size: 12px;
+}
+
+#nText5 {
+  background-color: silver;
+  color: blue;
+  font-size: 12px;
+}
+
+#nText6 {
+  background-color: silver;
+  color: red;
+  font-size: 12px;
+}
+
+#nText7 {
+  background-color: silver;
+  color: blue;
+  font-size: 12px;
+}
+
+#introduction_paragraph {
+  padding-left: 40px;
+	padding-right: 40px;
+	padding-top: 20px;
+	padding-bottom: 15px;
+	border-style: solid;
+	border-width: 2px;
+  border-radius: 15px;
+	opacity: 0.9;
+
+  
+}
+#introduction_paragraph2 {
+   color: brown;
+   background-color: white;
+
+}
+#featuretable_progress { 
+    padding-bottom:0;
+    margin-bottom:0;
+}
+#classlabel_progress { 
+    padding-bottom:0;
+    margin-bottom:0;
+}
+.underline {
+    text-decoration: underline;
+}
+
+#methodbuttoni {
+  padding-top:3px;
+  padding-bottom:3px;
+  padding-left:10px;
+  padding-right:10px;
+  margin-left:5px;
+}
+
+#methodbuttonii {
+  padding-top:3px;
+  padding-bottom:3px;
+  padding-left:10px;
+  padding-right:10px;
+  margin-left:5px;
+}
+
+#methodbuttoniii {
+  padding-top:3px;
+  padding-bottom:3px;
+  padding-left:10px;
+  padding-right:10px;
+  margin-left:5px;
+}
+
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 20%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 4px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+
+#feat_inte_progress { 
+    padding-bottom:0;
+    margin-bottom:0;
+}
+#classlabel_inte_progress { 
+    padding-bottom:0;
+    margin-bottom:0;
+}
+
+#clusterinput_progress { 
+    padding-bottom:0;
+    margin-bottom:0;
+}
+
+#featuretable_file_progress { 
+    padding-bottom:0;
+    margin-bottom:0;
+}
+
+#classlabel_file_progress { 
+    padding-bottom:0;
+    margin-bottom:0;
+}
+
+#foldchange_file_progress { 
+    padding-bottom:0;
+    margin-bottom:0;
+}
+#ref_meta_file_progress { 
+    padding-bottom:0;
+    margin-bottom:0;
+}

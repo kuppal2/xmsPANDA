@@ -1,0 +1,17 @@
+Package: RhpcBLASctl
+Version: 0.18-205
+Date: 2018-07-24
+Title: Control the Number of Threads on 'BLAS'
+Author: Junji NAKANO <nakanoj@ism.ac.jp> and Ei-ji Nakama <nakama@ki.rim.or.jp>
+Maintainer: Ei-ji Nakama <nakama@ki.rim.or.jp>
+Description: Control the number of threads on 'BLAS' (Aka 'GotoBLAS', 'OpenBLAS', 'ACML', 'BLIS' and 'MKL').
+  And possible to control the number of threads in 'OpenMP'.
+  Get a number of logical cores and physical cores if feasible.
+License: AGPL-3
+URL: http://prs.ism.ac.jp/~nakama/Rhpc/
+ByteCompile: true
+NeedsCompilation: yes
+Packaged: 2018-07-24 04:37:50 UTC; nakama
+Repository: CRAN
+Date/Publication: 2018-07-24 12:10:03 UTC
+Built: R 3.5.1; x86_64-pc-linux-gnu; 2018-12-06 21:46:13 UTC; unix
