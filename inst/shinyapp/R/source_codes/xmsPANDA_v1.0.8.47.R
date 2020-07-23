@@ -9320,6 +9320,7 @@ do_plsda<-function(X,Y,oscmode="pls",numcomp=3,kfold=10,evalmethod="CV",keepX=15
     
     # save(X,Y,pairedanalysis,file="plsdebug.Rda")
 
+<<<<<<< HEAD
    if(pairedanalysis==FALSE){
               Yclass<-Y[,1]
           
@@ -9352,6 +9353,31 @@ do_plsda<-function(X,Y,oscmode="pls",numcomp=3,kfold=10,evalmethod="CV",keepX=15
               }
 
       }
+=======
+    if(pairedanalysis==FALSE){
+            Yclass<-Y[,1]
+            Y<-as.numeric(Y[,1])
+            #Y<-as.factor(Y[,1])
+            #Yclass<-as.factor(Y[,1])
+    }else{
+        
+            if(dim(Y)[2]>2){
+                if(analysismode=="classification"){
+                    
+                    Yclass<-as.factor(Y[,2]):as.factor(Y[,3])
+                }else{
+                    Yclass<-Y[,3] #:Y[,3]
+                }
+                Y<-as.numeric(Yclass)
+                
+            }else{
+                Yclass<-Y[,2]
+                Y<-as.numeric(Y[,2])
+                # Y<-as.factor(Y[,2])
+            }
+
+	}
+>>>>>>> 3c4f9d127a1a49d34d635ca6d7a0fdad51239eb6
     
     class_labels_levels<-levels(as.factor(Yclass))
     alphacol=0.3
