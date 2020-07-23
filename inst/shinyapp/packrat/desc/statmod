@@ -1,0 +1,16 @@
+Package: statmod
+Version: 1.4.30
+Date: 2017-06-16
+Title: Statistical Modeling
+Author: Gordon Smyth [cre, aut], Yifang Hu [ctb], Peter Dunn [ctb], Belinda Phipson [ctb], Yunshun Chen [ctb]
+Maintainer: Gordon Smyth <smyth@wehi.edu.au>
+Depends: R (>= 1.6.1)
+Imports: stats, graphics
+Suggests: MASS, tweedie
+Description: A collection of algorithms and functions to aid statistical modeling. Includes growth curve comparisons, limiting dilution analysis (aka ELDA), mixed linear models, heteroscedastic regression, inverse-Gaussian probability calculations, Gauss quadrature and a secure convergence algorithm for nonlinear models.  Includes advanced generalized linear model functions that implement secure convergence, dispersion modeling and Tweedie power-law families. 
+License: GPL-2 | GPL-3
+NeedsCompilation: yes
+Packaged: 2017-06-17 23:53:15 UTC; smyth
+Repository: CRAN
+Date/Publication: 2017-06-18 14:56:34 UTC
+Built: R 3.5.1; x86_64-pc-linux-gnu; 2018-12-06 21:51:22 UTC; unix
