@@ -29,6 +29,7 @@ function(feature_table_file,class_labels_file,X=NA,Y=NA,parentoutput_dir,newdevi
     
     col_samples<-TRUE
     
+  
     if(is.na(Y)==TRUE){
         if(is.na(class_labels_file)==FALSE){
             classlabels<-read.table(class_labels_file,sep="\t",header=TRUE)

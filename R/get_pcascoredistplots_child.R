@@ -11,6 +11,9 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,sample.col.op
         
         data_matrix<-X
     }
+    
+   
+    
     if(is.na(Y)==TRUE){
         classlabels<-read.table(class_labels_file,sep="\t",header=TRUE)
         

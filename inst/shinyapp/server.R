@@ -765,10 +765,10 @@ server <- function(input, output, session) {
           rocclassifier="svm",foldchangethresh=foldchangethresh,
           optselect=input$optselect,max_comp_sel=input$max_comp_sel,saveRda=FALSE,pls.permut.count=pls_permut_count,
           pca.ellipse=pca_ellipse,ellipse.conf.level=input$ellipse_conf_level,svm.acc.tolerance=5,pamr.threshold.select.max=FALSE,
-          aggregation.method=aggregation_method,mars.gcv.thresh=1,pls.vip.selection=input$pls.vip.selection,limmadecideTests=TRUE,
+          aggregation.method=aggregation_method,mars.gcv.thresh=1,pls.vip.selection=input$pls.vip.selection,limmadecideTests=input$limmadecideTests,
           
           #4) arguments for WGCNA and global clustering analysis (HCA and EM clustering)
-          wgcnarsdthresh=30,WGCNAmodules=WGCNAmodules,globalclustering=globalclustering,
+          wgcnarsdthresh=input$rsd_filt_list,WGCNAmodules=WGCNAmodules,globalclustering=globalclustering,
           
           #5) arguments for correlation and network analysis using the selected features
           cor.method=cor_method, abs.cor.thresh = abs_cor_thresh, cor.fdrthresh=cor_fdrthresh,
@@ -791,7 +791,7 @@ server <- function(input, output, session) {
           timeseries.lineplots=input$timeseries.lineplots,
           alphabetical.order=input$alphabetical.order,
           ylab_text=input$ylabel.text,
-          kegg_species_code="hsa",database="pathway",reference_set=NA,match_class_dist=TRUE,differential.network.analysis=differential.network.analysis
+          kegg_species_code="hsa",database="pathway",reference_set=NA,match_class_dist=TRUE,differential.network.analysis=differential.network.analysis,balance.classes=input$balance.classes,balance.classes.sizefactor=input$balance.classes.sizefactor,balance.classes.seed=input$balance.classes.seed
           
         ),silent=TRUE)
         

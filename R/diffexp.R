@@ -13,7 +13,7 @@ optselect=TRUE,max_comp_sel=1,saveRda=FALSE,legendlocation="topleft",pcacenter=T
 pca.ellipse=FALSE,ellipse.conf.level=0.95,pls.permut.count=NA,svm.acc.tolerance=5,limmadecideTests=TRUE,pls.vip.selection="max",globalclustering=FALSE,plots.res=600,plots.width=8,plots.height=8,plots.type="cairo",
 output.device.type="pdf",pvalue.thresh=0.05,individualsampleplot.col.opt="journal",pamr.threshold.select.max=FALSE,aggregation.method="RankAggreg",aggregation.max.iter=1000,mars.gcv.thresh=1,error.bar=TRUE,cex.plots=1,lme.modeltype="RI",
 barplot.xaxis="Factor1",lineplot.lty.option=c("solid", "dashed", "dotted", "dotdash", "longdash", "twodash"),match_class_dist=TRUE,timeseries.lineplots=FALSE,alphabetical.order=FALSE,
-kegg_species_code="hsa",database="pathway",reference_set=NA,target.data.annot=NA,add.pvalues=FALSE,add.jitter=FALSE,fcs.permutation.type=1,fcs.method="zscore",fcs.min.hits=2,names_with_mz_time=NA,ylab_text="Abundance",xlab_text=NA,boxplot.type="ggplot",samplermindex=NA,differential.network.analysis=TRUE,degree.centrality.method="eigenvector",log2.transform.constant=1,...)
+kegg_species_code="hsa",database="pathway",reference_set=NA,target.data.annot=NA,add.pvalues=FALSE,add.jitter=FALSE,fcs.permutation.type=1,fcs.method="zscore",fcs.min.hits=2,names_with_mz_time=NA,ylab_text="Abundance",xlab_text=NA,boxplot.type="ggplot",samplermindex=NA,differential.network.analysis=TRUE,degree.centrality.method="eigenvector",log2.transform.constant=1,balance.classes=FALSE,balance.classes.sizefactor=10,balance.classes.seed=1,...)
 {
     
     time_start<-Sys.time()
@@ -25,6 +25,7 @@ kegg_species_code="hsa",database="pathway",reference_set=NA,target.data.annot=NA
     
     #print(paste("g is ",group.missing.thresh,sep=""))
     modeltype=lme.modeltype
+    balance.classes.method="ROSE"
     
     if(differential.network.analysis==TRUE){
         
@@ -390,7 +391,7 @@ for(i in 1:length(featselmethod))
 	    svm.acc.tolerance=svm.acc.tolerance,limmadecideTests=limmadecideTests,pls.vip.selection=pls.vip.selection,globalclustering=globalclustering,plots.res=plots.res,plots.width=plots.width,plots.height=plots.height,plots.type=plots.type,
 	    output.device.type=output.device.type,pvalue.thresh,individualsampleplot.col.opt,pamr.threshold.select.max,mars.gcv.thresh,error.bar,cex.plots,modeltype,barplot.xaxis,lineplot.lty.option,match_class_dist=match_class_dist,
 	    timeseries.lineplots=timeseries.lineplots,alphabetical.order=alphabetical.order,kegg_species_code=kegg_species_code,database=database,reference_set=reference_set,target.data.annot=target.data.annot,add.pvalues=add.pvalues,
-	    add.jitter=add.jitter,fcs.permutation.type=fcs.permutation.type,fcs.method=fcs.method,fcs.min.hits=fcs.min.hits,names_with_mz_time=names_with_mz_time,ylab_text=ylab_text,xlab_text=xlab_text,boxplot.type=boxplot.type,degree.centrality.method=degree.centrality.method,log2.transform.constant=log2.transform.constant)
+	    add.jitter=add.jitter,fcs.permutation.type=fcs.permutation.type,fcs.method=fcs.method,fcs.min.hits=fcs.min.hits,names_with_mz_time=names_with_mz_time,ylab_text=ylab_text,xlab_text=xlab_text,boxplot.type=boxplot.type,degree.centrality.method=degree.centrality.method,log2.transform.constant=log2.transform.constant,balance.classes=balance.classes,balance.classes.sizefactor=balance.classes.sizefactor,balance.classes.method=balance.classes.method,balance.classes.seed=balance.classes.seed)
             
             ,silent=TRUE))
             if(is(diffexp.res[[i]],"try-error")){
@@ -1066,7 +1067,7 @@ print(paste("**Program ended successfully in ",time_taken_panda," ",units(time_t
         optselect,max_comp_sel,saveRda,legendlocation,degree_rank_method,pca.cex.val,pca.ellipse,ellipse.conf.level,pls.permut.count,svm.acc.tolerance,limmadecideTests,pls.vip.selection,globalclustering,plots.res,plots.width,plots.height,
 	plots.type,output.device.type,pvalue.thresh,individualsampleplot.col.opt,pamr.threshold.select.max,mars.gcv.thresh,error.bar,cex.plots,modeltype,barplot.xaxis,lineplot.lty.option,match_class_dist=match_class_dist,
 	timeseries.lineplots=timeseries.lineplots,alphabetical.order=alphabetical.order,kegg_species_code=kegg_species_code,database=database,reference_set=reference_set,target.data.annot=target.data.annot,add.pvalues=add.pvalues,
-	add.jitter=add.jitter,fcs.permutation.type=fcs.permutation.type,fcs.method=fcs.method,fcs.min.hits=fcs.min.hits,names_with_mz_time=names_with_mz_time,ylab_text=ylab_text,xlab_text=xlab_text,boxplot.type=boxplot.type,degree.centrality.method=degree.centrality.method,log2.transform.constant=log2.transform.constant)
+    add.jitter=add.jitter,fcs.permutation.type=fcs.permutation.type,fcs.method=fcs.method,fcs.min.hits=fcs.min.hits,names_with_mz_time=names_with_mz_time,ylab_text=ylab_text,xlab_text=xlab_text,boxplot.type=boxplot.type,degree.centrality.method=degree.centrality.method,log2.transform.constant=log2.transform.constant,balance.classes=balance.classes,balance.classes.sizefactor=balance.classes.sizefactor,balance.classes.method=balance.classes.method,balance.classes.seed=balance.classes.seed)
         )
         
         time_end<-Sys.time()

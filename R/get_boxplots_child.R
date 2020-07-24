@@ -666,24 +666,24 @@ plot_res<-lapply(1:dim(goodfeats)[1],function(m)
                                 if(add.pvalues==TRUE){
                                     
                                                 if(multiple.groups==FALSE){
-                                                    p<-p + stat_compare_means()
+                                                    p<-p + stat_compare_means(size = 5*cex.plots,label = "p.format",label.x = 1.5, label.y = max_yval1)
                                                 }else{
                                                     if(pairedanalysis==FALSE){
                                                         #label = "p.format",
                                                         
-                                                        p<-p + stat_compare_means(aes(group = Factor1),label = "p.format",label.x = 1.5, label.y = max_yval1)
-                                                        p<-p + stat_compare_means(aes(group = Factor2),label = "p.format")
+                                                        p<-p + stat_compare_means(aes(group = Factor1),label = "p.format",label.x = 1.5, label.y = max_yval1,size = 5*cex.plots)
+                                                        p<-p + stat_compare_means(aes(group = Factor2),label = "p.format",size = 10*cex.plots)
                                                     }else{
                                                         
-                                                        p<-p + stat_compare_means(aes(group = Factor1),label = "p.format",label.x = 1.5, label.y = max_yval1)
-                                                        p<-p + stat_compare_means(aes(group = Factor2),paired=TRUE,label = "p.format")
+                                                        p<-p + stat_compare_means(aes(group = Factor1),label = "p.format",label.x = 1.5, label.y = max_yval1,size = 5*cex.plots)
+                                                        p<-p + stat_compare_means(aes(group = Factor2),paired=TRUE,label = "p.format",size = 5*cex.plots)
                                                     }
                                                 }
                                             }
                             }
                             
                            
-                            p=p + font("axis.text", size = 10*cex.plots, color = "black") + font("axis.title", size = 14*cex.plots, color = "black")
+                            p=p + font("axis.text", size = 10*cex.plots, color = "black") + font("axis.title", size = 12*cex.plots, color = "black")
                             #p + theme(legend.position = "none")
                             p=p+theme(plot.title = element_text(hjust = 0.5,size=10)) + labs(y=ylabel) + theme(axis.text.x = element_text(angle = 45, hjust = 1))
                             

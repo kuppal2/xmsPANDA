@@ -14760,24 +14760,24 @@ plot_res<-lapply(1:dim(goodfeats)[1],function(m)
                                 if(add.pvalues==TRUE){
                                     
                                                 if(multiple.groups==FALSE){
-                                                    p<-p + stat_compare_means()
+                                                    p<-p + stat_compare_means(size = 5*cex.plots,label = "p.format",label.x = 1.5, label.y = max_yval1)
                                                 }else{
                                                     if(pairedanalysis==FALSE){
                                                         #label = "p.format",
                                                         
-                                                        p<-p + stat_compare_means(aes(group = Factor1),label = "p.format",label.x = 1.5, label.y = max_yval1)
-                                                        p<-p + stat_compare_means(aes(group = Factor2),label = "p.format")
+                                                        p<-p + stat_compare_means(aes(group = Factor1),label = "p.format",label.x = 1.5, label.y = max_yval1,size = 5*cex.plots)
+                                                        p<-p + stat_compare_means(aes(group = Factor2),label = "p.format",size = 10*cex.plots)
                                                     }else{
                                                         
-                                                        p<-p + stat_compare_means(aes(group = Factor1),label = "p.format",label.x = 1.5, label.y = max_yval1)
-                                                        p<-p + stat_compare_means(aes(group = Factor2),paired=TRUE,label = "p.format")
+                                                        p<-p + stat_compare_means(aes(group = Factor1),label = "p.format",label.x = 1.5, label.y = max_yval1,size = 5*cex.plots)
+                                                        p<-p + stat_compare_means(aes(group = Factor2),paired=TRUE,label = "p.format",size = 5*cex.plots)
                                                     }
                                                 }
                                             }
                             }
                             
                            
-                            p=p + font("axis.text", size = 10*cex.plots, color = "black") + font("axis.title", size = 14*cex.plots, color = "black")
+                            p=p + font("axis.text", size = 10*cex.plots, color = "black") + font("axis.title", size = 12*cex.plots, color = "black")
                             #p + theme(legend.position = "none")
                             p=p+theme(plot.title = element_text(hjust = 0.5,size=10)) + labs(y=ylabel) + theme(axis.text.x = element_text(angle = 45, hjust = 1))
                             
@@ -14881,6 +14881,9 @@ get_pcascoredistplots_child<-function(X,Y,feature_table_file,parentoutput_dir,cl
         
         data_matrix<-X
     }
+    
+   
+    
     if(is.na(Y)==TRUE){
         classlabels<-read.table(class_labels_file,sep="\t",header=TRUE)
         
@@ -17925,6 +17928,8 @@ get_barplots<-function(feature_table_file,class_labels_file,X=NA,Y=NA,parentoutp
     
     col_samples<-TRUE
     
+   
+    
     if(is.na(Y)==TRUE){
         if(is.na(class_labels_file)==FALSE){
             classlabels<-read.table(class_labels_file,sep="\t",header=TRUE)
@@ -18396,6 +18401,7 @@ get_individualsampleplots<-function(feature_table_file,class_labels_file,X=NA,Y=
     
     col_samples<-TRUE
     
+  
     if(is.na(Y)==TRUE){
         if(is.na(class_labels_file)==FALSE){
             classlabels<-read.table(class_labels_file,sep="\t",header=TRUE)
@@ -18819,6 +18825,8 @@ sample.col.opt="rainbow",plots.width=8,plots.height=8,plots.res=600, plots.type=
     col_samples<-TRUE
     
     suppressWarnings(dir.create("Tables"))
+    
+
     
     if(is.na(Y)==TRUE){
     if(is.na(class_labels_file)==FALSE){
@@ -23904,7 +23912,7 @@ optselect=TRUE,max_comp_sel=1,saveRda=FALSE,legendlocation="topleft",pcacenter=T
 pca.ellipse=FALSE,ellipse.conf.level=0.95,pls.permut.count=NA,svm.acc.tolerance=5,limmadecideTests=TRUE,pls.vip.selection="max",globalclustering=FALSE,plots.res=600,plots.width=8,plots.height=8,plots.type="cairo",
 output.device.type="pdf",pvalue.thresh=0.05,individualsampleplot.col.opt="journal",pamr.threshold.select.max=FALSE,aggregation.method="RankAggreg",aggregation.max.iter=1000,mars.gcv.thresh=1,error.bar=TRUE,cex.plots=1,lme.modeltype="RI",
 barplot.xaxis="Factor1",lineplot.lty.option=c("solid", "dashed", "dotted", "dotdash", "longdash", "twodash"),match_class_dist=TRUE,timeseries.lineplots=FALSE,alphabetical.order=FALSE,
-kegg_species_code="hsa",database="pathway",reference_set=NA,target.data.annot=NA,add.pvalues=FALSE,add.jitter=FALSE,fcs.permutation.type=1,fcs.method="zscore",fcs.min.hits=2,names_with_mz_time=NA,ylab_text="Abundance",xlab_text=NA,boxplot.type="ggplot",samplermindex=NA,differential.network.analysis=TRUE,degree.centrality.method="eigenvector",log2.transform.constant=1,...)
+kegg_species_code="hsa",database="pathway",reference_set=NA,target.data.annot=NA,add.pvalues=FALSE,add.jitter=FALSE,fcs.permutation.type=1,fcs.method="zscore",fcs.min.hits=2,names_with_mz_time=NA,ylab_text="Abundance",xlab_text=NA,boxplot.type="ggplot",samplermindex=NA,differential.network.analysis=TRUE,degree.centrality.method="eigenvector",log2.transform.constant=1,balance.classes=FALSE,balance.classes.sizefactor=10,balance.classes.seed=1,...)
 {
     
     time_start<-Sys.time()
@@ -23916,6 +23924,7 @@ kegg_species_code="hsa",database="pathway",reference_set=NA,target.data.annot=NA
     
     #print(paste("g is ",group.missing.thresh,sep=""))
     modeltype=lme.modeltype
+    balance.classes.method="ROSE"
     
     if(differential.network.analysis==TRUE){
         
@@ -24281,7 +24290,7 @@ for(i in 1:length(featselmethod))
 	    svm.acc.tolerance=svm.acc.tolerance,limmadecideTests=limmadecideTests,pls.vip.selection=pls.vip.selection,globalclustering=globalclustering,plots.res=plots.res,plots.width=plots.width,plots.height=plots.height,plots.type=plots.type,
 	    output.device.type=output.device.type,pvalue.thresh,individualsampleplot.col.opt,pamr.threshold.select.max,mars.gcv.thresh,error.bar,cex.plots,modeltype,barplot.xaxis,lineplot.lty.option,match_class_dist=match_class_dist,
 	    timeseries.lineplots=timeseries.lineplots,alphabetical.order=alphabetical.order,kegg_species_code=kegg_species_code,database=database,reference_set=reference_set,target.data.annot=target.data.annot,add.pvalues=add.pvalues,
-	    add.jitter=add.jitter,fcs.permutation.type=fcs.permutation.type,fcs.method=fcs.method,fcs.min.hits=fcs.min.hits,names_with_mz_time=names_with_mz_time,ylab_text=ylab_text,xlab_text=xlab_text,boxplot.type=boxplot.type,degree.centrality.method=degree.centrality.method,log2.transform.constant=log2.transform.constant)
+	    add.jitter=add.jitter,fcs.permutation.type=fcs.permutation.type,fcs.method=fcs.method,fcs.min.hits=fcs.min.hits,names_with_mz_time=names_with_mz_time,ylab_text=ylab_text,xlab_text=xlab_text,boxplot.type=boxplot.type,degree.centrality.method=degree.centrality.method,log2.transform.constant=log2.transform.constant,balance.classes=balance.classes,balance.classes.sizefactor=balance.classes.sizefactor,balance.classes.method=balance.classes.method,balance.classes.seed=balance.classes.seed)
             
             ,silent=TRUE))
             if(is(diffexp.res[[i]],"try-error")){
@@ -24957,7 +24966,7 @@ print(paste("**Program ended successfully in ",time_taken_panda," ",units(time_t
         optselect,max_comp_sel,saveRda,legendlocation,degree_rank_method,pca.cex.val,pca.ellipse,ellipse.conf.level,pls.permut.count,svm.acc.tolerance,limmadecideTests,pls.vip.selection,globalclustering,plots.res,plots.width,plots.height,
 	plots.type,output.device.type,pvalue.thresh,individualsampleplot.col.opt,pamr.threshold.select.max,mars.gcv.thresh,error.bar,cex.plots,modeltype,barplot.xaxis,lineplot.lty.option,match_class_dist=match_class_dist,
 	timeseries.lineplots=timeseries.lineplots,alphabetical.order=alphabetical.order,kegg_species_code=kegg_species_code,database=database,reference_set=reference_set,target.data.annot=target.data.annot,add.pvalues=add.pvalues,
-	add.jitter=add.jitter,fcs.permutation.type=fcs.permutation.type,fcs.method=fcs.method,fcs.min.hits=fcs.min.hits,names_with_mz_time=names_with_mz_time,ylab_text=ylab_text,xlab_text=xlab_text,boxplot.type=boxplot.type,degree.centrality.method=degree.centrality.method,log2.transform.constant=log2.transform.constant)
+    add.jitter=add.jitter,fcs.permutation.type=fcs.permutation.type,fcs.method=fcs.method,fcs.min.hits=fcs.min.hits,names_with_mz_time=names_with_mz_time,ylab_text=ylab_text,xlab_text=xlab_text,boxplot.type=boxplot.type,degree.centrality.method=degree.centrality.method,log2.transform.constant=log2.transform.constant,balance.classes=balance.classes,balance.classes.sizefactor=balance.classes.sizefactor,balance.classes.method=balance.classes.method,balance.classes.seed=balance.classes.seed)
         )
         
         time_end<-Sys.time()
@@ -25021,7 +25030,7 @@ numtrees,analysismode,net_node_colors,net_legend,svm_kernel,heatmap.col.opt,manh
 pls_ncomp,pca.stage2.eval,scoreplot_legend,pca.global.eval,rocfeatlist,rocfeatincrement,rocclassifier,foldchangethresh,wgcnarsdthresh,WGCNAmodules,optselect,max_comp_sel,saveRda,legendlocation,degree_rank_method,
 pca.cex.val,pca.ellipse,ellipse.conf.level,pls.permut.count,svm.acc.tolerance,limmadecideTests,pls.vip.selection,globalclustering,plots.res,plots.width,plots.height,plots.type,output.device.type,pvalue.thresh,individualsampleplot.col.opt,
 pamr.threshold.select.max,mars.gcv.thresh,error.bar,cex.plots,modeltype,barplot.xaxis,lineplot.lty.option,match_class_dist,timeseries.lineplots,alphabetical.order,kegg_species_code,database,reference_set,target.data.annot,
-add.pvalues=TRUE,add.jitter=TRUE,fcs.permutation.type,fcs.method,fcs.min.hits,names_with_mz_time,ylab_text,xlab_text,boxplot.type,degree.centrality.method=degree.centrality.method,log2.transform.constant,...)
+add.pvalues=TRUE,add.jitter=TRUE,fcs.permutation.type,fcs.method,fcs.min.hits,names_with_mz_time,ylab_text,xlab_text,boxplot.type,degree.centrality.method,log2.transform.constant,balance.classes,balance.classes.sizefactor,balance.classes.method,balance.classes.seed,...)
 {
     
    
@@ -25628,25 +25637,25 @@ add.pvalues=TRUE,add.jitter=TRUE,fcs.permutation.type,fcs.method,fcs.min.hits,na
                                 
                                 analysistype="oneway"
 		
-				classlabels_sub<-NA
-                
-                if(featselmethod=="limma2way" | featselmethod=="lm2wayanova" | featselmethod=="spls2way"){
-                    analysistype="twoway"
-                }else{
-                    
-                    if(featselmethod=="limma2wayrepeat" | featselmethod=="lm2wayanovarepeat" | featselmethod=="spls2wayrepeat"){
-                        analysistype="twowayrepeat"
-                        pairedanalysis=TRUE
-                    }else{
-                        
-                        if(featselmethod=="limma1wayrepeat" | featselmethod=="lm1wayanovarepeat" | featselmethod=="spls1wayrepeat"){
-                                               analysistype="onewayrepeat"
-                                               pairedanalysis=TRUE
-                        }
-                        
-                    }
-                    
-                }
+                                classlabels_sub<-NA
+                                
+                                if(featselmethod=="limma2way" | featselmethod=="lm2wayanova" | featselmethod=="spls2way"){
+                                    analysistype="twoway"
+                                }else{
+                                    
+                                    if(featselmethod=="limma2wayrepeat" | featselmethod=="lm2wayanovarepeat" | featselmethod=="spls2wayrepeat"){
+                                        analysistype="twowayrepeat"
+                                        pairedanalysis=TRUE
+                                    }else{
+                                        
+                                        if(featselmethod=="limma1wayrepeat" | featselmethod=="lm1wayanovarepeat" | featselmethod=="spls1wayrepeat"){
+                                                               analysistype="onewayrepeat"
+                                                               pairedanalysis=TRUE
+                                        }
+                                        
+                                    }
+                                    
+                                }
                 
                 
                 if(pairedanalysis==TRUE){
@@ -25669,7 +25678,7 @@ add.pvalues=TRUE,add.jitter=TRUE,fcs.permutation.type,fcs.method,fcs.min.hits,na
                                             						Ymat<-classlabels
 									
 								}else{
-								classlabels<-Ymat
+                                            classlabels<-Ymat
 								
 									}
                                
@@ -25917,12 +25926,10 @@ add.pvalues=TRUE,add.jitter=TRUE,fcs.permutation.type,fcs.method,fcs.min.hits,na
 					classlabels_response_mat<-as.data.frame(classlabels_response_mat)
 					Ymat<-classlabels
                     
-                    # classlabels_orig<-classlabels
-                    #	print("classlabels is")
-                    #						print(classlabels)
+                   
 			
 										if(featselmethod=="limma1wayrepeat"){	
-										featselmethod="limma"
+                                            featselmethod="limma"
 
 										}else{
 
@@ -26585,7 +26592,7 @@ missing.val=0, samplermindex=NA,rep.max.missing.thresh=0.5,summary.na.replacemen
                 if(is.na(names_with_mz_time)==TRUE){
                     names_with_mz_time=data_matrix$names_with_mz_time
                 }
-                
+                #  save(data_matrix,file="data_matrix.Rda")
 	data_matrix_beforescaling<-data_matrix$data_matrix_prescaling
   
     data_matrix_beforescaling<-as.data.frame( data_matrix_beforescaling)
@@ -26594,11 +26601,6 @@ missing.val=0, samplermindex=NA,rep.max.missing.thresh=0.5,summary.na.replacemen
    
 
    
-	data_m<-data_matrix[,-c(1:2)]
-	
-
-	
-	Xmat<-data_matrix
 	
 		
 			#classlabels<-as.data.frame(classlabels)
@@ -26608,17 +26610,107 @@ missing.val=0, samplermindex=NA,rep.max.missing.thresh=0.5,summary.na.replacemen
 			}
 			
 			
-			classlabelsA<-classlabels
 			
+			data_m<-data_matrix[,-c(1:2)]
 			classlabels<-classlabels[seq(1,dim(classlabels)[1],num_replicates),]
+            
+            # save(classlabels,data_matrix,classlabels_orig,Ymat,file="Stage1/datarose.Rda")
+            
+            classlabels_raw_boxplots<-classlabels
+            
+            print("balance classes")
+            print(balance.classes)
+            
+            if(dim(classlabels)[2]==2){
+                if(length(levels(as.factor(classlabels[,2])))==2){
+                    if(balance.classes==TRUE){
+                        
+                        table_classes<-table(classlabels[,2])
+                        
+                        
+                        suppressWarnings(library(ROSE))
+                        Ytrain<-classlabels[,2]
+                        data1=cbind(Ytrain,t(data_matrix[,-c(1:2)]))
+                        
+                        #save(data1,classlabels,data_matrix,file="Stage1/data1.Rda")
+                        
+                        #   data_matrix_presim<-data_matrix
+                        
+                        data1<-as.data.frame(data1)
+                       
+                        colnames(data1)<-c("Ytrain",paste("var",seq(1,ncol(data1)-1),sep=""))
+                        
+                        data1$Ytrain<-classlabels[,2]
+                        
+                        if(table_classes[1]==table_classes[2])
+                        {
+                            
+                            
+                            set.seed(balance.classes.seed)
+                            
+                            data1[,-c(1)]<-apply(data1[,-c(1)],2,as.numeric)
+                            new_sample<-aggregate(x=data1[,-c(1)],by=list(as.factor(data1$Ytrain)),mean)
+                            colnames(new_sample)<-colnames(data1)
+                            data1<-rbind(data1,new_sample[1,])
+                            set.seed(balance.classes.seed)
+                                                           
+                                                           # save(data1,classlabels,file="Stage1/dataB.Rda")
+                                                           
+                                                           newData <- ROSE((Ytrain) ~ ., data1, seed = balance.classes.seed,N=nrow(data1)*balance.classes.sizefactor)$data
+                            
+                            # newData <- SMOTE(Ytrain ~ ., data=data1, perc.over = 100)
+                            #*balance.classes.sizefactor,perc.under=200*(balance.classes.sizefactor/(balance.classes.sizefactor/0.5)))
+                            
+                        }else{
+                            if(balance.classes.method=="ROSE"){
+                                set.seed(balance.classes.seed)
+                                data1[,-c(1)]<-apply(data1[,-c(1)],2,as.numeric)
+                                
+                                
+                                newData <- ROSE((Ytrain) ~ ., data1, seed = balance.classes.seed,N=nrow(data1)*balance.classes.sizefactor)$data
+                            }else{
+                                
+                                set.seed(balance.classes.seed)
+                                newData <- SMOTE(Ytrain ~ ., data=data1, perc.over = 100)
+                                 #*balance.classes.sizefactor,perc.under=200*(balance.classes.sizefactor/(balance.classes.sizefactor/0.5)))
+                                
+                            }
+                        }
+                        newData<-na.omit(newData)
+                        Xtrain<-newData[,-c(1)]
+                        Xtrain<-as.matrix(Xtrain)
+                        Ytrain<-newData[,c(1)]
+                  
+                        Ytrain_mat<-cbind((rownames(Xtrain)),(Ytrain))
+                        Ytrain_mat<-as.data.frame(Ytrain_mat)
+                        print("new data")
+                        print(dim(Xtrain))
+                        print(dim(Ytrain_mat))
+                        print(table(newData$Ytrain))
+                       
+                        data_m<-t(Xtrain)
+                        data_matrix<-cbind(data_matrix[,c(1:2)],data_m)
+                        classlabels<-cbind(paste("S",seq(1,nrow(newData)),sep=""),Ytrain)
+                        classlabels<-as.data.frame(classlabels)
+                        print(dim(classlabels))
+                        classlabels_orig<-classlabels
+                        classlabels_sub<-classlabels[,-c(1)]
+                        Ymat<-classlabels
+                        
+                        #save(newData,file="Stage1/newData.Rda")
+                        
+                    }
+                }
+            }
+            
+            
+            classlabelsA<-classlabels
+            Xmat<-data_matrix
+           
 		
         #if(dim(classlabels_orig)==TRUE){
 
-            if(length(ncol(classlabels_sub))<1){
-                classlabels_sub<-classlabels_sub[seq(1,length(classlabels_sub),num_replicates)]
-			}else{
-			classlabels_sub<-classlabels_sub[seq(1,dim(classlabels_sub)[1],num_replicates),]
-            			}
+         
 
 
 	    
@@ -26774,6 +26866,8 @@ missing.val=0, samplermindex=NA,rep.max.missing.thresh=0.5,summary.na.replacemen
                                         
                                     }
                                 }
+                                print("Class mapping:")
+                                print(cbind(class_labels_levels,classlabels))
                                 
                                 
                                 
@@ -26801,6 +26895,8 @@ missing.val=0, samplermindex=NA,rep.max.missing.thresh=0.5,summary.na.replacemen
     
     cl<-makeCluster(num_nodes)
     
+    
+    
     mean_overall<-apply(data_temp,1,do_mean)
     
     #clusterExport(cl,"do_mean")
@@ -26809,8 +26905,8 @@ missing.val=0, samplermindex=NA,rep.max.missing.thresh=0.5,summary.na.replacemen
     #stopCluster(cl)
 	
     #mean_overall<-unlist(mean_overall)
-    #print("mean overall")
-    #print(summary(mean_overall))
+    print("mean overall")
+    print(summary(mean_overall))
 	bad_feat<-which(mean_overall==0)
 
 	if(length(bad_feat)>0){
@@ -26907,15 +27003,7 @@ X<-replace(as.matrix(X),which(is.na(X)==TRUE),0)
    library(mixOmics)
  
 
-#if(pca.global.eval==TRUE)
 
-
-#"#CC0000","#AAC000",
-# col_vec<-c("blue","mediumpurple4","mediumpurple1","blueviolet","cornflowerblue","cyan4","skyblue",
-  #  "darkgreen", "seagreen1", "green","yellow","orange","pink", "coral1", "palevioletred2",
-   # "red","saddlebrown","brown","brown3","white","darkgray","aliceblue",
-    #"aquamarine","aquamarine3","bisque","burlywood1","lavender","khaki3","black")
-    
   
     if(sample.col.opt=="default"){
 
@@ -27059,7 +27147,7 @@ if(is.na(individualsampleplot.col.opt)==TRUE){
 
 #cl<-makeCluster(num_nodes)
 #feat_sds<-parApply(cl,data_m,1,sd)
-feat_sds<-apply(data_m,1,sd)
+feat_sds<-apply(data_m,1,function(x){sd(x,na.rm=TRUE)})
 			
 #stopCluster(cl)
 		
@@ -27088,11 +27176,12 @@ data_temp<-data_matrix_beforescaling[,-c(1:2)]
 			#feat_rsds<-parApply(cl,data_temp,1,do_rsd)
 			feat_rsds<-apply(data_temp,1,do_rsd)
 			#stopCluster(cl)
-			
+            #  save(feat_rsds,data_temp,data_matrix_beforescaling,data_m,file="rsds.Rda")
 		sum_rsd<-summary(feat_rsds,na.rm=TRUE)
 		max_rsd<-max(feat_rsds,na.rm=TRUE)
 		max_rsd<-round(max_rsd,2)
 		
+        
 			print("Summary of RSD across all features:")
 			print(sum_rsd)
 
@@ -27158,7 +27247,7 @@ if(is.na(max_varsel)==TRUE){
 for(lf in 1:length(log2.fold.change.thresh_list))
 {
 		
-        allmetabs_res<-{}
+            allmetabs_res<-{}
             classlabels_response_mat<-classlabels_response_mat_parent
 			classlabels_sub<-classlabels_sub_parent
 			classlabels_orig<-classlabels_orig_parent
@@ -27168,17 +27257,14 @@ for(lf in 1:length(log2.fold.change.thresh_list))
 			
 
             output_dir1<-paste(parentoutput_dir,"/Stage2/",sep="")
-                    dir.create(output_dir1,showWarnings=FALSE)
+            dir.create(output_dir1,showWarnings=FALSE)
 
-                        setwd(output_dir1)
+            setwd(output_dir1)
 
 			
-			#print("filter is")
-			#print(log2.fold.change.thresh)
+		
             if(logistic_reg==TRUE){
                 
-                
-               
                if(robust.estimate==FALSE){ output_dir<-paste(output_dir1,"logitreg","signalthresh",group.missing.thresh,"RSD",log2.fold.change.thresh,"/",sep="")
                }else{
                    
@@ -27229,9 +27315,7 @@ for(lf in 1:length(log2.fold.change.thresh_list))
              
             dir.create("Tables")
 	    
-            print(output_dir1)
-            print(output_dir)
-            print(getwd())
+          
         
 	    data_m<-parent_data_m
 			
@@ -27289,7 +27373,7 @@ for(lf in 1:length(log2.fold.change.thresh_list))
 				data_m_fc_withfeats<-data_matrix[,c(1:2)]
 			}
 			
-			#print("here 3")
+			
 			
             if(log2transform==TRUE || input.intensity.scale=="log2"){
                 
@@ -28024,9 +28108,9 @@ if(featselmethod=="rfesvm"){
 												if(dim(design)[2]<3){
 								
 										if(fdrmethod=="none"){
-										filename<-paste(featselmethod,"_pvalall_withfeats.txt",sep="")
+										filename<-paste("Tables/",featselmethod,"_pvalall_withfeats.txt",sep="")
 										}else{
-										filename<-paste(featselmethod,"_fdrall_withfeats.txt",sep="")
+										filename<-paste("Tables/",featselmethod,"_fdrall_withfeats.txt",sep="")
 										}
 										cnames_tab<-colnames(data_m_fc_withfeats)
 										cnames_tab<-c("P.value","adjusted.P.value",cnames_tab)
@@ -28039,7 +28123,7 @@ if(featselmethod=="rfesvm"){
                                         pvalues<-p.value
 										
                                         #data_limma_fdrall_withfeats<-data_limma_fdrall_withfeats[order(fdr_adjust_fpvalue),]
-                                        #write.table(data_limma_fdrall_withfeats,file=filename,sep="\t",row.names=FALSE)
+                                        write.table(data_limma_fdrall_withfeats,file=filename,sep="\t",row.names=FALSE)
                                         
                                       
                                         final.pvalues<-pvalues
@@ -28645,8 +28729,6 @@ if(featselmethod=="rfesvm"){
                   
                            save(data_m_fc,classlabels,numtrees,analysismode,file="rfdebug.Rda")
                             
-                            print("HERE313")
-                            print(head(classlabels))
                             
                             
                             
@@ -31132,8 +31214,7 @@ fdr_adjust_pvalue<-fdr_adjust_pvalue_all
 						
 					if(length(goodip)>0 & dim(data_m_fc)[2]>=kfold){
 
-                        # print("Time 1")
-                        #print(Sys.time())
+                    
                 
 					Targetvar<-classlabels[,1]
                                         dataA<-cbind(Targetvar,t(data_m_fc))
@@ -31141,7 +31222,9 @@ fdr_adjust_pvalue<-fdr_adjust_pvalue_all
                                         #df.summary <- dataA %>% group_by(Targetvar) %>%  summarize_all(funs(mean))
 
                                         # df.summary <- dataA %>% group_by(Targetvar) %>%  summarize_all(funs(mean))
-                                       
+                                        
+                                        dataA[,-c(1)]<-apply(dataA[,-c(1)],2,function(x){as.numeric(as.character(x))})
+                                   
                                        if(alphabetical.order==FALSE){
                                        dataA$Targetvar <- factor(dataA$Targetvar, levels=unique(dataA$Targetvar))
                                        }
@@ -33783,6 +33866,8 @@ classlabels_orig_wgcna<-classlabels_orig
                                                                       
        
              par(mfrow=c(1,1),family="sans",cex=cex.plots)
+             
+             #   save(goodfeats_temp,classlabels_orig_pca,file="pca1.Rda")
              get_pcascoredistplots(X=goodfeats_temp,Y=classlabels_orig_pca,feature_table_file=NA,parentoutput_dir=getwd(),class_labels_file=NA,sample.col.opt=sample.col.opt,plots.width=2000,plots.height=2000,plots.res=300, alphacol=0.3,col_vec=col_vec,pairedanalysis=pairedanalysis,pca.cex.val=pca.cex.val,legendlocation=legendlocation,pca.ellipse=pca.ellipse,ellipse.conf.level=ellipse.conf.level,filename="selected",paireddesign=paireddesign,lineplot.col.opt=lineplot.col.opt,lineplot.lty.option=lineplot.lty.option,timeseries.lineplots=timeseries.lineplots,pcacenter=pcacenter,pcascale=pcascale,alphabetical.order=alphabetical.order,study.design=analysistype,lme.modeltype=modeltype) #,silent=TRUE)
        
        if(output.device.type!="pdf"){
@@ -34044,9 +34129,15 @@ if(nrow(goodfeats)<1){
 
                text(5, 8, "Boxplots of selected features using the\n normalized intensities/abundance levels")
               
-               get_boxplots(X=goodfeats_temp,Y=classlabels_orig,parentoutput_dir=output_dir,boxplot.col.opt=boxplot.col.opt,alphacol=0.3,newdevice=FALSE,cex.plots=cex.plots,ylabel=plot.ylab_text,name=goodfeats_name,add.pvalues=add.pvalues,add.jitter=add.jitter,
+              if(normalization.method=="none"){
+               get_boxplots(X=goodfeats_temp,Y=classlabels_orig,parentoutput_dir=output_dir,boxplot.col.opt=boxplot.col.opt,alphacol=0.3,newdevice=FALSE,cex.plots=cex.plots,ylabel="Intensity",name=goodfeats_name,add.pvalues=add.pvalues,add.jitter=add.jitter,
                alphabetical.order=alphabetical.order,boxplot.type=boxplot.type,study.design=analysistype)
-     
+               
+              }else{
+                  get_boxplots(X=goodfeats_temp,Y=classlabels_orig,parentoutput_dir=output_dir,boxplot.col.opt=boxplot.col.opt,alphacol=0.3,newdevice=FALSE,cex.plots=cex.plots,ylabel=plot.ylab_text,name=goodfeats_name,add.pvalues=add.pvalues,add.jitter=add.jitter,
+                  alphabetical.order=alphabetical.order,boxplot.type=boxplot.type,study.design=analysistype)
+                  
+              }
      
                 
                 
@@ -34072,7 +34163,7 @@ if(nrow(goodfeats)<1){
                          text(5, 8, "Boxplots of selected features using the\n raw intensities/adundance levels")
                         par(mfrow=c(2,2),family="sans",cex=cex.plots)
                         
-                get_boxplots(X=goodfeats_raw,Y=classlabels_orig,parentoutput_dir=output_dir,boxplot.col.opt=boxplot.col.opt,alphacol=0.3,newdevice=FALSE,cex.plots=cex.plots,ylabel=" Intensity",name=goodfeats_name,add.pvalues=add.pvalues,
+                get_boxplots(X=goodfeats_raw,Y=classlabels_raw_boxplots,parentoutput_dir=output_dir,boxplot.col.opt=boxplot.col.opt,alphacol=0.3,newdevice=FALSE,cex.plots=cex.plots,ylabel=" Intensity",name=goodfeats_name,add.pvalues=add.pvalues,
                 add.jitter=add.jitter,alphabetical.order=alphabetical.order,boxplot.type=boxplot.type,study.design=analysistype)
                 
              
@@ -34081,6 +34172,16 @@ if(nrow(goodfeats)<1){
                     
                     try(dev.off(),silent=TRUE)
                 }
+                if(FALSE){
+                    if(balance.classes==TRUE){
+                            
+                        goodfeats_nosim<-data_matrix$data_matrix_afternorm_scaling[goodip,]
+                           goodfeats_nosim<-goodfeats_nosim[match(paste(goodfeats_temp$mz,"_",goodfeats_temp$time,sep=""),paste(goodfeats_nosim$mz,"_",goodfeats_nosim$time,sep="")),]
+                    
+                    }
+                
+                }
+                
                 if(FALSE){
                 if(output.device.type!="pdf"){
                     

@@ -98,6 +98,8 @@ sample.col.opt="rainbow",plots.width=8,plots.height=8,plots.res=600, plots.type=
     
     suppressWarnings(dir.create("Tables"))
     
+
+    
     if(is.na(Y)==TRUE){
     if(is.na(class_labels_file)==FALSE){
         classlabels<-read.table(class_labels_file,sep="\t",header=TRUE)

@@ -108,7 +108,7 @@ column(12,textOutput("txt")),
 ),
 column(width=12,style="margin-top:10px",
 column(width=6,style='padding-left:0;',numericInput(width="350px","fdrthresh", "False discovery threshold:", 0.05, min = 0, max = 1)),
-column(width=6,selectInput(width="350px","fdr_method","Choose FDR correction method:",c("BH (Benjamini-Hochberg 1995)"="BH","ST (Storey & Tibshirani 2001)"="ST","Strimmer (Strimmer 2008)"="Strimmer","none"="none")))
+column(width=6,selectInput(width="350px","fdr_method","Choose FDR correction method:",c("BH (Benjamini-Hochberg 1995)"="BH","ST (Storey & Tibshirani 2001)"="ST","Strimmer (Strimmer 2008)"="Strimmer","BY (Benjamini-Yekutieli 2001)"="BY", "Bonferroni"="bonferroni","none"="none")))
 ),
 column(width=12,style="margin-top:10px",
 column(width=6,numericInput(width="350px","pls_vip_thresh", "VIP threshold (1-100 limit):", 2, min = 1, max = 100)),
@@ -141,15 +141,30 @@ column(width=6,style='margin-top:25px;padding-left:0;',actionButton("argumentbut
                           numericInput(width="350px","max_varsel", "Max number of variables to be used:", 100, min = 1, max = 100000),
                           bsTooltip("max_varsel", "This argument only works for sPLS, spls1wayrepeat, spls2wayrepeat, rfesvm, and Random Forest","bottom", options = list(container = "body"))
                          )),
-column(width=6,style='padding-left:10;',
+
+column(width=12,style="margin-top:10px",
+column(width=6,radioButtons("limmadecideTests", "Should the LIMMA decide tests [-1 (down),0 (no change),1 (up)] be performed?", inline=TRUE,c(True = "TRUE",False = "FALSE"),selected = "TRUE")),
+column(width=6,#style='padding-left:10;',
 tags$label("Network based feature ranking:", `for` = "netbasedfeatranking_switch"),
 div(style="width: 100px;", switchInput(inputId = "netbasedfeatranking_switch",value = FALSE))
-),
-                         column(width=6,
+)),
+
+
+                         
+column(width=12,style="margin-top:10px",
+column(width=6,
 #conditionalPanel(
 #                          condition = "output.checkaggregationmethod",
                            selectInput(width="350px","aggregation_method","Methods for aggregating results:",c("None"="none","RankAggreg (cross entropy)"="RankAggreg","RankAggregGA (genetic algorithm)"="RankAggregGA","Consensus"="consensus"),selected="None")
-                            )
+                            ),
+#column(width=6,radioButtons("limmadecideTests", "Should the LIMMA decide tests be performed?", inline=TRUE,c(True = "TRUE",False = "FALSE"),selected = "TRUE")),
+column(width=6,radioButtons("balance.classes", "Should the ROSE method be used for balancing classes?", inline=TRUE,c(True = "TRUE",False = "FALSE"),selected = "FALSE")),
+),
+
+column(width=12,style="margin-top:10px",
+column(width=6,style='padding-left:0;',numericInput(width="350px","balance.classes.sizefactor", "Multiplicative factor for generating synthetic data (e.g. x3, x10):", 10, min = 1)),
+ column(width=6,numericInput(width="350px","balance.classes.seed", "Random seed generator for ROSE:", 1, min = 1)))
+
 #)
                        )
                
