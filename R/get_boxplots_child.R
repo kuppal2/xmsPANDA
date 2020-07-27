@@ -664,22 +664,22 @@ plot_res<-lapply(1:dim(goodfeats)[1],function(m)
                                 
                                  
                                 if(add.pvalues==TRUE){
-                                    
-                                                if(multiple.groups==FALSE){
-                                                    p<-p + stat_compare_means(size = 5*cex.plots,label = "p.format",label.x = 1.5, label.y = max_yval1)
-                                                }else{
-                                                    if(pairedanalysis==FALSE){
-                                                        #label = "p.format",
-                                                        
-                                                        p<-p + stat_compare_means(aes(group = Factor1),label = "p.format",label.x = 1.5, label.y = max_yval1,size = 5*cex.plots)
-                                                        p<-p + stat_compare_means(aes(group = Factor2),label = "p.format",size = 10*cex.plots)
-                                                    }else{
-                                                        
-                                                        p<-p + stat_compare_means(aes(group = Factor1),label = "p.format",label.x = 1.5, label.y = max_yval1,size = 5*cex.plots)
-                                                        p<-p + stat_compare_means(aes(group = Factor2),paired=TRUE,label = "p.format",size = 5*cex.plots)
-                                                    }
-                                                }
-                                            }
+                                                                   
+                                                                               if(multiple.groups==FALSE){
+                                                                                   p<-p + stat_compare_means(size = 5*cex.plots,label = "p.format",label.x = 1.5, label.y = max_yval1,size = 5*cex.plots)
+                                                                               }else{
+                                                                                   if(pairedanalysis==FALSE){
+                                                                                       #label = "p.format",
+                                                                                       
+                                                                                       p<-p + stat_compare_means(aes(group = Factor1),label = "p.format",label.x = 1.5, label.y = max_yval1,size = 5*cex.plots)
+                                                                                       p<-p + stat_compare_means(aes(group = Factor2),label = "p.format",size = 5*cex.plots)
+                                                                                   }else{
+                                                                                       
+                                                                                       p<-p + stat_compare_means(aes(group = Factor1),label = "p.format",label.x = 1.5, label.y = max_yval1,size = 5*cex.plots)
+                                                                                       p<-p + stat_compare_means(aes(group = Factor2),paired=TRUE,label = "p.format",size = 5*cex.plots)
+                                                                                   }
+                                                                               }
+                                                                           }
                             }
                             
                            
