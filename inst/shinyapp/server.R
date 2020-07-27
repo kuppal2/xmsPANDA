@@ -787,6 +787,7 @@ server <- function(input, output, session) {
           plots.height=8,
           plots.type="cairo",
           boxplot.type=input$boxplot.type,
+          add.pvalues=input$boxplot.pvalues,
           add.jitter=input$boxplot.jitter,
           timeseries.lineplots=input$timeseries.lineplots,
           alphabetical.order=input$alphabetical.order,

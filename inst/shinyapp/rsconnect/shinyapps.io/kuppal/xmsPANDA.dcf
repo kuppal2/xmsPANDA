@@ -5,6 +5,6 @@ account: kuppal
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 314634
-bundleId: 3432874
+bundleId: 3432912
 url: https://kuppal.shinyapps.io/xmspanda/
-when: 1595625508.91135
+when: 1595626147.63035
