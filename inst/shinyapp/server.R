@@ -765,7 +765,7 @@ server <- function(input, output, session) {
           rocclassifier="svm",foldchangethresh=foldchangethresh,
           optselect=input$optselect,max_comp_sel=input$max_comp_sel,saveRda=FALSE,pls.permut.count=pls_permut_count,
           pca.ellipse=pca_ellipse,ellipse.conf.level=input$ellipse_conf_level,svm.acc.tolerance=5,pamr.threshold.select.max=FALSE,
-          aggregation.method=aggregation_method,mars.gcv.thresh=1,pls.vip.selection=input$pls.vip.selection,limmadecideTests=input$limmadecideTests,
+          aggregation.method=aggregation_method,mars.gcv.thresh=1,pls.vip.selection=input$pls.vip.selection,limmadecideTests=input$limmadecideTests,lme.modeltype=input$lme.modeltype,
           
           #4) arguments for WGCNA and global clustering analysis (HCA and EM clustering)
           wgcnarsdthresh=input$rsd_filt_list,WGCNAmodules=WGCNAmodules,globalclustering=globalclustering,
@@ -786,6 +786,7 @@ server <- function(input, output, session) {
           plots.width=8,
           plots.height=8,
           plots.type="cairo",
+          cex.plots=input$cex.plots,
           boxplot.type=input$boxplot.type,
           add.pvalues=input$boxplot.pvalues,
           add.jitter=input$boxplot.jitter,

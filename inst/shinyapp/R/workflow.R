@@ -145,7 +145,7 @@ column(width=6,style='margin-top:25px;padding-left:0;',actionButton("argumentbut
 column(width=12,style="margin-top:10px",
 column(width=6,radioButtons("limmadecideTests", "Should the LIMMA decide tests [-1 (down),0 (no change),1 (up)] be performed?", inline=TRUE,c(True = "TRUE",False = "FALSE"),selected = "TRUE")),
 column(width=6,#style='padding-left:10;',
-tags$label("Network based feature ranking:", `for` = "netbasedfeatranking_switch"),
+tags$label("Network based feature ranking (differential network analysis):", `for` = "netbasedfeatranking_switch"),
 div(style="width: 100px;", switchInput(inputId = "netbasedfeatranking_switch",value = FALSE))
 )),
 
@@ -155,7 +155,7 @@ column(width=12,style="margin-top:10px",
 column(width=6,
 #conditionalPanel(
 #                          condition = "output.checkaggregationmethod",
-                           selectInput(width="350px","aggregation_method","Methods for aggregating results:",c("None"="none","RankAggreg (cross entropy)"="RankAggreg","RankAggregGA (genetic algorithm)"="RankAggregGA","Consensus"="consensus"),selected="None")
+                           selectInput(width="350px","aggregation_method","Method for aggregating results:",c("None"="none","RankAggreg (cross entropy)"="RankAggreg","RankAggregGA (genetic algorithm)"="RankAggregGA","Consensus"="consensus"),selected="None")
                             ),
 #column(width=6,radioButtons("limmadecideTests", "Should the LIMMA decide tests be performed?", inline=TRUE,c(True = "TRUE",False = "FALSE"),selected = "TRUE")),
 column(width=6,radioButtons("balance.classes", "Should the ROSE method be used for balancing classes?", inline=TRUE,c(True = "TRUE",False = "FALSE"),selected = "FALSE")),
@@ -163,7 +163,11 @@ column(width=6,radioButtons("balance.classes", "Should the ROSE method be used f
 
 column(width=12,style="margin-top:10px",
 column(width=6,style='padding-left:0;',numericInput(width="350px","balance.classes.sizefactor", "Multiplicative factor for generating synthetic data (e.g. x3, x10):", 10, min = 1)),
- column(width=6,numericInput(width="350px","balance.classes.seed", "Random seed generator for ROSE:", 1, min = 1)))
+ column(width=6,numericInput(width="350px","balance.classes.seed", "Random seed generator for ROSE:", 1, min = 1))),
+column(width=12,style="margin-top:10px",
+column(width=6,style='padding-left:0;',selectInput(width="350px","lme.modeltype","Model type for mixed effects model:",c("Random Intercept"="RI","Random Intercept & Random Slope"="RIRS"),selected="Random Intercept")))
+
+
 
 #)
                        )
