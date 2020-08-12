@@ -9,7 +9,7 @@ library(shiny)
 library(shinyjs)
 library(shinyBS)
 library(DT)
-source("R/source_codes/xmsPANDA_v1.0.8.47.R")
+source("R/source_codes/xmsPANDA_v1.0.8.50.R")
 #source("R/source_codes/xMSquant_v0.0.3.R")
 
 
@@ -103,6 +103,25 @@ server <- function(input, output, session) {
       shinyjs::disable("pls_permut_count")
     }
   })
+  
+  session_outloc <- eventReactive(input$go,{
+                             # if(input$go!=0 & check$count==1){
+                             cur_date<-Sys.time()
+                             cur_date<-gsub(x=cur_date,pattern="-",replacement="")
+                             cur_date<-gsub(x=cur_date,pattern=":",replacement="")
+                             cur_date<-gsub(x=cur_date,pattern=" ",replacement="")
+                             if(input$outloc==""){
+                               outloc<-paste('~/xmsPANDAout',cur_date,sep="")
+                             }else{
+                               outloc<-paste('~/',input$outloc,cur_date,sep="")
+                             }
+                             outloc
+                             #}else{
+                             #outloc<-paste('~/xmsPANDAout',sep="")
+                             #outloc
+                              #}
+                         })
+       
   
   all_alert <- reactive({
 
@@ -439,11 +458,14 @@ server <- function(input, output, session) {
     })
   })
   
-  observeEvent(input$go, 
+  observeEvent(input$go,
+
                {
-                   reset("nText2")
-                   reset("nText")
-                   reset("id1")
+                   
+                  
+                   # reset("nText2")
+                   #reset("nText")
+                   #reset("id1")
                    output$nText2 <- renderText({shiny::validate(
                      need(input$featuretable, "No datasetA provided. Please upload dataset A in 'Choose Files'."),
                      need(input$featuretable$type=="text/csv" || input$featuretable$type=="text/plain", "The format of datasetA is not correct. Please upload the file with correct format."),
@@ -460,6 +482,8 @@ server <- function(input, output, session) {
                   )
                    check$count=1
                    id1 <<- showNotification("Starting processing now. Your results will be available for download shortly. The processing time depends on the number of methods you used.", duration=NULL)
+                   
+                   output$output_results <- renderUI({})
       
                })
   
@@ -467,30 +491,33 @@ server <- function(input, output, session) {
   
   #########################################
   
-  featselmethod_check <-reactive({
-    if(input$analysismode=='classification' && input$pairedanalysis=='FALSE'){
-      featselmethod<-input$featselmethodi
-    }else{
-      if(input$analysismode=='classification' && input$pairedanalysis=='TRUE'){
-        featselmethod<-input$featselmethodii
-      }else{
-        if(input$analysismode=='regression' && input$pairedanalysis=='FALSE'){
-          featselmethod<-input$featselmethodiii
-        }else{
-            
-            if(input$analysismode=='regression' && input$pairedanalysis=='TRUE'){
-              featselmethod<-input$featselmethodiv
-            }else{
-                featselmethod<-NULL
-            }
-        }
-      }
-    }
-    featselmethod
-  })
+  
+                        featselmethod_check <-eventReactive(input$go,{
+                          if(input$analysismode=='classification' && input$pairedanalysis=='FALSE'){
+                            featselmethod<-input$featselmethodi
+                          }else{
+                            if(input$analysismode=='classification' && input$pairedanalysis=='TRUE'){
+                              featselmethod<-input$featselmethodii
+                            }else{
+                              if(input$analysismode=='regression' && input$pairedanalysis=='FALSE'){
+                                featselmethod<-input$featselmethodiii
+                              }else{
+                                  
+                                  if(input$analysismode=='regression' && input$pairedanalysis=='TRUE'){
+                                    featselmethod<-input$featselmethodiv
+                                  }else{
+                                      featselmethod<-NULL
+                                  }
+                              }
+                            }
+                          }
+                          featselmethod
+                        })
+  
+ 
   
   
-  featuretable <- reactive({
+  featuretable <- eventReactive(input$go,{
     if(input$go!=0 & check$count==1 & !is.null(input$featuretable$name) ){
       
       if((input$featuretable$type=="text/csv" || input$featuretable$type=="text/plain")){
@@ -510,7 +537,7 @@ server <- function(input, output, session) {
     }
   })
   
-  classlabel <- reactive({
+  classlabel <- eventReactive(input$go,{
     if(input$go!=0 & check$count==1 & !is.null(input$classlabel$name) ){
       
       if((input$classlabel$type=="text/csv" || input$classlabel$type=="text/plain")){
@@ -530,23 +557,7 @@ server <- function(input, output, session) {
     }
   })
   
-  session_outloc <- reactive({
-    if(input$go!=0 & check$count==1){
-      cur_date<-Sys.time()
-      cur_date<-gsub(x=cur_date,pattern="-",replacement="")
-      cur_date<-gsub(x=cur_date,pattern=":",replacement="")
-      cur_date<-gsub(x=cur_date,pattern=" ",replacement="")
-      if(input$outloc==""){
-        outloc<-paste('~/xmsPANDAout',cur_date,sep="")
-      }else{
-        outloc<-paste('~/',input$outloc,cur_date,sep="")
-      }
-      outloc
-    }else{
-       outloc<-paste('~/xmsPANDAout',sep="")
-       outloc
-    }
-  })
+  
   
  
   
@@ -726,7 +737,11 @@ server <- function(input, output, session) {
     
     # if(input$workflow=='workflowI')
     # if(check$count==1)
+    # if(input$go)
     {
+      
+      
+                      
       
       #start: see manual for additional arguments and description
      #start: see manual for additional arguments and description
@@ -797,6 +812,7 @@ server <- function(input, output, session) {
           
         ),silent=TRUE)
         
+        check$count=0
         if(is(demetabs_res,"try-error")){
              done$count=0
               go <- reactiveValues(count = 0)
@@ -806,11 +822,44 @@ server <- function(input, output, session) {
             print(demetabs_res)
             
         }else{
+            print(session_outloc())
             done$count=1
              go <- reactiveValues(count = 0)
             setwd(session_outloc())
             zip(zipfile=paste(basename(session_outloc()),'zip',sep='.'), files='.')
             print("Processing complete. Please click on download button to save the results.")
+            
+            
+            observeEvent({if(done$count==1) TRUE else return()},{
+               if (!is.null(id1)){
+                 removeNotification(id1)
+                 id1 <<- showNotification(paste("Processing complete. Please click on download button to save the results. Output location: ",session_outloc(),sep=""), duration=10)
+               }
+               
+               if(length(featselmethod_check())>1 & !input$aggregation_method=="none"){
+                 featselmethodout <- c('AggregatedResults',featselmethod_check())
+               }else{
+                 featselmethodout <-featselmethod_check()
+               }
+               
+               #print(c(featselmethodout,input$method))
+               
+               output$output_results <- renderUI({
+             
+                 column(12,
+                        column(12,style='padding-top:10px;padding-left:0;',tags$div(h4("Output"))),
+                        column(8,align='center',style="display:block; margin-left: auto;margin-right:auto;",
+                               imageOutput("myImage",width="400px",height="400px",inline=TRUE)
+                        ),
+                        column(4,
+                               div(style='margin-bottom:40px;', selectInput(width="250px","methodout","Choose method to display figures:",featselmethodout)),
+                               uiOutput("figureradio")
+                        )
+                 )
+               
+               })
+               
+             })
             
         }
     
@@ -820,7 +869,7 @@ server <- function(input, output, session) {
       
       #  go <- reactiveValues(count = 0)
        # go <- reactiveValues(count = 0)
-       # reset("go")
+        reset("go")
        
        #   done <- reactiveValues(count = 0)
        #go <- reactiveValues(count = 0)
@@ -835,36 +884,7 @@ server <- function(input, output, session) {
   
   ##########################################
   
-  observeEvent({if(done$count==1) TRUE else return()},{
-    if (!is.null(id1)){
-      removeNotification(id1)
-      id1 <<- showNotification(paste("Processing complete. Please click on download button to save the results. Output location: ",session_outloc(),sep=""), duration=10)
-    }
-    
-    if(length(featselmethod_check())>1 & !input$aggregation_method=="none"){
-      featselmethodout <- c('AggregatedResults',featselmethod_check())
-    }else{
-      featselmethodout <-featselmethod_check()
-    }
-    
-    #print(c(featselmethodout,input$method))
-    
-    output$output_results <- renderUI({
-  
-      column(12,
-             column(12,style='padding-top:10px;padding-left:0;',tags$div(h4("Output"))),
-             column(8,align='center',style="display:block; margin-left: auto;margin-right:auto;",
-                    imageOutput("myImage",width="400px",height="400px",inline=TRUE)
-             ),
-             column(4,
-                    div(style='margin-bottom:40px;', selectInput(width="250px","methodout","Choose method to display figures:",featselmethodout)),
-                    uiOutput("figureradio")
-             )
-      )
-    
-    })
-    
-  })
+ 
   
   observeEvent(input$methodout,{
     
@@ -967,7 +987,8 @@ server <- function(input, output, session) {
   observeEvent(input$normstart,{normcheck2$count=0})
   
   
-  observeEvent(input$normstart,
+  #observeEvent(input$normstart,
+ eventReactive(input$normstart,
                {
                  output$normText4 <- renderText({shiny::validate(
                    need(input$norminput1, "No data file was provided. Please upload your data file."),
@@ -1026,7 +1047,8 @@ server <- function(input, output, session) {
      
    })
   
-  session_outloc2 <- reactive({
+  #session_outloc2 <- reactive({
+   session_outloc2 <- eventReactive(input$normstart,{
      if(input$normstart!=0  & normcheck2$count==1){
        cur_date<-Sys.time()
        cur_date<-gsub(x=cur_date,pattern="-",replacement="")
@@ -1071,7 +1093,7 @@ server <- function(input, output, session) {
    
    
       normdone2$count=1
-      
+      normcheck2$count=0
       setwd(session_outloc2())
       zip(zipfile=paste(basename(session_outloc2()),'zip',sep='.'), files='.')
       print("Processing complete. Please click on download button to save the results.")
@@ -1114,9 +1136,11 @@ server <- function(input, output, session) {
    #update2 <- reactiveValues(count = 0)
    pcaid3 <-NULL
    
-   observeEvent(input$pcastart,{pcacheck2$count=0})
+   # observeEvent(input$pcastart,{pcacheck2$count=0})
+     eventReactive(input$pcastart,{pcacheck2$count=0})
    
-   
+   #observeEvent
+   #eventReactive
    observeEvent(input$pcastart,
                 {
                   output$pcaText4 <- renderText({shiny::validate(
@@ -1176,7 +1200,7 @@ server <- function(input, output, session) {
       
     })
    
-   session_outloc3 <- reactive({
+   session_outloc3 <- eventReactive(input$pcastart,{
       if(input$pcastart!=0  & pcacheck2$count==1){
         cur_date<-Sys.time()
         cur_date<-gsub(x=cur_date,pattern="-",replacement="")
@@ -1214,13 +1238,15 @@ server <- function(input, output, session) {
  
       
       pcadone2$count=1
-      
+      pcacheck2$count=0
       setwd(session_outloc3())
      
   
          zip(zipfile=paste(basename(session_outloc3()),'zip',sep='.'), files='.')
          
       print("Processing complete. Please click on download button to save the results.")
+      
+      pcacheck2$count=0
 
     reset("pcastart")
       
@@ -1244,20 +1270,17 @@ server <- function(input, output, session) {
    
    # column(12,style='padding-top:10px;padding-left:0;',tags$div(h4("Output")))
     output$pcaoutput_results <- renderText({
+        
   pcal1 <- list.files(paste(session_outloc3()),".pdf",recursive=FALSE,full.names=FALSE)
     
-    print(pcal1)
+   
     
     filename <- normalizePath(file.path(session_outloc3(),pcal1))
-    print(filename)
+    
     
                  PDFfile=filename
                  print(paste("file exists:",file.exists(PDFfile)))
                  list(src=PDFfile)
-                 
-             
-             #     return(paste('<iframe style="height:600px; width:100%" src="', filename, '"></iframe>', sep = ""))
-             
              
       
     
@@ -1294,8 +1317,10 @@ server <- function(input, output, session) {
   #observeEvent(input$kegg_species_code,{update2$count=1;start2$count=0})
   #observeEvent(input$database,{update2$count=1;start2$count=0})
   #observeEvent(input$type.statistic,{update2$count=1;start2$count=0})
-  observeEvent(input$start2,{check2$count=0})
   
+  #observeEvent(input$start2,{check2$count=0})
+  
+  eventReactive(input$start2,{check2$count=0})
   
   observeEvent(input$start2, 
                {
@@ -1384,11 +1409,7 @@ server <- function(input, output, session) {
                                   "Drosophila melanogaster"= "dme"
       )
 
-      # if(isolate(input$database)=='pathway(default)'){
-      #  database="pathway"
-      #}else{
-      # database="module"
-      #}
+     
 
       database=input$fcs.database
         
@@ -1426,6 +1447,7 @@ server <- function(input, output, session) {
       }else{
           done2$cluster_table <-get_fcs(target.data=cluster_metab_data(),target.data.annot=target.data.annot,kegg_species_code=kegg_species_code,database=input$fcs.database,type.statistic=type.statistic,fcs.min.hits=input$fcs.min.hits,reference_set=NA,itrs=input$fcs.itrs)
       }
+      check2$count=0
       
       NULL
       #checktable1=1
@@ -1460,10 +1482,11 @@ server <- function(input, output, session) {
       })
       
        
-       outputOptions(output, "checkannotfile", suspendWhenHidden = FALSE)
+ outputOptions(output, "checkannotfile", suspendWhenHidden = FALSE)
        
  
-  observeEvent({if(dim(done2$cluster_table)[2]>1) TRUE else return()},{
+ observeEvent({if(dim(done2$cluster_table)[2]>1) TRUE else return()},{
+ # eventReactive({if(dim(done2$cluster_table)[2]>1) TRUE else return()},{
     if (!is.null(id3)){
       removeNotification(id3)
       id3 <<-  showNotification("Processing complete. Click on View Results to view or download the results.", duration=NULL)
@@ -1630,7 +1653,8 @@ server <- function(input, output, session) {
   observeEvent(input$start3,{check3$count=0})
   
   
-  observeEvent(input$start3, 
+  #observeEvent(input$start3,
+  eventReactive(input$start3,
                {
                  output$nText6 <- renderText({shiny::validate(
                    need(input$featuretable_file, "No feature table provided. Please upload your feature table."),
@@ -1846,6 +1870,7 @@ server <- function(input, output, session) {
       
       
       done3$count=1
+      check3$count=0
       #file.copy(paste(getwd(),'matrix_centrality.txt',sep='/'),session_outloc())
       setwd(session_outloc_quant())
       zip(zipfile=paste(basename(session_outloc_quant()),'zip',sep='.'), files='.')
