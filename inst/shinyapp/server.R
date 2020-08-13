@@ -26,10 +26,10 @@ server <- function(input, output, session) {
   check <- reactiveValues(count = 0)
   output$checkpvalue <- reactive({
     if(input$analysismode == 'classification' && input$pairedanalysis == 'FALSE'){
-      sum(input$featselmethodi%in%c('limma','limma2way','lm1wayanova','lm2wayanova','lmreg','logitreg','rfesvm','ttest','wilcox','RF','MARS','pamr'))>0
+      sum(input$featselmethodi%in%c('limma','limma2way','limmarobust','limma2wayrobust','lm1wayanova','lm2wayanova','lmreg','logitreg','rfesvm','ttest','wilcox','RF','MARS','pamr'))>0
     }else{
       if(input$analysismode == 'classification' && input$pairedanalysis == 'TRUE'){
-        sum(input$featselmethodii%in%c('limma1wayrepeat','limma2wayrepeat','lm1wayanovarepeat','lm2wayanovarepeat','ttestrepeat','wilcoxrepeat'))>0
+        sum(input$featselmethodii%in%c('limma1wayrepeat','limma2wayrepeat','limma1wayrepeatrobust','limma2wayrepeatrobust','lm1wayanovarepeat','lm2wayanovarepeat','ttestrepeat','wilcoxrepeat'))>0
       }else{
         if(input$analysismode == 'regression' && input$pairedanalysis == 'FALSE'){
           sum(input$featselmethodiii%in%c('lmreg','RF','MARS'))>0
@@ -892,7 +892,7 @@ server <- function(input, output, session) {
       l1 <- list.files(paste(session_outloc(),'AggregatedResults',sep="/"),".png",recursive=TRUE,full.names=FALSE)
       figurenum <- paste('Figure',seq(1:length(l1)))
     }else{
-      folder <- grep(input$methodout,list.dirs(paste(session_outloc(),'Stage2',sep='/'),recursive=FALSE,full.names=FALSE),value=TRUE)
+      folder <- grep(paste(input$methodout,"signalthresh",sep=""),list.dirs(paste(session_outloc(),'Stage2',sep='/'),recursive=FALSE,full.names=FALSE),value=TRUE)
       l1 <- list.files(paste(session_outloc(),'Stage2',folder,sep="/"),".png",recursive=TRUE,full.names=FALSE)
       figurenum <- paste('Figure',seq(1:length(l1)))
     }
