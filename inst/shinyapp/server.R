@@ -1531,7 +1531,21 @@ server <- function(input, output, session) {
                          
                          
                        table1[,1] <- paste("<a target='_blank' href='https://www.genome.jp/kegg-bin/show_module?",map_cpd,"'>",table1[,1],"</a>",sep="")
-                   }
+            }else{
+                
+                if(input$fcs.database=="kegg_atlas"){
+                 
+                    map_cpd<-paste(table1[,1],"+",as.character(table1$XID),sep="")
+                       
+                       temp_pattern=paste(" ",input$path.bg.color,"+",sep="")
+                       map_cpd<-gsub(as.character(map_cpd),pattern=";",replacement=temp_pattern)
+                       map_cpd<-paste(map_cpd," ",input$path.bg.color,sep="")
+                       
+                       
+                        table1[,1] <- paste("<a target='_blank' href='https://www.genome.jp/kegg-bin/show_pathway?",map_cpd,"'>",table1[,1],"</a>",sep="")
+                }
+                
+            }
             
         }
         
@@ -1565,7 +1579,10 @@ server <- function(input, output, session) {
           if(isolate(input$fcs.database)=='pathway'){
           table[i,1]=paste("<a target='_blank' href='https://www.genome.jp/kegg-bin/show_pathway?",table[i,1],"'>",table[i,1],"</a>",sep="")
         }else{
-
+            if(isolate(input$fcs.database)=='kegg_atlas'){
+                     table[i,1]=paste("<a target='_blank' href='https://www.genome.jp/kegg-bin/show_pathway?",table[i,1],"'>",table[i,1],"</a>",sep="")
+                }
+            
             #  moduleid = strsplit(table[i,1],split = ":")[[1]][length(strsplit(table[i,1],split = ":")[[1]])]
             #table[i,1]=paste("<a target='_blank' #href='https://www.kegg.jp/kegg-bin/show_module?",moduleid,"'>",table[i,1],"</a>",sep="")
         }
