@@ -6787,8 +6787,11 @@ get_fcs<-function(target.data,target.data.annot=NA,kegg_species_code="hsa",datab
    colnames(g1)<-cnames_g1 #c("XID","SetID","Name","ExactMass","Formula")
    res<-get_fcs_child(metab_data=metab_data,reference_sets=g1,fcs.min.hits=fcs.min.hits,itrs=itrs,numnodes=numnodes)
  
- #save(res,g1,file="r5.rda")
- g1agg<-aggregate(g1$XID,by=list(g1$SetID),function(x){paste(x,sep="",collapse=";")})
+ #save(res,g1,metab_data,file="r5.rda")
+ 
+ g2=g1[which(g1$XID%in%metab_data$XID),]
+ 
+ g1agg<-aggregate(g2$XID,by=list(g2$SetID),function(x){paste(x,sep="",collapse=";")})
    colnames(g1agg)<-c("SetID","XID")
       
       if(length(which(duplicated(g1$SetID)==TRUE))>0){
@@ -6814,7 +6817,7 @@ get_fcs<-function(target.data,target.data.annot=NA,kegg_species_code="hsa",datab
        
        colnames(res)<-cnames1
        
-       res<-res[order(as.numeric(as.character(res$FDR.meta)),decreasing=FALSE),]
+       res<-res[order(as.numeric(as.character(res$FDR.MaxMean)),decreasing=FALSE),]
         
       
        if(is.na(fcs.min.hits)==FALSE){
@@ -6825,8 +6828,8 @@ get_fcs<-function(target.data,target.data.annot=NA,kegg_species_code="hsa",datab
       
       if(length(res)>0){
           
-           res<-merge(res,g1agg,by="SetID")
-            res<-res[order(as.numeric(as.character(res$FDR.meta)),decreasing=FALSE),]
+            res<-merge(res,g1agg,by="SetID")
+            res<-res[order(as.numeric(as.character(res$FDR.MaxMean)),decreasing=FALSE),]
             
             #res<-res[,c("SetID","Agg.Statistic","Z.score","MaxMean","Total.Size","Num.Hits","pval.Agg.Statistic","pval.Z.score","pval.MaxMean","FDR.MaxMean","pval.meta","FDR.meta","SetName","XID")]
             res<-res[,c("SetID","MaxMean","Total.Size.x","Num.Hits","pval.MaxMean","FDR.MaxMean","SetName","XID")]
@@ -6840,7 +6843,7 @@ get_fcs<-function(target.data,target.data.annot=NA,kegg_species_code="hsa",datab
       }
        }
        
-       print(head(res))
+       #print(head(res))
        #save(res,file="res.Rda")
        return(res)
        
