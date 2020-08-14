@@ -94,6 +94,12 @@ suppressMessages(library(gplots))
 
 runApp.xmsPANDA <-
 function() {
+    
+      library(shiny)
+      library(shinyjs)
+      library(shinyBS)
+      library(DT)
+    
     appDir <- system.file("shinyapp", package = "xmsPANDA")
     if (appDir == "") {
         stop("Could not find shinyapp directory. Try re-installing `xmsPANDA`.", call. = FALSE)
@@ -9675,6 +9681,7 @@ ind<-rep(c(n1,n1+1),c(n3,n2))
 ind<-diffinv(ind)
 min_err=1
 best_k=1
+y[,1]<-factor(y[,1])
 
 #set.seed(seednum)
 #group<-sample(1:num_samp,num_samp, replace=FALSE)

@@ -566,33 +566,7 @@ server <- function(input, output, session) {
   output$nText <- renderText({
     if(input$go!=0  & check$count==1 & !is.null(featselmethod_check()) & is.data.frame(featuretable()) & is.data.frame(classlabel()) & all_alert()==TRUE){
       
-      #if(input$transformation=="Log2 transformation"){
-        
-        #}else{
-        #if(input$transformation=="Median centering"){
-        # log2transform=FALSE
-        # medcenter=TRUE
-        # znormtransform=FALSE
-        #}else{
-        # log2transform=FALSE
-        # medcenter=FALSE
-        #  znormtransform=TRUE
-        #}
-        #}
       
-      #  if(input$normalization=="Quantile normalization"){
-   
-        # }else{
-        #    if(input$normalization=="Lowess normalization"){
-        #  quantile_norm=FALSE
-        #  lowess_norm=TRUE
-        # madscaling=FALSE
-        # }else{
-        #quantile_norm=FALSE
-          #  lowess_norm=FALSE
-          #madscaling=TRUE
-          # }
-          #}
       
       
       
@@ -833,7 +807,7 @@ server <- function(input, output, session) {
             observeEvent({if(done$count==1) TRUE else return()},{
                if (!is.null(id1)){
                  removeNotification(id1)
-                 id1 <<- showNotification(paste("Processing complete. Please click on download button to save the results. Output location: ",session_outloc(),sep=""), duration=10)
+                 id1 <<- showNotification("Processing complete. Please click on download button to save the results.",duration=10)
                }
                
                if(length(featselmethod_check())>1 & !input$aggregation_method=="none"){
@@ -869,12 +843,12 @@ server <- function(input, output, session) {
       
       #  go <- reactiveValues(count = 0)
        # go <- reactiveValues(count = 0)
-        reset("go")
+         reset("go")
        
        #   done <- reactiveValues(count = 0)
        #go <- reactiveValues(count = 0)
       
-      
+
       
     }else{
       
