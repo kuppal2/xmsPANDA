@@ -843,7 +843,7 @@ server <- function(input, output, session) {
       
       #  go <- reactiveValues(count = 0)
        # go <- reactiveValues(count = 0)
-         reset("go")
+        suppressWarnings(reset("go"))
        
        #   done <- reactiveValues(count = 0)
        #go <- reactiveValues(count = 0)
