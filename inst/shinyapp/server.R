@@ -481,7 +481,7 @@ server <- function(input, output, session) {
                      need(featselmethod_check(),"No feature selection method was selected. Please select at least one method.")
                   )
                    check$count=1
-                   id1 <<- showNotification("Starting processing now. Your results will be available for download shortly. The processing time depends on the number of methods you used.", duration=NULL)
+                   id1 <<- showNotification("Starting processing now. Your results will be available for download shortly. The processing time depends on the number of methods used.", duration=NULL)
                    
                    output$output_results <- renderUI({})
       
