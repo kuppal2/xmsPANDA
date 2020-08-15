@@ -563,7 +563,7 @@ server <- function(input, output, session) {
   
   ##########################################
   
-  output$nText <- renderText({
+  output$nText <- renderPrint({
     if(input$go!=0  & check$count==1 & !is.null(featselmethod_check()) & is.data.frame(featuretable()) & is.data.frame(classlabel()) & all_alert()==TRUE){
       
       
@@ -708,10 +708,10 @@ server <- function(input, output, session) {
           #}
       
       ###################
-    
+    msg=""
     # if(input$workflow=='workflowI')
     # if(check$count==1)
-    # if(input$go)
+    if(input$go)
     {
       
       
@@ -782,32 +782,42 @@ server <- function(input, output, session) {
           timeseries.lineplots=input$timeseries.lineplots,
           alphabetical.order=input$alphabetical.order,
           ylab_text=input$ylabel.text,
-          kegg_species_code="hsa",database="pathway",reference_set=NA,match_class_dist=TRUE,differential.network.analysis=differential.network.analysis,balance.classes=input$balance.classes,balance.classes.sizefactor=input$balance.classes.sizefactor,balance.classes.seed=input$balance.classes.seed
+          kegg_species_code="hsa",database="pathway",reference_set=NA,match_class_dist=TRUE,differential.network.analysis=differential.network.analysis,log2.transform.constant=input$log2.transform.constant,balance.classes=input$balance.classes,balance.classes.sizefactor=input$balance.classes.sizefactor,balance.classes.seed=input$balance.classes.seed
           
         ),silent=TRUE)
         
         check$count=0
         if(is(demetabs_res,"try-error")){
-             done$count=0
+             done$count=1
               go <- reactiveValues(count = 0)
               # done <- reactiveValues(count = 0)
             #file.copy(paste(getwd(),'matrix_centrality.txt',sep='/'),session_outloc())
-            print("Error processing the data. Error message:")
-            print(demetabs_res)
+            #  print("Error processing the data. Error message:")
+            #print(demetabs_res)
+            setwd(session_outloc())
+                       zip(zipfile=paste(basename(session_outloc()),'zip',sep='.'), files='.')
+            msg=paste("Error processing the data. Click on download button to save the partial results and review the Log.txt file. Error message:", demetabs_res)
+            
+            observeEvent({if(done$count==1) TRUE else return()},{
+                         if (!is.null(id1)){
+                           removeNotification(id1)
+                           id1 <<- showNotification(msg,duration=60)
+                         }
+            })
             
         }else{
-            print(session_outloc())
+            #print(session_outloc())
             done$count=1
              go <- reactiveValues(count = 0)
             setwd(session_outloc())
             zip(zipfile=paste(basename(session_outloc()),'zip',sep='.'), files='.')
-            print("Processing complete. Please click on download button to save the results.")
-            
+             print("Processing complete. Please click on download button to save the results.")
+            #msg="Processing complete. Please click on download button to save the results."
             
             observeEvent({if(done$count==1) TRUE else return()},{
                if (!is.null(id1)){
                  removeNotification(id1)
-                 id1 <<- showNotification("Processing complete. Please click on download button to save the results.",duration=10)
+                 id1 <<- showNotification("Processing complete. Please click on download button to save the results.",duration=60)
                }
                
                if(length(featselmethod_check())>1 & !input$aggregation_method=="none"){
@@ -841,19 +851,21 @@ server <- function(input, output, session) {
       
       #   input$go=0
       
-      #  go <- reactiveValues(count = 0)
+        go <- reactiveValues(count = 0)
        # go <- reactiveValues(count = 0)
-        suppressWarnings(reset("go"))
+       #  suppressWarnings(reset("go"))
        
        #   done <- reactiveValues(count = 0)
        #go <- reactiveValues(count = 0)
       
 
       
-    }else{
+      # }else{
       
-      NULL
+      #NULL
     }
+    
+    #msg
   })
   
   ##########################################
@@ -1072,8 +1084,10 @@ server <- function(input, output, session) {
       zip(zipfile=paste(basename(session_outloc2()),'zip',sep='.'), files='.')
       print("Processing complete. Please click on download button to save the results.")
 
-    reset("normstart")
-
+      # reset("normstart")
+    
+        normstart <- reactiveValues(count = 0)
+    
     }else{
 
       NULL
@@ -1222,7 +1236,9 @@ server <- function(input, output, session) {
       
       pcacheck2$count=0
 
-    reset("pcastart")
+      #reset("pcastart")
+      
+     pcastart <- reactiveValues(count = 0)
       
 
     }else{
@@ -1427,7 +1443,10 @@ server <- function(input, output, session) {
       #checktable1=1
       #print(dim(done2$cluster_table))
       #print("yes2")
-      reset("start2")
+      #  reset("start2")
+      
+       start2 <- reactiveValues(count = 0)
+       
     }else{
 
       NULL
@@ -1866,7 +1885,10 @@ server <- function(input, output, session) {
       setwd(session_outloc_quant())
       zip(zipfile=paste(basename(session_outloc_quant()),'zip',sep='.'), files='.')
       print("Processing complete. Please click on download button to save the results.")
-      reset("start3")
+      #reset("start3")
+      
+      start3 <- reactiveValues(count = 0)
+       
     })  
       
     }else{

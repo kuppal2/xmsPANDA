@@ -124,7 +124,7 @@ column(width=6,style='margin-top:25px;padding-left:0;',actionButton("argumentbut
                bsModal("argument_modal", "More arguments for feature selection", "argumentbutton", size = "large",
                        tags$div(
                          width=12,
-                         style="height:500px",
+                         style="height:575px",
                          
                          column(width=6,numericInput(width="350px","kfold", "k for k-fold Cross Validation (1-10000 limit):", 10, min = 1, max = 10000)),
                          
@@ -172,7 +172,9 @@ column(width=12,style="margin-top:10px",
 column(width=6,style='padding-left:0;',numericInput(width="350px","balance.classes.sizefactor", "Multiplicative factor for generating synthetic data (e.g. x3, x10):", 10, min = 1)),
  column(width=6,numericInput(width="350px","balance.classes.seed", "Random seed generator for ROSE:", 1, min = 1))),
 column(width=12,style="margin-top:10px",
-column(width=6,style='padding-left:0;',selectInput(width="350px","lme.modeltype","Model type for mixed effects model:",c("Random Intercept"="RI","Random Intercept & Random Slope"="RIRS"),selected="Random Intercept")))
+column(width=6,style='padding-left:0;',selectInput(width="350px","lme.modeltype","Model type for mixed effects model:",c("Random Intercept"="RI","Random Intercept & Random Slope"="RIRS"),selected="Random Intercept")),
+column(width=6,numericInput(width="350px","log2.transform.constant", "Small constant for log2 transformation:", 1, min = 0))
+)
 
 
 
