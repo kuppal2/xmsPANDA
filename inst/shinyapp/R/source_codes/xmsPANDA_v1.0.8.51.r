@@ -21756,7 +21756,8 @@ study.design=c("multiclass","onewayanova","twowayanova","onewayanovarepeat","two
         if(normalization.method[1]==c("none")){
             print("Using raw data")
         }
-        valid_norm_options<-c("log2quantilenorm","log2transform","znormtransform","lowess_norm","quantile_norm","rangescaling","paretoscaling","mstus","eigenms_norm","vsn_norm","sva_norm","none","tic_norm","cubicspline_norm","mad_norm")
+        valid_norm_options<-c("log2quantilenorm","log2transform","znormtransform","lowess_norm","quantile_norm","rangescaling","paretoscaling","mstus",
+                              "eigenms_norm","vsn_norm","sva_norm","none","tic_norm","cubicspline_norm","mad_norm")
         
        data_matrix_list<-new("list")
 
@@ -23616,6 +23617,18 @@ create.new.folder=TRUE,log2.transform.constant=1){
    normalization.method=tolower(normalization.method)
    
     if(length(normalization.method)==1){
+      
+      valid_norm_options<-c("log2quantilenorm","log2transform","znormtransform","lowess_norm","quantile_norm","rangescaling","paretoscaling","mstus",
+                            "eigenms_norm","vsn_norm","sva_norm","none","tic_norm","cubicspline_norm","mad_norm")
+      
+      if(normalization.method%in%valid_norm_options){
+        
+        print(paste("Performing ",normalization.method," normalization",sep=""))
+        
+      }else{
+        
+        stop(paste("Invalid normalization option. Valid options: ",paste(valid_norm_options,collapse=", "),sep=""))
+      }
         
         if(normalization.method=="log2quantilenorm" || normalization.method=="log2quantnorm"){
             print("Performing log2 transformation and quantile normalization")
@@ -24496,10 +24509,8 @@ if(FALSE){
         colmedians=apply(data_m,2,function(x){median(x,na.rm=TRUE)})
         
         Y=sweep(data_m,2,colmedians)
-        
-        
         mad<-apply(abs(Y),2,function(x){median(x,na.rm=TRUE)})
-        const<-prod(mad)^(1/length(mad))
+        const<-1 #prod(mad)^(1/length(mad))
         scale.normalized<-sweep(Y,2,const/mad,"*")+mean(colmedians,na.rm=TRUE)
         
         
@@ -25255,7 +25266,6 @@ if(consensus_analysis==TRUE){
         write.table(Xmat,file="Tables/Aggregated_selected_features.txt",sep="\t",row.names=FALSE)
         
 	if(nrow(Xmat)>1){
-        library(e1071)
 
 	dir.create("Figures")
 
@@ -26295,7 +26305,8 @@ add.pvalues=TRUE,add.jitter=TRUE,fcs.permutation.type,fcs.method,fcs.min.hits,na
                     classlabels_orig<-classlabels
                     classlabels_sub<-classlabels
 						class_labels_levels<-c("A")
-                        #if(featselmethod=="lmregrepeat" || featselmethod=="splsrepeat" || featselmethod=="plsrepeat"){
+						
+                  if(featselmethod=="lmregrepeat" || featselmethod=="splsrepeat" || featselmethod=="plsrepeat"){
 				     				colnames(classlabels)<-c("SampleID","SubjectNum",paste("Response",sep=""))
 											
 											
@@ -26316,7 +26327,7 @@ add.pvalues=TRUE,add.jitter=TRUE,fcs.permutation.type,fcs.method,fcs.min.hits,na
 											
 											Xmat<-Xmat_temp[,-c(1:factor_lastcol[length(factor_lastcol)])]
 											
-                                            #}
+                      }
 							
 
 					classlabels<-as.data.frame(classlabels)
@@ -28765,6 +28776,8 @@ if(featselmethod=="rfesvm"){
 											
 											# Ordinary fit
 											
+										
+											
 											
 											if(pairedanalysis==TRUE){
 											
@@ -28788,10 +28801,9 @@ if(featselmethod=="rfesvm"){
 												print(design)
 											
                                                 ####savelist=ls(),file="limma.Rda")
-												####savef,file="f.Rda")
-												####savedesign,file="design.Rda")
-												####savedata_m_fc,file="data_m_fc.Rda")
-												####savesubject_inf,file="subject_inf.Rda")
+                                                
+                                               
+												#save(subject_inf,file="subject_inf.Rda")
 												
 												corfit<-duplicateCorrelation(data_m_fc,design=design,block=subject_inf,ndups=1)
 												
@@ -28806,6 +28818,15 @@ if(featselmethod=="rfesvm"){
 											
                                             ####savelist=ls(),file="d.Rda")
                                             
+                                            colnames(classlabels_response_mat)<-paste("Factor",seq(1,dim(classlabels_response_mat)[2]),sep="")
+                                            if(FALSE)
+                                              {                                              
+                                                        save(classlabels_response_mat,file="classlabels_response_mat.Rda")
+                                                                                           
+                                                                                           save(f,file="f.Rda")
+                                                                                           save(design,file="design.Rda")
+                                                                                           save(data_m_fc,file="data_m_fc.Rda")
+                                            }
                                                 if(limmarobust==TRUE)
                                                 {
                                                     fit <- lmFit(data_m_fc,design,method="robust")
@@ -29026,6 +29047,14 @@ if(featselmethod=="rfesvm"){
 								print("Design matrix")
 								print(design)
 								
+								if(FALSE){
+								save(classlabels_response_mat,file="classlabels_response_mat.Rda")
+								
+								save(f,file="f.Rda")
+								save(design,file="design.Rda")
+								save(data_m_fc,file="data_m_fc.Rda")
+								}
+								
 								if(pairedanalysis==TRUE)
 								{
 
@@ -29102,8 +29131,10 @@ if(featselmethod=="rfesvm"){
 								#cont.matrix <- makeContrasts(Grp1vs2="ClassA-ClassB",Grp1vs3="ClassC-ClassD",Grp2vs3=("ClassA-ClassB")-("ClassC-ClassD"),levels=design)
 								#cont.matrix <- makeContrasts(Grp1vs2=ClassA-ClassB,Grp1vs3=ClassC-ClassD,Grp2vs3=(ClassA-ClassB)-(ClassC-ClassD),Grp3vs4=ClassA-ClassC,Group2vs4=ClassB-ClassD,levels=design)
 								
+									 # print("here1A")
+									  
 								cont.matrix <- makeContrasts(Factor1=(ClassA+ClassB+ClassC+ClassD)-(ClassE+ClassF+ClassG+ClassH),Factor2=(ClassA+ClassE)-(ClassB+ClassF)-(ClassC+ClassG)-(ClassD+ClassH),Factor1x2=(ClassA-ClassB-ClassC-ClassD)-(ClassE-ClassF-ClassG-ClassH),levels=design)
-
+                
 								if(pairedanalysis==TRUE){
 								
 									class_table_facts<-table(classlabels)
@@ -29163,6 +29194,8 @@ if(featselmethod=="rfesvm"){
 								
 								cont.matrix <- makeContrasts(Factor1=(ClassA+ClassB+ClassC+ClassD+ClassE+ClassF)-(ClassG+ClassH+ClassI+ClassJ+ClassK+ClassL),Factor2=(ClassA+ClassG)-(ClassB+ClassH)-(ClassC+ClassI)-(ClassD+ClassJ)-(ClassE+ClassK)-(ClassF-ClassL),Factor1x2=(ClassA-ClassB-ClassC-ClassD-ClassE-ClassF)-(ClassG-ClassH-ClassI-ClassJ-ClassK-ClassL),levels=design)
 
+								
+								
 								if(pairedanalysis==TRUE){
 								
 									class_table_facts<-table(classlabels)
@@ -29204,6 +29237,7 @@ if(featselmethod=="rfesvm"){
                                      }else{
                                          
                                          
+                                        
                                          fit <- lmFit(data_m_fc,design)
                                      }
                                      
@@ -35770,472 +35804,6 @@ find.Overlapping <- function (dataA, dataB, mz.thresh = 10, time.thresh = 30, be
   }
   
 }
-generate_distribution_concentration<-function(targeted_table,seq,outloc,groupcheck=FALSE,targetID=NA,min_num_nonmissing=3){
-    
-    #summarize the number of batches
-    num_batches<- length(unique(seq[,4]))
-    
-    
-    #check batchwise distribution
-    pdf(paste(outloc,"batchwise_concentration_distribution.pdf",sep="/"))
-    for(ii in 1:dim(targeted_table)[1]){
-        
-        inten_study<-c()
-        batch_study<-c()
-        inten_qstd<-c()
-        batch_qstd<-c()
-        for(jj in 1:num_batches){
-            study_list=as.character(seq[seq[,4]==jj & grepl('study',seq[,3],ignore.case = TRUE),1])
-            qstd_list=as.character(seq[seq[,4]==jj & grepl('qstd',seq[,3],ignore.case = TRUE),1])
-            study_list<-which(colnames(targeted_table)%in%study_list)
-            qstd_list<-which(colnames(targeted_table)%in%qstd_list)
-            
-           
-            
-            tmp_intensity_study<-as.numeric(targeted_table[ii,study_list])
-            tmp_intensity_study<-tmp_intensity_study[!tmp_intensity_study==0]
-            tmp_intensity_qstd<-as.numeric(targeted_table[ii,qstd_list])
-            tmp_intensity_qstd<-tmp_intensity_qstd[!tmp_intensity_qstd==0]
-    
-            if(length(tmp_intensity_study)>=min_num_nonmissing){
-                inten_study<-c(inten_study,tmp_intensity_study)
-                batch_study<-c(batch_study,rep(paste("Batch",jj,sep=""),times=length(tmp_intensity_study)))
-                inten_qstd<-c(inten_qstd,tmp_intensity_qstd)
-                batch_qstd<-c(batch_qstd,rep(paste("Batch",jj,sep=""),times=length(tmp_intensity_qstd)))
-            }
-        }
-        if(length(inten_study)>0){
-            plotdata_study<-data.frame(inten_study,batch_study)
-            plotdata_study$batch_study<-factor(plotdata_study$batch_study,levels=as.character(unique(plotdata_study$batch_study)))
-            plotdata1<-cbind(plotdata_study,"black")
-            colnames(plotdata1)<-c("inten","batch","col")
-            if(length(inten_qstd)>0){
-                plotdata_qstd<-data.frame(inten_qstd,batch_qstd)
-                plotdata_qstd$batch_qstd<-factor(plotdata_qstd$batch_qstd,levels=as.character(unique(plotdata_qstd$batch_qstd)))
-                plotdata2<-cbind(plotdata_qstd,"red")
-                colnames(plotdata2)<-c("inten","batch","col")
-                plotdata<-rbind(plotdata1,plotdata2)
-            }else{
-                plotdata<-plotdata1
-            }
-            
-            if(length(grep("time_error",colnames(targeted_table)))>0){
-                subtitle=paste(
-                paste("mz:",round(targeted_table[ii,"mz"],5),"  ","time:",round(targeted_table[ii,"time"],1),sep=""),
-                paste("reference mz:",round(targeted_table[ii,"ref_mz"],5),"  ","reference time:",round(targeted_table[ii,"ref_time"],1),sep=""),
-                paste("mz error:",round(targeted_table[ii,"mz_error"]),"ppm","  ","time error:",round(targeted_table[ii,"time_error"],1),"s",sep=""),
-                sep="\n")
-            }else{
-                subtitle=paste(
-                paste("mz:",round(targeted_table[ii,"mz"],5),"  ","time:",round(targeted_table[ii,"time"],1),sep=""),
-                paste("reference mz:",round(targeted_table[ii,"ref_mz"],5),"  ","reference time:",round(targeted_table[ii,"ref_time"],1),sep=""),
-                paste("mz error:",round(targeted_table[ii,"mz_error"]),"ppm",sep=""),
-                sep="\n")
-            }
-            
-            #draw the plot
-            print(ggplot() +
-            geom_boxplot(data=plotdata_study, aes(x=batch_study, y=inten_study,fill=batch_study)) +
-            geom_point(data=plotdata, aes(x=batch, y=inten,fill=batch,color=col)) +
-            scale_y_continuous(name="concentration") +
-            scale_x_discrete(name="",limits = rev(levels(plotdata_study$batch_study)))+
-            coord_flip() +
-            labs(subtitle=subtitle,
-            title=as.character(targeted_table[ii,"Chemical_name"])) +
-            theme(axis.line.x = element_line(size = 0.5, colour = "black"),
-            axis.line.y = element_line(size = 0.5, colour = "black"),
-            axis.line = element_line(size=1, colour = "black"),
-            panel.grid.major = element_blank(),
-            panel.grid.minor = element_blank(),
-            panel.border = element_blank(),
-            panel.background = element_blank(),
-            plot.title=element_text(size = 20),
-            legend.title=element_text(size=13),
-            legend.text=element_text(size=10),
-            text=element_text(size = 16),
-            #plot.margin=margin(10,5,10,1),
-            axis.text.x=element_text(colour="black", size = 10),
-            axis.text.y=element_text(colour="black", size = 10))+
-            scale_colour_manual(name ='Category',
-            values =c('black'='black','red'='red'), labels = c('Sample','QSTD'))+
-            guides(fill="none"))
-        }
-        
-    }
-    dev.off()
-    
-    
-    
-    #check overall distribution
-    pdf(paste(outloc,"overall_concentration_distribution.pdf",sep="/"))
-    for(ii in 1:dim(targeted_table)[1]){
-        study_list=as.character(seq[grepl('study',seq[,3],ignore.case = TRUE),1])
-        qstd_list=as.character(seq[grepl('qstd',seq[,3],ignore.case = TRUE),1])
-        
-        study_list<-which(colnames(targeted_table)%in%study_list)
-        qstd_list<-which(colnames(targeted_table)%in%qstd_list)
-        
-        
-        tmp_intensity_study<-as.numeric(targeted_table[ii,study_list])
-        tmp_intensity_study<-tmp_intensity_study[!tmp_intensity_study==0]
-        tmp_intensity_qstd<-as.numeric(targeted_table[ii,qstd_list])
-        tmp_intensity_qstd<-tmp_intensity_qstd[!tmp_intensity_qstd==0]
-        if(length(tmp_intensity_study)>=min_num_nonmissing){
-            plotdata_study<-cbind(as.data.frame(tmp_intensity_study),"black")
-            colnames(plotdata_study)<-c("intensity","col")
-            if(length(tmp_intensity_qstd)>0){
-                plotdata_qstd<- cbind(as.data.frame(tmp_intensity_qstd),"red")
-                colnames(plotdata_qstd)<-c("intensity","col")
-                plotdata<-rbind(plotdata_study,plotdata_qstd)
-            }else{
-                plotdata<-plotdata_study
-            }
-            
-            if(any(is.na(targetID))){
-                
-                if(length(grep("time_error",colnames(targeted_table)))>0){
-                    subtitle=paste(
-                    paste("mz:",round(targeted_table[ii,"mz"],5),"  ","time:",round(targeted_table[ii,"time"],1),sep=""),
-                    paste("reference mz:",round(targeted_table[ii,"ref_mz"],5),"  ","reference time:",round(targeted_table[ii,"ref_time"],1),sep=""),
-                    paste("mz error:",round(targeted_table[ii,"mz_error"]),"ppm","  ","time error:",round(targeted_table[ii,"time_error"],1),"s",sep=""),
-                    sep="\n")
-                }else{
-                    subtitle=paste(
-                    paste("mz:",round(targeted_table[ii,"mz"],5),"  ","time:",round(targeted_table[ii,"time"],1),sep=""),
-                    paste("reference mz:",round(targeted_table[ii,"ref_mz"],5),"  ","reference time:",round(targeted_table[ii,"ref_time"],1),sep=""),
-                    paste("mz error:",round(targeted_table[ii,"mz_error"]),"ppm",sep=""),
-                    sep="\n")
-                }
-                
-                
-                print(ggplot() +
-                geom_boxplot(data=plotdata_study, aes(x="", y=intensity)) +
-                geom_point(data=plotdata, aes(x="", y=intensity,color=col)) +
-                scale_y_continuous(name="concentration") +
-                scale_x_discrete(name="")+
-                coord_flip() +
-                labs(subtitle=subtitle,
-                title=as.character(targeted_table[ii,"Chemical_name"])) +
-                theme(axis.line.x = element_line(size = 0.5, colour = "black"),
-                axis.line.y = element_line(size = 0.5, colour = "black"),
-                axis.line = element_line(size=1, colour = "black"),
-                panel.grid.major = element_blank(),
-                panel.grid.minor = element_blank(),
-                panel.border = element_blank(),
-                panel.background = element_blank(),
-                plot.title=element_text(size = 20),
-                legend.title=element_text(size=13),
-                legend.text=element_text(size=10),
-                text=element_text(size = 16),
-                #plot.margin=margin(10,5,10,1),
-                axis.text.x=element_text(colour="black", size = 10),
-                axis.text.y=element_text(colour="black", size = 10))+
-                scale_colour_manual(name ='Category',
-                values =c('black'='black','red'='red'), labels = c('Sample','QSTD'))+
-                guides(fill="none"))
-                
-            }else{
-                if(!any(as.character(seq[,2])%in%targetID)){
-                    stop("There is none of targetIDs that can find a match in class label file.", call.=TRUE)
-                }
-                if(length(targetID)>10){
-                    stop("The maximum number of allowed targetID is 10.", call.=TRUE)
-                }
-                plotdata_target<-seq[as.character(seq[,2])%in%targetID,c(1,2)]
-                plotdata_target<-cbind(plotdata_target,as.numeric(targeted_table[ii,as.character(plotdata_target[,1])]))
-                colnames(plotdata_target)<-c("FileName","SampleID","intensity")
-                plotdata_target<-plotdata_target[!plotdata_target$intensity==0,]
-                if(length(plotdata_target$intensity)>0){
-                    col=c(palette()[-c(1,2)],c("darkorange1","brown","gold1","deeppink1"))
-                    col<-col[1:length(plotdata_target$intensity)]
-                    plotdata_target<-cbind(plotdata_target,col)
-                    plotdata_target$col<-factor(plotdata_target$col,levels=as.character(unique(plotdata_target$col)))
-                    col_len<-c('black','red',as.character(plotdata_target$col))
-                    names(col_len)<-c('black','red',as.character(plotdata_target$col))
-                    plotdata[,"size"]=1
-                    plotdata=rbind(plotdata,cbind(plotdata_target[,c("intensity","col")],size=8))
-                    
-                    if(length(grep("time_error",colnames(targeted_table)))>0){
-                        subtitle=paste(
-                        paste("mz:",round(targeted_table[ii,"mz"],5),"  ","time:",round(targeted_table[ii,"time"],1),sep=""),
-                        paste("reference mz:",round(targeted_table[ii,"ref_mz"],5),"  ","reference time:",round(targeted_table[ii,"ref_time"],1),sep=""),
-                        paste("mz error:",round(targeted_table[ii,"mz_error"]),"ppm","  ","time error:",round(targeted_table[ii,"time_error"],1),"s",sep=""),
-                        sep="\n")
-                    }else{
-                        subtitle=paste(
-                        paste("mz:",round(targeted_table[ii,"mz"],5),"  ","time:",round(targeted_table[ii,"time"],1),sep=""),
-                        paste("reference mz:",round(targeted_table[ii,"ref_mz"],5),"  ","reference time:",round(targeted_table[ii,"ref_time"],1),sep=""),
-                        paste("mz error:",round(targeted_table[ii,"mz_error"]),"ppm",sep=""),
-                        sep="\n")
-                    }
-                    
-                    print(ggplot() +
-                    geom_boxplot(data=plotdata_study, aes(x="", y=intensity)) +
-                    geom_point(data=plotdata, aes(x="", y=intensity,color=col,size=size)) +
-                    scale_y_continuous(name="concentration") +
-                    scale_x_discrete(name="")+
-                    coord_flip() +
-                    labs(subtitle=subtitle,
-                    title=as.character(targeted_table[ii,"Chemical_name"])) +
-                    theme(axis.line.x = element_line(size = 0.5, colour = "black"),
-                    axis.line.y = element_line(size = 0.5, colour = "black"),
-                    axis.line = element_line(size=1, colour = "black"),
-                    panel.grid.major = element_blank(),
-                    panel.grid.minor = element_blank(),
-                    panel.border = element_blank(),
-                    panel.background = element_blank(),
-                    plot.title=element_text(size = 20),
-                    legend.title=element_text(size=13),
-                    legend.text=element_text(size=10),
-                    text=element_text(size = 16),
-                    #plot.margin=margin(10,5,10,1),
-                    axis.text.x=element_text(colour="black", size = 10),
-                    axis.text.y=element_text(colour="black", size = 10))+
-                    scale_colour_manual(name ='Category',
-                    values =col_len, labels = c('Sample','QSTD',as.character(plotdata_target$SampleID)))+
-                    guides(fill="none",size="none"))
-                }else{
-                    
-                    if(length(grep("time_error",colnames(targeted_table)))>0){
-                        subtitle=paste(
-                        paste("mz:",round(targeted_table[ii,"mz"],5),"  ","time:",round(targeted_table[ii,"time"],1),sep=""),
-                        paste("reference mz:",round(targeted_table[ii,"ref_mz"],5),"  ","reference time:",round(targeted_table[ii,"ref_time"],1),sep=""),
-                        paste("mz error:",round(targeted_table[ii,"mz_error"]),"ppm","  ","time error:",round(targeted_table[ii,"time_error"],1),"s",sep=""),
-                        sep="\n")
-                    }else{
-                        subtitle=paste(
-                        paste("mz:",round(targeted_table[ii,"mz"],5),"  ","time:",round(targeted_table[ii,"time"],1),sep=""),
-                        paste("reference mz:",round(targeted_table[ii,"ref_mz"],5),"  ","reference time:",round(targeted_table[ii,"ref_time"],1),sep=""),
-                        paste("mz error:",round(targeted_table[ii,"mz_error"]),"ppm",sep=""),
-                        sep="\n")
-                    }
-                    
-                    print(ggplot() +
-                    geom_boxplot(data=plotdata_study, aes(x="", y=intensity)) +
-                    geom_point(data=plotdata, aes(x="", y=intensity,color=col)) +
-                    scale_y_continuous(name="intensity") +
-                    scale_x_discrete(name="")+
-                    coord_flip() +
-                    labs(subtitle=subtitle,
-                    title=as.character(targeted_table[ii,"Chemical_name"])) +
-                    theme(axis.line.x = element_line(size = 0.5, colour = "black"),
-                    axis.line.y = element_line(size = 0.5, colour = "black"),
-                    axis.line = element_line(size=1, colour = "black"),
-                    panel.grid.major = element_blank(),
-                    panel.grid.minor = element_blank(),
-                    panel.border = element_blank(),
-                    panel.background = element_blank(),
-                    plot.title=element_text(size = 20),
-                    legend.title=element_text(size=13),
-                    legend.text=element_text(size=10),
-                    text=element_text(size = 16),
-                    #plot.margin=margin(10,5,10,1),
-                    axis.text.x=element_text(colour="black", size = 10),
-                    axis.text.y=element_text(colour="black", size = 10))+
-                    scale_colour_manual(name ='Category',
-                    values =c('black'='black','red'='red'), labels = c('Sample','QSTD'))+
-                    guides(fill="none"))
-                }
-            }
-        }
-    }
-    dev.off()
-    
-    
-    #check group intensity distribution
-    if(groupcheck==TRUE){
-        if(length(grep("group",colnames(seq),ignore.case =TRUE))==0){
-            #stop("There is no column called 'group' in class label file. Please assign 'Group' to the name of the column with group label in class label file", call.=TRUE)
-            Group<-rep(1,nrow(seq))
-            seq<-cbind(seq,Group)
-        }
-        print(head(seq))
-        colnames(seq)[grep("group",colnames(seq),ignore.case =TRUE)]='Group'
-        seq_group=seq[!is.na(seq$Group),]
-        group=unique(as.character(seq_group$Group))
-        pdf(paste(outloc,"groupwise_intensity_distribution.pdf",sep="/"))
-        for(ii in 1:dim(targeted_table)[1]){
-            inten_group<-c()
-            label_group<-c()
-            name_group<-c()
-            for(jj in 1:length(group)){
-                group_list=as.character(seq_group[seq_group$Group==group[jj],1])
-                
-                group_list<-which(colnames(targeted_table)%in%group_list)
-                
-                
-                
-                tmp_intensity_group<-as.numeric(targeted_table[ii,group_list])
-                group_list<-group_list[!tmp_intensity_group==0]
-                tmp_intensity_group<-tmp_intensity_group[!tmp_intensity_group==0]
-                if(length(tmp_intensity_study)>=min_num_nonmissing){
-                    inten_group<-c(inten_group,tmp_intensity_group)
-                    label_group<-c(label_group,rep(group[jj],length(tmp_intensity_group)))
-                    name_group<-c(name_group,group_list)
-                }
-            }
-            if(length(inten_group)>0){
-                plotdata_group<-data.frame(name_group,inten_group,label_group)
-                plotdata_group$label_group<-factor(plotdata_group$label_group,levels=as.character(unique(plotdata_group$label_group)))
-                plotdata<-cbind(plotdata_group,"black")
-                colnames(plotdata)<-c("name","inten","group","col")
-                plotdata$col<-as.character(plotdata$col)
-                plotdata<-merge(plotdata,seq[,c(1,2)],by.x='name',by.y='FileName',all.x=TRUE)
-                
-                colnames(plotdata)[ncol(plotdata)]="sampleID"
-                
-                if(!any(is.na(targetID))){
-                    if(!any(as.character(seq_group[,2])%in%targetID)){
-                        stop("There is none of targetIDs that can find a match in class label file.", call.=TRUE)
-                    }
-                    if(length(targetID)>10){
-                        stop("The maximum number of allowed targetID is 10.", call.=TRUE)
-                    }
-                    if(any(plotdata$name%in%as.character(seq_group[as.character(seq_group[,2])%in%targetID,1]))){
-                        plotdata=cbind(plotdata,size=1)
-                        plotdata[plotdata$name%in%as.character(seq_group[as.character(seq_group[,2])%in%targetID,1]),"size"]=8
-                        col=c(palette()[-c(1,2)],c("darkorange1","brown","gold1","deeppink1"))
-                        col<-col[1:dim(plotdata[plotdata$name%in%as.character(seq_group[as.character(seq_group[,2])%in%targetID,1]),])[1]]
-                        plotdata[plotdata$name%in%as.character(seq_group[as.character(seq_group[,2])%in%targetID,1]),"col"]=col
-                        plotdata$col<-factor(plotdata$col,levels=as.character(unique(plotdata$col)))
-                        col_len<-c('black',as.character(col))
-                        names(col_len)<-c('black',as.character(col))
-                        
-                        #draw the plot
-                        if(length(grep("time_error",colnames(targeted_table)))>0){
-                            subtitle=paste(
-                            paste("mz:",round(targeted_table[ii,"mz"],5),"  ","time:",round(targeted_table[ii,"time"],1),sep=""),
-                            paste("reference mz:",round(targeted_table[ii,"ref_mz"],5),"  ","reference time:",round(targeted_table[ii,"ref_time"],1),sep=""),
-                            paste("mz error:",round(targeted_table[ii,"mz_error"]),"ppm","  ","time error:",round(targeted_table[ii,"time_error"],1),"s",sep=""),
-                            sep="\n")
-                        }else{
-                            subtitle=paste(
-                            paste("mz:",round(targeted_table[ii,"mz"],5),"  ","time:",round(targeted_table[ii,"time"],1),sep=""),
-                            paste("reference mz:",round(targeted_table[ii,"ref_mz"],5),"  ","reference time:",round(targeted_table[ii,"ref_time"],1),sep=""),
-                            paste("mz error:",round(targeted_table[ii,"mz_error"]),"ppm",sep=""),
-                            sep="\n")
-                        }
-                        
-                        print(ggplot() +
-                        geom_boxplot(data=plotdata, aes(x=group, y=inten,fill=group)) +
-                        geom_point(data=plotdata, aes(x=group, y=inten,fill=group,color=col,size=size)) +
-                        scale_y_continuous(name="intensity") +
-                        scale_x_discrete(name="",limits = rev(levels(plotdata_study$batch_study)))+
-                        coord_flip() +
-                        labs(subtitle=subtitle,
-                        title=as.character(targeted_table[ii,"Chemical_name"])) +
-                        theme(axis.line.x = element_line(size = 0.5, colour = "black"),
-                        axis.line.y = element_line(size = 0.5, colour = "black"),
-                        axis.line = element_line(size=1, colour = "black"),
-                        panel.grid.major = element_blank(),
-                        panel.grid.minor = element_blank(),
-                        panel.border = element_blank(),
-                        panel.background = element_blank(),
-                        plot.title=element_text(size = 20),
-                        legend.title=element_text(size=13),
-                        legend.text=element_text(size=10),
-                        text=element_text(size = 16),
-                        #plot.margin=margin(10,5,10,1),
-                        axis.text.x=element_text(colour="black", size = 10),
-                        axis.text.y=element_text(colour="black", size = 10))+
-                        scale_colour_manual(name ='Category',
-                        values =col_len, labels = c('Sample',as.character(plotdata[plotdata$name%in%as.character(seq_group[as.character(seq_group[,2])%in%targetID,1]),"sampleID"])))+
-                        guides(fill="none",size="none"))
-                    }else{
-                        if(length(grep("time_error",colnames(targeted_table)))>0){
-                            subtitle=paste(
-                            paste("mz:",round(targeted_table[ii,"mz"],5),"  ","time:",round(targeted_table[ii,"time"],1),sep=""),
-                            paste("reference mz:",round(targeted_table[ii,"ref_mz"],5),"  ","reference time:",round(targeted_table[ii,"ref_time"],1),sep=""),
-                            paste("mz error:",round(targeted_table[ii,"mz_error"]),"ppm","  ","time error:",round(targeted_table[ii,"time_error"],1),"s",sep=""),
-                            sep="\n")
-                        }else{
-                            subtitle=paste(
-                            paste("mz:",round(targeted_table[ii,"mz"],5),"  ","time:",round(targeted_table[ii,"time"],1),sep=""),
-                            paste("reference mz:",round(targeted_table[ii,"ref_mz"],5),"  ","reference time:",round(targeted_table[ii,"ref_time"],1),sep=""),
-                            paste("mz error:",round(targeted_table[ii,"mz_error"]),"ppm",sep=""),
-                            sep="\n")
-                        }
-                        
-                        print(ggplot() +
-                        geom_boxplot(data=plotdata, aes(x=group, y=inten,fill=group)) +
-                        geom_point(data=plotdata, aes(x=group, y=inten,fill=group,color=col)) +
-                        scale_y_continuous(name="intensity") +
-                        scale_x_discrete(name="",limits = rev(levels(plotdata_study$batch_study)))+
-                        coord_flip() +
-                        labs(subtitle=subtitle,
-                        title=as.character(targeted_table[ii,"Chemical_name"])) +
-                        theme(axis.line.x = element_line(size = 0.5, colour = "black"),
-                        axis.line.y = element_line(size = 0.5, colour = "black"),
-                        axis.line = element_line(size=1, colour = "black"),
-                        panel.grid.major = element_blank(),
-                        panel.grid.minor = element_blank(),
-                        panel.border = element_blank(),
-                        panel.background = element_blank(),
-                        plot.title=element_text(size = 20),
-                        legend.title=element_text(size=13),
-                        legend.text=element_text(size=10),
-                        text=element_text(size = 16),
-                        #plot.margin=margin(10,5,10,1),
-                        axis.text.x=element_text(colour="black", size = 10),
-                        axis.text.y=element_text(colour="black", size = 10))+
-                        scale_colour_manual(name ='Category',
-                        values =c('black'='black'), labels = c('Sample'))+
-                        guides(fill="none"))
-                    }
-                    
-                    
-                }else{
-                    #draw the plot
-                    if(length(grep("time_error",colnames(targeted_table)))>0){
-                        subtitle=paste(
-                        paste("mz:",round(targeted_table[ii,"mz"],5),"  ","time:",round(targeted_table[ii,"time"],1),sep=""),
-                        paste("reference mz:",round(targeted_table[ii,"ref_mz"],5),"  ","reference time:",round(targeted_table[ii,"ref_time"],1),sep=""),
-                        paste("mz error:",round(targeted_table[ii,"mz_error"]),"ppm","  ","time error:",round(targeted_table[ii,"time_error"],1),"s",sep=""),
-                        sep="\n")
-                    }else{
-                        subtitle=paste(
-                        paste("mz:",round(targeted_table[ii,"mz"],5),"  ","time:",round(targeted_table[ii,"time"],1),sep=""),
-                        paste("reference mz:",round(targeted_table[ii,"ref_mz"],5),"  ","reference time:",round(targeted_table[ii,"ref_time"],1),sep=""),
-                        paste("mz error:",round(targeted_table[ii,"mz_error"]),"ppm",sep=""),
-                        sep="\n")
-                    }
-                    
-                    print(ggplot() +
-                    geom_boxplot(data=plotdata, aes(x=group, y=inten,fill=group)) +
-                    geom_point(data=plotdata, aes(x=group, y=inten,fill=group,color=col)) +
-                    scale_y_continuous(name="intensity") +
-                    scale_x_discrete(name="",limits = rev(levels(plotdata_study$batch_study)))+
-                    coord_flip() +
-                    labs(subtitle=subtitle,
-                    title=as.character(targeted_table[ii,"Chemical_name"])) +
-                    theme(axis.line.x = element_line(size = 0.5, colour = "black"),
-                    axis.line.y = element_line(size = 0.5, colour = "black"),
-                    axis.line = element_line(size=1, colour = "black"),
-                    panel.grid.major = element_blank(),
-                    panel.grid.minor = element_blank(),
-                    panel.border = element_blank(),
-                    panel.background = element_blank(),
-                    plot.title=element_text(size = 20),
-                    legend.title=element_text(size=13),
-                    legend.text=element_text(size=10),
-                    text=element_text(size = 16),
-                    #plot.margin=margin(10,5,10,1),
-                    axis.text.x=element_text(colour="black", size = 10),
-                    axis.text.y=element_text(colour="black", size = 10))+
-                    scale_colour_manual(name ='Category',
-                    values =c('black'='black'), labels = c('Sample'))+
-                    guides(fill="none"))
-                }
-                
-            }
-            
-        }
-        dev.off()
-    }
-    
-}
-
-
 
 generate_distribution<-function(targeted_table,seq,outloc,groupcheck=FALSE,targetID=NA,min_num_nonmissing=3){
   
@@ -37056,11 +36624,8 @@ quant<- function(Xmat=NA,Ymat=NA,Wmat=NA,Zmat=NA,feature_table,class_file,ref_li
     print("2. Calculating the concentration for all samples.")
     outloc2=paste(outloc,"/step2",sep="")
     suppressWarnings(dir.create(outloc2))
-    final_study_qstd_conc<-calculate_concentration(targeted_table=r_targeted_table,ref=ref_table,seq=sample.mapping,outloc=outloc2)
+    calculate_concentration(targeted_table=r_targeted_table,ref=ref_table,seq=sample.mapping,outloc=outloc2)
     print("Step 2 complete")
-    
-    generate_distribution_concentration(targeted_table=final_study_qstd_conc,seq=sample.mapping,outloc=outloc2,groupcheck=groupcheck,targetID=targetID,min_num_nonmissing=min_num_nonmissing)
-
   }
   
   #draw kegg map
@@ -37081,7 +36646,7 @@ quant<- function(Xmat=NA,Ymat=NA,Wmat=NA,Zmat=NA,feature_table,class_file,ref_li
 
 .onAttach <- function(libname, pkgname) {
   # to show a startup message
-  packageStartupMessage("xmsPANDA v1.1.65 successfully loaded.")
+  packageStartupMessage("xmsPANDA v1.1.67 successfully loaded.")
 
   suppressMessages(library(RColorBrewer))
   #suppressMessages(library(data.table))
@@ -37094,7 +36659,7 @@ quant<- function(Xmat=NA,Ymat=NA,Wmat=NA,Zmat=NA,feature_table,class_file,ref_li
 
 .onLoad <- function(libname, pkgname) {
       # something to run
-      packageStartupMessage("xmsPANDA v1.1.65 successfully loaded.")
+      packageStartupMessage("xmsPANDA v1.1.67 successfully loaded.")
       suppressMessages(library(RColorBrewer))
       #suppressMessages(library(data.table))
       suppressMessages(library(plyr))

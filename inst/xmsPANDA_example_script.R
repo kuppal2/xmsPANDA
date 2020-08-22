@@ -1,7 +1,7 @@
 
 #load xmsPANDA-v1.1
 library(xmsPANDA)
-source("/Users/karanuppal/Documents/Emory/JonesLab/Projects/DifferentialExpression/xmsPaNDA/xmsPANDA_v1.1.54/inst/shinyapp/R/source_codes/xmsPANDA_v1.0.8.44.R")
+source("/Users/karanuppal/Documents/Emory/JonesLab/Projects/DifferentialExpression/xmsPaNDA/xmsPANDA_v1.1.66/inst/shinyapp/R/source_codes/xmsPANDA_v1.0.8.51.R")
 
 #change the input and output locations
 
@@ -27,7 +27,7 @@ demetabs_res<-diffexp(
         log2transform = FALSE, medcenter=FALSE, znormtransform = FALSE,
         quantile_norm = FALSE, lowess_norm = FALSE, madscaling = FALSE,
         TIC_norm=FALSE,
-        rsd.filt.list = c(1),normalization.method="log2transform",
+        rsd.filt.list = c(1),normalization.method="autoscaling",
 
         ##3) options for feature seletion: "limma","ttest","wilcox","lm1wayanova","lmreg","pls",
         #"pamr","spls","pls","o1pls","MARS","RF","rfesvm","logitreg", "poissonreg",
