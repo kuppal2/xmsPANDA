@@ -28818,7 +28818,7 @@ if(featselmethod=="rfesvm"){
 											
                                             ####savelist=ls(),file="d.Rda")
                                             
-                                            colnames(classlabels_response_mat)<-paste("Factor",seq(1,dim(classlabels_response_mat)[2]),sep="")
+                                           # colnames(classlabels_response_mat)<-paste("Factor",seq(1,dim(classlabels_response_mat)[2]),sep="")
                                             if(FALSE)
                                               {                                              
                                                         save(classlabels_response_mat,file="classlabels_response_mat.Rda")
@@ -36646,7 +36646,7 @@ quant<- function(Xmat=NA,Ymat=NA,Wmat=NA,Zmat=NA,feature_table,class_file,ref_li
 
 .onAttach <- function(libname, pkgname) {
   # to show a startup message
-  packageStartupMessage("xmsPANDA v1.1.67 successfully loaded.")
+  packageStartupMessage("xmsPANDA v1.1.671 successfully loaded.")
 
   suppressMessages(library(RColorBrewer))
   #suppressMessages(library(data.table))
@@ -36659,7 +36659,7 @@ quant<- function(Xmat=NA,Ymat=NA,Wmat=NA,Zmat=NA,feature_table,class_file,ref_li
 
 .onLoad <- function(libname, pkgname) {
       # something to run
-      packageStartupMessage("xmsPANDA v1.1.67 successfully loaded.")
+      packageStartupMessage("xmsPANDA v1.1.671 successfully loaded.")
       suppressMessages(library(RColorBrewer))
       #suppressMessages(library(data.table))
       suppressMessages(library(plyr))
