@@ -1,8 +1,13 @@
 Package: xmsPANDA
 Type: Package
 Title: R Package for Biomarker Discovery, Network, and Data Exploratory Analysis
+<<<<<<< HEAD
 Version: 1.1.68
 Date: 2020-09-02
+=======
+Version: 1.1.67
+Date: 2020-08-21
+>>>>>>> c3ff66c6826817a36eed061db658de2fb3145900
 Author: Karan Uppal
 Maintainer: Karan Uppal <kuppal2@emory.edu>
 Description: Includes functions to perform feature selection for classification and regression, network analysis, data exploratory, normalization, and functional analysis.

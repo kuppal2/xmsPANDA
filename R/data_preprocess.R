@@ -33,6 +33,7 @@ create.new.folder=TRUE,log2.transform.constant=1){
    normalization.method=tolower(normalization.method)
    
     if(length(normalization.method)==1){
+<<<<<<< HEAD
       
       valid_norm_options<-c("log2quantilenorm","log2transform","znormtransform","lowess_norm","quantile_norm","rangescaling","paretoscaling","mstus",
                             "eigenms_norm","vsn_norm","sva_norm","none","tic_norm","cubicspline_norm","mad_norm")
@@ -45,6 +46,8 @@ create.new.folder=TRUE,log2.transform.constant=1){
         
         stop(paste("Invalid normalization option. Valid options: ",paste(valid_norm_options,collapse=", "),sep=""))
       }
+=======
+>>>>>>> c3ff66c6826817a36eed061db658de2fb3145900
         
         if(normalization.method=="log2quantilenorm" || normalization.method=="log2quantnorm"){
             print("Performing log2 transformation and quantile normalization")
@@ -926,7 +929,11 @@ if(FALSE){
         
         Y=sweep(data_m,2,colmedians)
         mad<-apply(abs(Y),2,function(x){median(x,na.rm=TRUE)})
+<<<<<<< HEAD
         const<-1 #prod(mad)^(1/length(mad))
+=======
+        const<-prod(mad)^(1/length(mad))
+>>>>>>> c3ff66c6826817a36eed061db658de2fb3145900
         scale.normalized<-sweep(Y,2,const/mad,"*")+mean(colmedians,na.rm=TRUE)
         
         

@@ -1,7 +1,11 @@
 get_pca <-
+<<<<<<< HEAD
 function(X,samplelabels,legendlocation="topright",filename=NA,ncomp=5,pcacenter=TRUE,pcascale=TRUE,legendcex=0.5,
                   outloc=getwd(),col_vec=NA,sample.col.opt="default",alphacol=0.3,class_levels=NA,pca.cex.val=3,pca.ellipse=TRUE,
                   ellipse.conf.level=0.95,samplenames=FALSE,do_pca_anova=FALSE,paireddesign=NA,pairedanalysis=FALSE,classlabelsorig=NA,alphabetical.order=FALSE,analysistype="oneway",lme.modeltype="RI"){
+=======
+function(X,samplelabels,legendlocation="topright",filename=NA,ncomp=5,pcacenter=TRUE,pcascale=TRUE,legendcex=0.5,outloc=getwd(),col_vec=NA,sample.col.opt="default",alphacol=0.3,class_levels=NA,pca.cex.val=3,pca.ellipse=TRUE,ellipse.conf.level=0.95,samplenames=FALSE,do_pca_anova=FALSE,paireddesign=NA,pairedanalysis=FALSE,classlabelsorig=NA,alphabetical.order=FALSE,analysistype="oneway",lme.modeltype="RI"){
+>>>>>>> c3ff66c6826817a36eed061db658de2fb3145900
     
     suppressMessages(library(mixOmics))
     suppressMessages(library(car))
@@ -119,12 +123,16 @@ function(X,samplelabels,legendlocation="topright",filename=NA,ncomp=5,pcacenter=
     
 
   fname1<-paste("pcares",filename,".Rda",sep="")
+<<<<<<< HEAD
   #save(result,file=fname1)
   if(analysistype=="regression"){
     
   }
   #save(X,result,samplelabels,ellipse.conf.level,classlabelsorig,analysistype,file="debug3.Rda")
  
+=======
+  ##save(result,file=fname1)
+>>>>>>> c3ff66c6826817a36eed061db658de2fb3145900
     
     s1<-summary(result)
     r1<-s1$importance[2,]
@@ -450,7 +458,11 @@ function(X,samplelabels,legendlocation="topright",filename=NA,ncomp=5,pcacenter=
      iqr_xlim=2*sd(result$variates$X[,1],na.rm=TRUE) #4*(summary(result$variates$X[,1])[5]-summary(result$variates$X[,1])[3])
      iqr_ylim=2*sd(result$variates$X[,2],na.rm=TRUE) #4*(summary(result$variates$X[,2])[5]-summary(result$variates$X[,2])[3])
      
+<<<<<<< HEAD
      save(X,result,samplelabels,ellipse.conf.level,iqr_ylim,iqr_xlim,r1,classlabelsorig,col_per_group,main_text,analysistype,l1,pch,file="debug3.Rda")
+=======
+     #save(X,result,samplelabels,ellipse.conf.level,iqr_ylim,iqr_xlim,r1,classlabelsorig,col_per_group,main_text,l1,pch,file="debug3.Rda")
+>>>>>>> c3ff66c6826817a36eed061db658de2fb3145900
          
       if(pca.ellipse==TRUE){
           
@@ -464,12 +476,16 @@ function(X,samplelabels,legendlocation="topright",filename=NA,ncomp=5,pcacenter=
                  else
                  {
                            
+<<<<<<< HEAD
                   de1<-(dataEllipse(x=result$x[,1], y=result$x[,2],groups=as.factor(samplelabels),grid=FALSE,lwd=0.5,
                                     levels=c(ellipse.conf.level),col=col_per_group,pch=pch,xlab=paste("PC1 (",r1[1],"% variation)",sep=""),
                                     ylab=paste("PC2 (",r1[2],"% variation)",sep=""),group.labels="",main=main_text,fill=TRUE,cex.main=0.6,cex.axis=0.8,
                                     cex.lab=0.6,center.pch=FALSE,ylim=range(pretty(c(floor(min(result$variates$X[,2])-iqr_ylim),
                                                                                      ceiling(max(result$variates$X[,2])+iqr_ylim)))),
                                     xlim=range(pretty(c(floor(min(result$variates$X[,1])-iqr_xlim),ceiling(max(result$variates$X[,1])+iqr_xlim))))))
+=======
+                  de1<-(dataEllipse(x=result$x[,1], y=result$x[,2],groups=as.factor(samplelabels),grid=FALSE,lwd=0.5,levels=c(ellipse.conf.level),col=col_per_group,pch=pch,xlab=paste("PC1 (",r1[1],"% variation)",sep=""),ylab=paste("PC2 (",r1[2],"% variation)",sep=""),group.labels="",main=main_text,fill=TRUE,cex.main=0.6,cex.axis=0.8,cex.lab=0.6,center.pch=FALSE,ylim=range(pretty(c(floor(min(result$variates$X[,2])-iqr_ylim),ceiling(max(result$variates$X[,2])+iqr_ylim)))),xlim=range(pretty(c(floor(min(result$variates$X[,1])-iqr_xlim),ceiling(max(result$variates$X[,1])+iqr_xlim))))))
+>>>>>>> c3ff66c6826817a36eed061db658de2fb3145900
                      
                  }
                    le1<-(legend(par('usr')[2], par('usr')[4], bty='n', xpd=NA,l1, col = col_per_group,pch = pch_per_group, pt.cex = 0.6, title = "Class",cex=0.8))
