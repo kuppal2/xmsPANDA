@@ -362,7 +362,6 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,sample.col.op
     
     
     patientcolors <- rep(col_vec[1:length(t1)], t1)
-<<<<<<< HEAD
     
    # save(data_m,classgroup,legendlocation,filename,pcacenter,paireddesign,pcascale,col_vec,sample.col.opt,pca.cex.val,pca.ellipse,do_pca_anova,paireddesign,classlabels_orig,alphabetical.order,analysistype,file="pcad1A.Rda")
     
@@ -373,14 +372,6 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,sample.col.op
          res<-get_pca(X=data_m,samplelabels=classgroup,legendlocation=legendlocation,filename=filename,ncomp=10,pcacenter=pcacenter,pcascale=pcascale,legendcex=0.5,outloc=getwd(),
                       col_vec=col_vec,sample.col.opt=sample.col.opt,alphacol=0.3,class_levels=NA,pca.cex.val=pca.cex.val,pca.ellipse=pca.ellipse,do_pca_anova=do_pca_anova,
                       paireddesign=paireddesign,classlabelsorig=classlabels_orig,alphabetical.order=alphabetical.order,analysistype=analysistype,pairedanalysis=pairedanalysis,lme.modeltype=lme.modeltype)
-=======
-    #	save(data_m,classgroup,legendlocation,filename,pcacenter,pcascale,col_vec,sample.col.opt,pca.cex.val,pca.ellipse,do_pca_anova,paireddesign,classlabels_orig,file="pcad1A.Rda")
-    
-    if(dim(data_m)[1]>2){
-        
-      
-         res<-get_pca(X=data_m,samplelabels=classgroup,legendlocation=legendlocation,filename=filename,ncomp=10,pcacenter=pcacenter,pcascale=pcascale,legendcex=0.5,outloc=getwd(),col_vec=col_vec,sample.col.opt=sample.col.opt,alphacol=0.3,class_levels=NA,pca.cex.val=pca.cex.val,pca.ellipse=pca.ellipse,do_pca_anova=do_pca_anova,paireddesign=paireddesign,classlabelsorig=classlabels_orig,alphabetical.order=alphabetical.order,analysistype=analysistype,pairedanalysis=pairedanalysis,lme.modeltype=lme.modeltype)
->>>>>>> c3ff66c6826817a36eed061db658de2fb3145900
         
         pc_pval_vec<-res$pca_pval_vec
         res<-res$result
@@ -412,7 +403,6 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,sample.col.op
         get_pooled_sp<-function(n1,n2,S1,S2){a<-(n1-1)*S1;b<-(n2-1)*S2;c<-(n1+n2-2);return((a+b)/c)}
         
         
-<<<<<<< HEAD
         if(analysistype=="regression"){
           
         #  plot(classlabels_orig[,2],scores_res[,1],main="Outcomve vs PC1 scores")
@@ -477,8 +467,6 @@ print(plot_res)
           
           
         }else{
-=======
->>>>>>> c3ff66c6826817a36eed061db658de2fb3145900
         
         class_levels<-levels(as.factor(classlabels_orig[,2]))
         
@@ -1240,10 +1228,7 @@ print(plot_res)
             }
             
         }
-<<<<<<< HEAD
         }
-=======
->>>>>>> c3ff66c6826817a36eed061db658de2fb3145900
     }
     
     df_fname<-paste("PC_score_distribution_matrix_",filename,"features.txt",sep="")

@@ -12,10 +12,7 @@ ind<-rep(c(n1,n1+1),c(n3,n2))
 ind<-diffinv(ind)
 min_err=1
 best_k=1
-<<<<<<< HEAD
 y[,1]<-factor(y[,1])
-=======
->>>>>>> c3ff66c6826817a36eed061db658de2fb3145900
 
 #set.seed(seednum)
 #group<-sample(1:num_samp,num_samp, replace=FALSE)

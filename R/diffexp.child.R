@@ -549,12 +549,8 @@ add.pvalues=TRUE,add.jitter=TRUE,fcs.permutation.type,fcs.method,fcs.min.hits,na
                     classlabels_orig<-classlabels
                     classlabels_sub<-classlabels
 						class_labels_levels<-c("A")
-<<<<<<< HEAD
 						
                   if(featselmethod=="lmregrepeat" || featselmethod=="splsrepeat" || featselmethod=="plsrepeat"){
-=======
-                        #if(featselmethod=="lmregrepeat" || featselmethod=="splsrepeat" || featselmethod=="plsrepeat"){
->>>>>>> c3ff66c6826817a36eed061db658de2fb3145900
 				     				colnames(classlabels)<-c("SampleID","SubjectNum",paste("Response",sep=""))
 											
 											
@@ -575,11 +571,7 @@ add.pvalues=TRUE,add.jitter=TRUE,fcs.permutation.type,fcs.method,fcs.min.hits,na
 											
 											Xmat<-Xmat_temp[,-c(1:factor_lastcol[length(factor_lastcol)])]
 											
-<<<<<<< HEAD
                       }
-=======
-                                            #}
->>>>>>> c3ff66c6826817a36eed061db658de2fb3145900
 							
 
 					classlabels<-as.data.frame(classlabels)
@@ -2667,12 +2659,8 @@ for(lf in 1:length(log2.fold.change.thresh_list))
                    plots.width=2000,plots.height=2000,plots.res=300, alphacol=0.3,col_vec=col_vec,pairedanalysis=pairedanalysis,pca.cex.val=pca.cex.val,legendlocation=legendlocation,
                    pca.ellipse=pca.ellipse,ellipse.conf.level=ellipse.conf.level,filename="all",paireddesign=paireddesign,lineplot.col.opt=lineplot.col.opt,lineplot.lty.option=lineplot.lty.option,timeseries.lineplots=timeseries.lineplots,pcacenter=pcacenter,pcascale=pcascale,alphabetical.order=alphabetical.order,study.design=analysistype,lme.modeltype=lme.modeltype),silent=TRUE)
                    
-<<<<<<< HEAD
                                       
                                       
-=======
-                   
->>>>>>> c3ff66c6826817a36eed061db658de2fb3145900
                                   
                                 if(output.device.type!="pdf"){
 
@@ -2683,7 +2671,6 @@ for(lf in 1:length(log2.fold.change.thresh_list))
                                 classlabels_orig<-classlabels_orig_parent
                    }else{
                        #regression
-<<<<<<< HEAD
                             tempgroup<-rep("A",dim(data_m_fc)[2]) #cbind(classlabels_orig[,1],
                             col_vec1<-rep("black",dim(data_m_fc)[2])
                             class_labels_levels_main1<-c("A")
@@ -2734,18 +2721,6 @@ for(lf in 1:length(log2.fold.change.thresh_list))
                               try(dev.off(),silent=TRUE)
                             }
                             
-=======
-                            tempgroup<-rep("A",dim(data_m_fc)[2])
-                            col_vec1<-rep("black",dim(data_m_fc)[2])
-                            class_labels_levels_main1<-c("A")
-                            
-                            
-                            
-                                                     try(get_pca(X=data_m_fc,samplelabels=tempgroup,legendlocation=legendlocation,filename="all",ncomp=3,pcacenter=pcacenter,pcascale=pcascale,legendcex=0.5,outloc=getwd(),col_vec=col_vec1,sample.col.opt=sample.col.opt,alphacol=0.3,class_levels=NA,pca.cex.val=pca.cex.val,pca.ellipse=FALSE,paireddesign=paireddesign,alphabetical.order=alphabetical.order,pairedanalysis=pairedanalysis,analysistype=analysistype),silent=TRUE)
-                            
-                            
-                            
->>>>>>> c3ff66c6826817a36eed061db658de2fb3145900
                         }
 
 
@@ -3086,11 +3061,8 @@ if(featselmethod=="rfesvm"){
 											
 											# Ordinary fit
 											
-<<<<<<< HEAD
 										
 											
-=======
->>>>>>> c3ff66c6826817a36eed061db658de2fb3145900
 											
 											if(pairedanalysis==TRUE){
 											
@@ -3114,16 +3086,9 @@ if(featselmethod=="rfesvm"){
 												print(design)
 											
                                                 ####savelist=ls(),file="limma.Rda")
-<<<<<<< HEAD
                                                 
                                                
 												#save(subject_inf,file="subject_inf.Rda")
-=======
-												####savef,file="f.Rda")
-												####savedesign,file="design.Rda")
-												####savedata_m_fc,file="data_m_fc.Rda")
-												####savesubject_inf,file="subject_inf.Rda")
->>>>>>> c3ff66c6826817a36eed061db658de2fb3145900
 												
 												corfit<-duplicateCorrelation(data_m_fc,design=design,block=subject_inf,ndups=1)
 												
@@ -3138,7 +3103,6 @@ if(featselmethod=="rfesvm"){
 											
                                             ####savelist=ls(),file="d.Rda")
                                             
-<<<<<<< HEAD
                                            # colnames(classlabels_response_mat)<-paste("Factor",seq(1,dim(classlabels_response_mat)[2]),sep="")
                                             if(FALSE)
                                               {                                              
@@ -3148,8 +3112,6 @@ if(featselmethod=="rfesvm"){
                                                                                            save(design,file="design.Rda")
                                                                                            save(data_m_fc,file="data_m_fc.Rda")
                                             }
-=======
->>>>>>> c3ff66c6826817a36eed061db658de2fb3145900
                                                 if(limmarobust==TRUE)
                                                 {
                                                     fit <- lmFit(data_m_fc,design,method="robust")
@@ -3370,7 +3332,6 @@ if(featselmethod=="rfesvm"){
 								print("Design matrix")
 								print(design)
 								
-<<<<<<< HEAD
 								if(FALSE){
 								save(classlabels_response_mat,file="classlabels_response_mat.Rda")
 								
@@ -3379,8 +3340,6 @@ if(featselmethod=="rfesvm"){
 								save(data_m_fc,file="data_m_fc.Rda")
 								}
 								
-=======
->>>>>>> c3ff66c6826817a36eed061db658de2fb3145900
 								if(pairedanalysis==TRUE)
 								{
 
@@ -3457,15 +3416,10 @@ if(featselmethod=="rfesvm"){
 								#cont.matrix <- makeContrasts(Grp1vs2="ClassA-ClassB",Grp1vs3="ClassC-ClassD",Grp2vs3=("ClassA-ClassB")-("ClassC-ClassD"),levels=design)
 								#cont.matrix <- makeContrasts(Grp1vs2=ClassA-ClassB,Grp1vs3=ClassC-ClassD,Grp2vs3=(ClassA-ClassB)-(ClassC-ClassD),Grp3vs4=ClassA-ClassC,Group2vs4=ClassB-ClassD,levels=design)
 								
-<<<<<<< HEAD
 									 # print("here1A")
 									  
 								cont.matrix <- makeContrasts(Factor1=(ClassA+ClassB+ClassC+ClassD)-(ClassE+ClassF+ClassG+ClassH),Factor2=(ClassA+ClassE)-(ClassB+ClassF)-(ClassC+ClassG)-(ClassD+ClassH),Factor1x2=(ClassA-ClassB-ClassC-ClassD)-(ClassE-ClassF-ClassG-ClassH),levels=design)
                 
-=======
-								cont.matrix <- makeContrasts(Factor1=(ClassA+ClassB+ClassC+ClassD)-(ClassE+ClassF+ClassG+ClassH),Factor2=(ClassA+ClassE)-(ClassB+ClassF)-(ClassC+ClassG)-(ClassD+ClassH),Factor1x2=(ClassA-ClassB-ClassC-ClassD)-(ClassE-ClassF-ClassG-ClassH),levels=design)
-
->>>>>>> c3ff66c6826817a36eed061db658de2fb3145900
 								if(pairedanalysis==TRUE){
 								
 									class_table_facts<-table(classlabels)
@@ -3525,11 +3479,8 @@ if(featselmethod=="rfesvm"){
 								
 								cont.matrix <- makeContrasts(Factor1=(ClassA+ClassB+ClassC+ClassD+ClassE+ClassF)-(ClassG+ClassH+ClassI+ClassJ+ClassK+ClassL),Factor2=(ClassA+ClassG)-(ClassB+ClassH)-(ClassC+ClassI)-(ClassD+ClassJ)-(ClassE+ClassK)-(ClassF-ClassL),Factor1x2=(ClassA-ClassB-ClassC-ClassD-ClassE-ClassF)-(ClassG-ClassH-ClassI-ClassJ-ClassK-ClassL),levels=design)
 
-<<<<<<< HEAD
 								
 								
-=======
->>>>>>> c3ff66c6826817a36eed061db658de2fb3145900
 								if(pairedanalysis==TRUE){
 								
 									class_table_facts<-table(classlabels)
@@ -3571,10 +3522,7 @@ if(featselmethod=="rfesvm"){
                                      }else{
                                          
                                          
-<<<<<<< HEAD
                                         
-=======
->>>>>>> c3ff66c6826817a36eed061db658de2fb3145900
                                          fit <- lmFit(data_m_fc,design)
                                      }
                                      
@@ -8530,7 +8478,6 @@ cnames1<-colnames(ord_data)
                                 #goodfeats<-goodfeats[order(goodfeats[,1],decreasing=TRUE),]
                                 
                             }
-<<<<<<< HEAD
                           
                           goodfeats<-as.data.frame(goodfeats)
                           
@@ -8587,8 +8534,6 @@ cnames1<-colnames(ord_data)
                               try(dev.off(),silent=TRUE)
                             }
                           }
-=======
->>>>>>> c3ff66c6826817a36eed061db658de2fb3145900
                         }
                         
                     }
@@ -9059,12 +9004,7 @@ classlabels_orig_wgcna<-classlabels_orig
     colnames(goodfeats_temp)<-cnames_temp
    
     
-<<<<<<< HEAD
   
-=======
-    
-    
->>>>>>> c3ff66c6826817a36eed061db658de2fb3145900
     if(num_sig_feats>=3){
         if(output.device.type!="pdf"){
             
@@ -9086,11 +9026,7 @@ classlabels_orig_wgcna<-classlabels_orig
        
              par(mfrow=c(1,1),family="sans",cex=cex.plots)
              
-<<<<<<< HEAD
             
-=======
-             #   save(goodfeats_temp,classlabels_orig_pca,file="pca1.Rda")
->>>>>>> c3ff66c6826817a36eed061db658de2fb3145900
              get_pcascoredistplots(X=goodfeats_temp,Y=classlabels_orig_pca,feature_table_file=NA,parentoutput_dir=getwd(),class_labels_file=NA,sample.col.opt=sample.col.opt,plots.width=2000,plots.height=2000,plots.res=300, alphacol=0.3,col_vec=col_vec,pairedanalysis=pairedanalysis,pca.cex.val=pca.cex.val,legendlocation=legendlocation,pca.ellipse=pca.ellipse,ellipse.conf.level=ellipse.conf.level,filename="selected",paireddesign=paireddesign,lineplot.col.opt=lineplot.col.opt,lineplot.lty.option=lineplot.lty.option,timeseries.lineplots=timeseries.lineplots,pcacenter=pcacenter,pcascale=pcascale,alphabetical.order=alphabetical.order,study.design=analysistype,lme.modeltype=modeltype) #,silent=TRUE)
        
        if(output.device.type!="pdf"){

@@ -87,12 +87,8 @@ study.design=c("multiclass","onewayanova","twowayanova","onewayanovarepeat","two
         if(normalization.method[1]==c("none")){
             print("Using raw data")
         }
-<<<<<<< HEAD
         valid_norm_options<-c("log2quantilenorm","log2transform","znormtransform","lowess_norm","quantile_norm","rangescaling","paretoscaling","mstus",
                               "eigenms_norm","vsn_norm","sva_norm","none","tic_norm","cubicspline_norm","mad_norm")
-=======
-        valid_norm_options<-c("log2quantilenorm","log2transform","znormtransform","lowess_norm","quantile_norm","rangescaling","paretoscaling","mstus","eigenms_norm","vsn_norm","sva_norm","none","tic_norm","cubicspline_norm","mad_norm")
->>>>>>> c3ff66c6826817a36eed061db658de2fb3145900
         
        data_matrix_list<-new("list")
 

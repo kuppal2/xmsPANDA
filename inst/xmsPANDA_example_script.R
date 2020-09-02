@@ -1,12 +1,8 @@
 
 #load xmsPANDA-v1.1
 library(xmsPANDA)
-<<<<<<< HEAD
 
 source("/Users/karanuppal/Documents/Emory/JonesLab/Projects/DifferentialExpression/xmsPaNDA/xmsPANDA_v1.1.67/inst/shinyapp/R/source_codes/xmsPANDA_v1.0.8.52.R")
-=======
-source("/Users/karanuppal/Documents/Emory/JonesLab/Projects/DifferentialExpression/xmsPaNDA/xmsPANDA_v1.1.66/inst/shinyapp/R/source_codes/xmsPANDA_v1.0.8.51.R")
->>>>>>> c3ff66c6826817a36eed061db658de2fb3145900
 
 #change the input and output locations
 
