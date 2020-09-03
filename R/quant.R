@@ -153,6 +153,9 @@ function(Xmat=NA,Ymat=NA,Wmat=NA,Zmat=NA,feature_table,class_file,ref_list,foldc
     outloc2=paste(outloc,"/step2",sep="")
     suppressWarnings(dir.create(outloc2))
     calculate_concentration(targeted_table=r_targeted_table,ref=ref_table,seq=sample.mapping,outloc=outloc2)
+    
+    generate_distribution_concentration(targeted_table=final_study_qstd_conc,seq=sample.mapping,outloc=outloc2,groupcheck=groupcheck,targetID=targetID,min_num_nonmissing=min_num_nonmissing)
+    
     print("Step 2 complete")
   }
   

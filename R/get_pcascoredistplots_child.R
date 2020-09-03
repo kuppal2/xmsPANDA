@@ -409,7 +409,7 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,sample.col.op
           
          # sadj=(s1[5]-s1[3])*ypos.adj.factor
           
-     #    save(classlabels_orig,scores_res,file="pcascatter.Rda")
+       #  save(classlabels_orig,scores_res,file="pcascatter.Rda")
           
           df.sub1<-cbind(classlabels_orig[,2],scores_res[,1])
           

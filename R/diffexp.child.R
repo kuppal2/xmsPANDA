@@ -8495,7 +8495,7 @@ cnames1<-colnames(ord_data)
                           
                           
                           print("PCA selected features")
-                         # save(goodfeats,goodfeats_temp,mz_ind,time_ind,classlabels_orig,analysistype,alphabetical.order,col_vec,file="pca1.Rda")
+                    #      save(goodfeats,goodfeats_temp,mz_ind,time_ind,classlabels_orig,analysistype,alphabetical.order,col_vec,file="pca1.Rda")
                           
                           num_sig_feats<-nrow(goodfeats)
                           if(num_sig_feats>=3){
