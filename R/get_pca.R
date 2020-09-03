@@ -450,7 +450,7 @@ function(X,samplelabels,legendlocation="topright",filename=NA,ncomp=5,pcacenter=
      iqr_xlim=2*sd(result$variates$X[,1],na.rm=TRUE) #4*(summary(result$variates$X[,1])[5]-summary(result$variates$X[,1])[3])
      iqr_ylim=2*sd(result$variates$X[,2],na.rm=TRUE) #4*(summary(result$variates$X[,2])[5]-summary(result$variates$X[,2])[3])
      
-     save(X,result,samplelabels,ellipse.conf.level,iqr_ylim,iqr_xlim,r1,classlabelsorig,col_per_group,main_text,analysistype,l1,pch,file="debug3.Rda")
+    # save(X,result,samplelabels,ellipse.conf.level,iqr_ylim,iqr_xlim,r1,classlabelsorig,col_per_group,main_text,analysistype,l1,pch,file="debug3.Rda")
          
       if(pca.ellipse==TRUE){
           
