@@ -8684,7 +8684,7 @@ if(analysismode=="classification" && nrow(goodfeats)>=1 && length(goodip)>=1)
     
     ##save(kfold,subdata,goodfeats,classlabels,svm_kernel,pred.eval.method,match_class_dist,file="svmdebug.Rda")
     
-    svm_model<-try(svm_cv(v=kfold,x=subdata,y=classlabels,kname=svm_kernel,errortype=pred.eval.method,conflevel=95,match_class_dist=match_class_dist),silent=TRUE)
+    svm_model<-svm_cv(v=kfold,x=subdata,y=classlabels,kname=svm_kernel,errortype=pred.eval.method,conflevel=95,match_class_dist=match_class_dist) #,silent=TRUE)
     #svm_model<-try(svm(x=subdata,y=(classlabels),type="nu-classification",cross=kfold,kernel=svm_kernel),silent=TRUE)
     
         #svm_model<-try(svm_cv(v=kfold,x=subdata,y=classlabels,kname=svm_kernel,errortype=pred.eval.method,conflevel=95,match_class_dist=match_class_dist),silent=TRUE)
