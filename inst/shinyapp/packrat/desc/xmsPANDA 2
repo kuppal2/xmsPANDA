@@ -1,0 +1,29 @@
+Package: xmsPANDA
+Type: Package
+Title: Predictive And Network Discovery Analysis (xmsPANDA): R package
+        for biomarker discovery and biomarker-driven network analysis
+        for studying disease mechanisms using metabolomics
+Version: 1.0.7.5
+Date: 2018-05-01
+Author: Karan Uppal
+Maintainer: Karan Uppal <kuppal2@emory.edu>
+Description: This package includes functions to perform biomarker discovery for classification and regression scenarios and to perform correlation based network analysis (all metabolites and/or targeted metabolites eg: glucose metabolism pathway).
+License: GPL2.0
+LazyLoad: yes
+Depends: limma, GO.db, statmod, rgl, gplots, snow, mixOmics, doSNOW,
+        foreach, e1071, WGCNA, randomForest, party,qvalue,fdrtool,
+        GeneNet, corpcor, earth, pROC, multcomp, RColorBrewer, nlme,
+        pls, plsgenomics, igraph, ROCR, flashClust,
+        data.table,dplyr,plyr,mclust,parallel,RankAggreg,pcaMethods,
+        pamr, sandwich, Boruta
+Built: R 3.4.4; ; 2018-05-02 14:15:35 UTC; unix
+RemoteType: github
+RemoteHost: https://api.github.com
+RemoteRepo: xmsPANDA
+RemoteUsername: kuppal2
+RemoteRef: master
+RemoteSha: 4a8a567b7d0a9611c3162b17e69577e9681d570d
+GithubRepo: xmsPANDA
+GithubUsername: kuppal2
+GithubRef: master
+GithubSHA1: 4a8a567b7d0a9611c3162b17e69577e9681d570d
