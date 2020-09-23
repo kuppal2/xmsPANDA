@@ -24693,7 +24693,8 @@ optselect=TRUE,max_comp_sel=1,saveRda=FALSE,legendlocation="topleft",pcacenter=T
 pca.ellipse=FALSE,ellipse.conf.level=0.95,pls.permut.count=NA,svm.acc.tolerance=5,limmadecideTests=TRUE,pls.vip.selection="max",globalclustering=FALSE,plots.res=600,plots.width=8,plots.height=8,plots.type="cairo",
 output.device.type="pdf",pvalue.thresh=0.05,individualsampleplot.col.opt="journal",pamr.threshold.select.max=FALSE,aggregation.method="RankAggreg",aggregation.max.iter=1000,mars.gcv.thresh=1,error.bar=TRUE,cex.plots=1,lme.modeltype="RI",
 barplot.xaxis="Factor1",lineplot.lty.option=c("solid", "dashed", "dotted", "dotdash", "longdash", "twodash"),match_class_dist=TRUE,timeseries.lineplots=FALSE,alphabetical.order=FALSE,
-kegg_species_code="hsa",database="pathway",reference_set=NA,target.data.annot=NA,add.pvalues=FALSE,add.jitter=FALSE,fcs.permutation.type=1,fcs.method="zscore",fcs.min.hits=2,names_with_mz_time=NA,ylab_text="Abundance",xlab_text=NA,boxplot.type="ggplot",samplermindex=NA,differential.network.analysis=TRUE,degree.centrality.method="eigenvector",log2.transform.constant=1,balance.classes=FALSE,balance.classes.sizefactor=10,balance.classes.seed=1,...)
+kegg_species_code="hsa",database="pathway",reference_set=NA,target.data.annot=NA,add.pvalues=FALSE,add.jitter=FALSE,fcs.permutation.type=1,
+fcs.method="zscore",fcs.min.hits=2,names_with_mz_time=NA,ylab_text="Abundance",xlab_text=NA,boxplot.type="ggplot",samplermindex=NA,differential.network.analysis=TRUE,degree.centrality.method="eigenvector",log2.transform.constant=1,balance.classes=FALSE,balance.classes.sizefactor=10,balance.classes.seed=1,...)
 {
     
     time_start<-Sys.time()
@@ -37090,7 +37091,13 @@ quant<- function(Xmat=NA,Ymat=NA,Wmat=NA,Zmat=NA,feature_table,class_file,ref_li
   setwd(outloc)
   
   if(summarize_replicates==TRUE){
-    capture.output(avg_feature_table<-data_preprocess(X=feature.table,feature_table_file=NA,parentoutput_dir=outloc,class_labels_file=NA,num_replicates=num_replicates,feat.filt.thresh=NA,summarize.replicates=TRUE,summary.method=summary.method,all.missing.thresh=NA,group.missing.thresh=NA,log2transform=FALSE,medcenter=FALSE,znormtransform=FALSE,quantile_norm=FALSE,lowess_norm=FALSE,madscaling=FALSE,missing.val=0,samplermindex=NA, rep.max.missing.thresh=rep.max.missing.thresh,summary.na.replacement="zeros"), file='/dev/null')
+    capture.output(avg_feature_table<-data_preprocess(X=feature.table,feature_table_file=NA,parentoutput_dir=outloc,
+                                                      
+                                                      class_labels_file=NA,num_replicates=num_replicates,feat.filt.thresh=NA,summarize.replicates=TRUE,
+                                                      summary.method=summary.method,all.missing.thresh=NA,group.missing.thresh=NA,
+                                                      log2transform=FALSE,medcenter=FALSE,znormtransform=FALSE,quantile_norm=FALSE,
+                                                      lowess_norm=FALSE,madscaling=FALSE,missing.val=0,samplermindex=NA, 
+                                                      rep.max.missing.thresh=rep.max.missing.thresh,summary.na.replacement="zeros"), file='/dev/null')
     avg_feature_table<-avg_feature_table$data_matrix_afternorm_scaling
     unlink(paste(outloc,"Stage1",sep="/"), recursive = TRUE)
   }else{
