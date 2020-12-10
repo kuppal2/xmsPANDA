@@ -682,7 +682,7 @@ function(Xmat=NA,Ymat=NA,feature_table_file,parentoutput_dir,class_labels_file,n
           clusterEvalQ(cl,library(ROCR))
           clusterEvalQ(cl,library(CMA))
           clusterExport(cl,"svm_cv",envir = .GlobalEnv)
-          clusterExport(cl,"svm",envir = .GlobalEnv)
+         # clusterExport(cl,"svm",envir = .GlobalEnv)
           if(analysismode=="classification"){
             kfold_acc_rand<-parLapply(cl,1:100,function(p1){
               
