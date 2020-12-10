@@ -26882,6 +26882,10 @@ diffexp<-function(Xmat=NA,Ymat=NA,feature_table_file,parentoutput_dir,class_labe
         pass_method_list<-c(pass_method_list,i)
         print(paste("Done with ",featselmethod[i],sep=""))
       }
+      
+      fname_del<-paste(outloc,"/Rplots.pdf",sep="")
+      try(unlink(fname_del),silent=TRUE)
+      
     }
     
     ##save(diffexp.res,featselmethod,file="diffexp.res.Rda")
