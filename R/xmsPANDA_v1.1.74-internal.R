@@ -18,6 +18,7 @@ function(libname, pkgname) {
   suppressMessages(library(parallel))
   suppressMessages(library(CMA))
   suppressMessages(library(ggplot2))
+  suppressMessages(library(gplots))
   #suppressMessages(library(extrafont))
   
 }
@@ -31,6 +32,7 @@ function(libname, pkgname) {
   suppressMessages(library(parallel))
   suppressMessages(library(CMA))
   suppressMessages(library(ggplot2))
+  suppressMessages(library(gplots))
   # suppressMessages(library(extrafont))
 }
 .Random.seed <-
