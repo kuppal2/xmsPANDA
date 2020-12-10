@@ -10059,6 +10059,9 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
   ################################
   
   
+  fname_del<-paste(output_dir,"/Rplots.pdf",sep="")
+  try(unlink(fname_del),silent=TRUE)
+  
   #if(removeRda==TRUE)
   {
     unlink("*.Rda",force=TRUE,recursive=TRUE)
