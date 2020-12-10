@@ -963,6 +963,7 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
         
         #save(res,file="res.Rda")
         
+      suppressMessages(library(grid))
      
         for(i in 1:length(res)){
        
@@ -982,7 +983,7 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
         
         legend <- cowplot::get_legend(plot_res[[i]])
         
-        suppressMessages(library(grid))
+      
         
         grid.newpage()
         grid.draw(legend)
