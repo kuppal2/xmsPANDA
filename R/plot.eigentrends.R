@@ -12,7 +12,11 @@ function(svdr, title1){
   toplot1_1 = as.numeric(v[,1])
   toplot1_2 = as.numeric(v[,2])
   toplot1_3 = as.numeric(v[,3])
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> 4ccdcb99e71707b6d2e6cfcfae418ec4bdb9aae3
   plot(c(1:length(toplot1_1)), toplot1_1, type='b', ann=F, ylim=range.y)
   do.text(1)
   abline(h=0, lty=3)

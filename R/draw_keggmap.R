@@ -1,7 +1,12 @@
 draw_keggmap <-
 function(targeted_table,outloc,foldchange.thresh=2,minhit=3,highcolor='red',lowcolor='blue',percent_node=0.2){
+<<<<<<< HEAD
   
   suppressMessages(library(pathview))
+=======
+    
+    suppressMessages(library(pathview))
+>>>>>>> 4ccdcb99e71707b6d2e6cfcfae418ec4bdb9aae3
   
   if(length(grep('keggid',colnames(targeted_table),ignore.case=TRUE))==0){
     stop("No KEGG ID was detected in reference list. To draw kegg map, please add one more column named 'KEGGID' to reference list for KEGG ID.")
@@ -28,7 +33,11 @@ function(targeted_table,outloc,foldchange.thresh=2,minhit=3,highcolor='red',lowc
     mapdata[ii,"keggid"]=paste(as.character(targeted_table[grep(totalmap[ii],targeted_table[,"map"]),"KEGGID"]),collapse="/")
     mapdata[ii,"foldchange"]=paste(targeted_table[grep(totalmap[ii],targeted_table[,"map"]),"foldchange"],collapse="/")
   }
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> 4ccdcb99e71707b6d2e6cfcfae418ec4bdb9aae3
   write.table(mapdata, paste(outloc,"keggmapdata.txt",sep="/"), sep= "\t", row.names=FALSE)
   
   suppressWarnings(dir.create(paste(outloc,"KEGGmaps",sep="/")))

@@ -2,6 +2,7 @@
 #load xmsPANDA-v1.1
 library(xmsPANDA)
 
+<<<<<<< HEAD
 source("/Users/karanuppal/Documents/Emory/JonesLab/Projects/DifferentialExpression/xmsPaNDA/xmsPANDA_v1.0.8.62.R")
 #change the input and output locations
 
@@ -15,6 +16,15 @@ class_labels_file<-"/Users/karanuppal/Documents/Emory/JonesLab/Projects/Differen
 outloc<-"/Users/karanuppal/Downloads/testv62/"
   
   #"/Users/karanuppal/Documents/Emory/JonesLab/Projects/AnnetteEsper/ARDS/July2019/common_plasma_BALP/PANDA_balptest/"
+=======
+
+#change the input and output locations
+
+feature_table_file<-"/Users/karanuppal/Mzmine_smokers_nonsmokers_PANDA.txt"
+
+class_labels_file<-"/Users/karanuppal/classlabels.txt"
+outloc<-"/Users/karanuppal/reslog2knn/"
+>>>>>>> 4ccdcb99e71707b6d2e6cfcfae418ec4bdb9aae3
 
 
 #start: see manual for additional arguments and description
@@ -33,23 +43,39 @@ demetabs_res<-diffexp(
         log2transform = FALSE, medcenter=FALSE, znormtransform = FALSE,
         quantile_norm = FALSE, lowess_norm = FALSE, madscaling = FALSE,
         TIC_norm=FALSE,
+<<<<<<< HEAD
         rsd.filt.list = c(-1),normalization.method="none",
+=======
+        rsd.filt.list = c(1),normalization.method="log2transform",
+>>>>>>> 4ccdcb99e71707b6d2e6cfcfae418ec4bdb9aae3
 
         ##3) options for feature seletion: "limma","ttest","wilcox","lm1wayanova","lmreg","pls",
         #"pamr","spls","pls","o1pls","MARS","RF","rfesvm","logitreg", "poissonreg",
         #"ttestrepeat","wilcoxrepeat", "lm1wayanovarepeat","limma1wayrepeat","spls1wayrepeat"
         #"lm2wayanova","lm2wayanovarepeat","limma2way","limma2wayrepeat","spls2wayrepeat"
+<<<<<<< HEAD
         pairedanalysis = FALSE, featselmethod=c("lmreg","lmregrobust"),
         pvalue.thresh=0.05,
         fdrthresh = 0.05, fdrmethod="none",
         kfold=5,networktype="complete",
         samplermindex=NA,numtrees=5000,analysismode="classification",pls_vip_thresh = 2, num_nodes = 4,
+=======
+        pairedanalysis = FALSE, featselmethod=c("limma","pls"),
+        pvalue.thresh=0.05,
+        fdrthresh = 0.05, fdrmethod="BH",
+        kfold=5,networktype="complete",
+        samplermindex=NA,numtrees=5000,analysismode="classification",pls_vip_thresh = 2, num_nodes = 3,
+>>>>>>> 4ccdcb99e71707b6d2e6cfcfae418ec4bdb9aae3
         max_varsel = 100, pls_ncomp = 5,pred.eval.method="BER",rocfeatlist=seq(2,10,1),
         rocfeatincrement=TRUE,
         rocclassifier="svm",foldchangethresh=1,
         optselect=TRUE,max_comp_sel=1,saveRda=FALSE,pls.permut.count=NA,
         pca.ellipse=TRUE,ellipse.conf.level=0.95,svm.acc.tolerance=5,pamr.threshold.select.max=FALSE,
+<<<<<<< HEAD
         aggregation.method="consensus",mars.gcv.thresh=50,
+=======
+        aggregation.method="none",mars.gcv.thresh=50,
+>>>>>>> 4ccdcb99e71707b6d2e6cfcfae418ec4bdb9aae3
 
         #4) arguments for centrality analysis, WGCNA and global clustering analysis (HCA and EM clustering)
         degree_rank_method="none", wgcnarsdthresh=30,WGCNAmodules=FALSE,globalclustering=FALSE,
@@ -67,8 +93,12 @@ demetabs_res<-diffexp(
         boxplot.col.opt=c("journal"),barplot.col.opt=c("journal"),individualsampleplot.col.opt="journal",
         lineplot.col.opt="journal",hca_type="two-way",cex.plots=0.6,
         lineplot.lty.option=c("dotted", "solid", "dashed", "dotdash", "longdash", "twodash"),
+<<<<<<< HEAD
         timeseries.lineplots=FALSE,lme.modeltype="RI",ylab_text="Intensity",boxplot.type="ggplot",
         multiple.figures.perpanel = FALSE,fill.plots=TRUE
+=======
+        timeseries.lineplots=TRUE,lme.modeltype="RI",ylab_text="Normalized intensity",boxplot.type="ggplot"
+>>>>>>> 4ccdcb99e71707b6d2e6cfcfae418ec4bdb9aae3
 
 )
 sink(file=NULL)

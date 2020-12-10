@@ -1,10 +1,18 @@
 get_kegg_compounds_brite <-
 function(keggid) {
+<<<<<<< HEAD
   Sys.sleep(0.5)
   b1 <- keggGet(keggid) #paste("cpd:", keggid, sep = ""))
   
   
   if(length(b1[[1]]$BRITE)>0){
+=======
+    Sys.sleep(0.5)
+    b1 <- keggGet(keggid) #paste("cpd:", keggid, sep = ""))
+    
+    
+    if(length(b1[[1]]$BRITE)>0){
+>>>>>>> 4ccdcb99e71707b6d2e6cfcfae418ec4bdb9aae3
     
     brite_inf<-b1[[1]]$BRITE
     
@@ -23,7 +31,13 @@ function(keggid) {
     colnames(r1)<-c("XID","SetID","Name","ExactMass","Formula")
     
     return(r1)
+<<<<<<< HEAD
   }
   
   
+=======
+    }
+    
+    
+>>>>>>> 4ccdcb99e71707b6d2e6cfcfae418ec4bdb9aae3
 }

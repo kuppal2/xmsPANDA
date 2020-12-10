@@ -1,8 +1,13 @@
 sva.id <-
 function(dat, n.u.treatment, lm.fm, B = 500, sv.sig = 0.05)
 {
+<<<<<<< HEAD
   #message("Number of complete variables (and samples) used in SVD")
   #message(dim(dat))
+=======
+    #message("Number of complete variables (and samples) used in SVD")
+    #message(dim(dat))
+>>>>>>> 4ccdcb99e71707b6d2e6cfcfae418ec4bdb9aae3
   n = ncol(dat)
   ncomp = n.u.treatment
   # message("Number of treatment groups (in svd.id): ", ncomp)
@@ -33,7 +38,11 @@ function(dat, n.u.treatment, lm.fm, B = 500, sv.sig = 0.05)
   # Bootstrap procedure determines the number of significant eigertrends...
   for (ii in seq_len(B)) {
     if (ii %% 50 == 0) {
+<<<<<<< HEAD
       #  message('Iteration ', ii)
+=======
+        #  message('Iteration ', ii)
+>>>>>>> 4ccdcb99e71707b6d2e6cfcfae418ec4bdb9aae3
     }
     res0 = t(apply(res, 1, sample, replace = FALSE)) # regression
     # center each peptide around zero (subtract its mean across samples)

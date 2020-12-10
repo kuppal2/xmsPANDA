@@ -1,9 +1,21 @@
 
+<<<<<<< HEAD
 #load xmsPANDA
 library(xmsPANDA)
 
 #change the input and output locations
 feature_table_file<-"/Users/karanuppal/Desktop/H1N1/exh1n1_metabolome.txt"
+=======
+#load xmsPANDA-v1.1
+library(xmsPANDA)
+
+source("/Users/karanuppal/Documents/Emory/JonesLab/Projects/DifferentialExpression/xmsPaNDA/xmsPANDA_v1.1.67/inst/shinyapp/R/source_codes/xmsPANDA_v1.0.8.52.R")
+
+#change the input and output locations
+
+feature_table_file<-"/Users/karanuppal/Desktop/H1N1/exh1n1_metabolome.txt"
+
+>>>>>>> 4ccdcb99e71707b6d2e6cfcfae418ec4bdb9aae3
 class_labels_file<-"/Users/karanuppal/Desktop/H1N1/exh1n1_classlabels.txt"
 outloc<-"/Users/karanuppal/Desktop/H1N1/testlog2knn4/"
 
@@ -58,8 +70,13 @@ demetabs_res<-diffexp(
         boxplot.col.opt=c("journal"),barplot.col.opt=c("journal"),individualsampleplot.col.opt="journal",
         lineplot.col.opt="journal",hca_type="two-way",cex.plots=0.6,
         lineplot.lty.option=c("dotted", "solid", "dashed", "dotdash", "longdash", "twodash"),
+<<<<<<< HEAD
         timeseries.lineplots=FALSE,lme.modeltype="RI",ylab_text="Intensity",boxplot.type="simple",
         multiple.figures.perpanel = FALSE,fill.plots=TRUE
+=======
+        timeseries.lineplots=FALSE,lme.modeltype="RI",ylab_text="Normalized intensity",boxplot.type="simple"
+
+>>>>>>> 4ccdcb99e71707b6d2e6cfcfae418ec4bdb9aae3
 )
 sink(file=NULL)
 #end

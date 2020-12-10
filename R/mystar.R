@@ -12,7 +12,11 @@ function(coords, v=NULL, params) {
   if (length(norays) != 1 && !is.null(v)) {
     norays <- norays[v]
   }
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> 4ccdcb99e71707b6d2e6cfcfae418ec4bdb9aae3
   mapply(coords[,1], coords[,2], vertex.color, vertex.size, norays,
          FUN=function(x, y, bg, size, nor) {
            symbols(x=x, y=y, bg=bg,

@@ -26,7 +26,11 @@ function(rv,plot.trend=FALSE) {
   toplot1 = rv$toplot1
   # vector of indicators of variables that threw exeptions
   exPeps = vector(mode = "numeric", length = nrow(pres))
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> 4ccdcb99e71707b6d2e6cfcfae418ec4bdb9aae3
   print("Normalizing...")
   treatment = data.frame(treatment) # does this need to be done?
   if(n.u.treatment > 1) {
@@ -35,7 +39,11 @@ function(rv,plot.trend=FALSE) {
   } else {  # have 1 treatment group
     mtmp = treatment # as.numeric(t(treatment))
   }
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> 4ccdcb99e71707b6d2e6cfcfae418ec4bdb9aae3
   
   # above needed to know how many values will get back for some matrices
   # create some variables:
@@ -46,11 +54,19 @@ function(rv,plot.trend=FALSE) {
   numpep = dim(pres)[1]
   betahat_n = matrix(NA,nrow=dim(mtmp)[2],ncol=nrow(pres))
   rm(mtmp)
+<<<<<<< HEAD
   
   
   V0 = my.svd$v[,1:h.c,drop=F]   # residual eigenvariables
   
   
+=======
+
+  
+  V0 = my.svd$v[,1:h.c,drop=F]   # residual eigenvariables
+ 
+
+>>>>>>> 4ccdcb99e71707b6d2e6cfcfae418ec4bdb9aae3
   if(n.u.treatment == 1) { # got 1 treatment group
     for (ii in 1:nrow(pres)) {
       if(ii%%250 == 0) { print(paste('Processing variable ',ii))  }
@@ -72,7 +88,11 @@ function(rv,plot.trend=FALSE) {
       pos = !is.na(pep)
       peptemp = as.matrix(pep[pos]) # take only the observed values, may not be needed in R? but this works
       
+<<<<<<< HEAD
       
+=======
+    
+>>>>>>> 4ccdcb99e71707b6d2e6cfcfae418ec4bdb9aae3
       ftemp = treatment[pos,]
       ftemp = data.frame(ftemp)
       #### use try, not entirely sure if need for modt, need it for solve lm?!
@@ -113,8 +133,13 @@ function(rv,plot.trend=FALSE) {
       }
     }
   } # end else - got 2+ treatment groups
+<<<<<<< HEAD
   
   
+=======
+
+
+>>>>>>> 4ccdcb99e71707b6d2e6cfcfae418ec4bdb9aae3
   #####################################################################################
   # rescaling has been eliminated form the code after discussion that bias
   # adds variation and we remove it, so no need to rescale after as we removed what was introduced
@@ -125,7 +150,11 @@ function(rv,plot.trend=FALSE) {
   y_resc = data.frame(present, y_rescaled)
   rownames(y_resc) = rownames(pres)  # rownames(rv$normalized)
   final = y_resc # row names are assumed to be UNIQUE, variable IDs are unique
+<<<<<<< HEAD
   
+=======
+ 
+>>>>>>> 4ccdcb99e71707b6d2e6cfcfae418ec4bdb9aae3
   # rows with all observations present
   complete_all = y_rescaled[rowSums(is.na(y_rescaled))==0,,drop=F]
   
@@ -138,8 +167,13 @@ function(rv,plot.trend=FALSE) {
   toplot3 = svd(complete_all_center)
   
   if(plot.trend==TRUE){
+<<<<<<< HEAD
     plot.eigentrends(toplot1, "Raw Data")
     plot.eigentrends(toplot3, "Normalized Data")
+=======
+  plot.eigentrends(toplot1, "Raw Data")
+  plot.eigentrends(toplot3, "Normalized Data")
+>>>>>>> 4ccdcb99e71707b6d2e6cfcfae418ec4bdb9aae3
   }
   # print("Done with normalization!!!")
   colnames(V0) =  paste("Trend", 1:ncol(V0), sep="_")

@@ -26,7 +26,11 @@ function(rv,Xtest=NA) {
   toplot1 = rv$toplot1
   # vector of indicators of variables that threw exeptions
   exPeps = vector(mode = "numeric", length = nrow(pres))
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> 4ccdcb99e71707b6d2e6cfcfae418ec4bdb9aae3
   print("Normalizing...")
   treatment = data.frame(treatment) # does this need to be done?
   if(n.u.treatment > 1) {
@@ -47,6 +51,7 @@ function(rv,Xtest=NA) {
   numpep = dim(pres)[1]
   betahat_n = matrix(NA,nrow=dim(mtmp)[2],ncol=nrow(pres))
   
+<<<<<<< HEAD
   norm_mtest = array(NA, c(nrow(Xtest), ncol(Xtest)))
   
   rm(mtmp)
@@ -57,6 +62,18 @@ function(rv,Xtest=NA) {
   print(numsamp)
   print(dim(V0))
   print(n.u.treatment)
+=======
+   norm_mtest = array(NA, c(nrow(Xtest), ncol(Xtest)))
+   
+  rm(mtmp)
+ 
+  
+  V0 = my.svd$v[,1:h.c,drop=F]   # residual eigenvariables
+ 
+ print(numsamp)
+ print(dim(V0))
+ print(n.u.treatment)
+>>>>>>> 4ccdcb99e71707b6d2e6cfcfae418ec4bdb9aae3
   if(n.u.treatment == 1) { # got 1 treatment group
     for (ii in 1:nrow(pres)) {
       if(ii%%250 == 0) { print(paste('Processing variable ',ii))  }
@@ -68,7 +85,11 @@ function(rv,Xtest=NA) {
       bias = array(NA, numsamp)
       bias[pos] = resm[pos] %*% V0[pos,] %*% t(V0[pos,])
       norm_m[ii, ] = as.numeric(pep - bias)
+<<<<<<< HEAD
       norm_mtest[ii, ] = as.numeric(Xtest - bias)
+=======
+       norm_mtest[ii, ] = as.numeric(Xtest - bias)
+>>>>>>> 4ccdcb99e71707b6d2e6cfcfae418ec4bdb9aae3
     }
     
   } else { # got 2+ treatment groups
@@ -126,7 +147,11 @@ function(rv,Xtest=NA) {
       }
     }
   } # end else - got 2+ treatment groups
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> 4ccdcb99e71707b6d2e6cfcfae418ec4bdb9aae3
   #####################################################################################
   # rescaling has been eliminated form the code after discussion that bias
   # adds variation and we remove it, so no need to rescale after as we removed what was introduced
@@ -137,7 +162,11 @@ function(rv,Xtest=NA) {
   y_resc = data.frame(present, y_rescaled)
   rownames(y_resc) = rownames(pres)  # rownames(rv$normalized)
   final = y_resc # row names are assumed to be UNIQUE, variable IDs are unique
+<<<<<<< HEAD
   
+=======
+ 
+>>>>>>> 4ccdcb99e71707b6d2e6cfcfae418ec4bdb9aae3
   # rows with all observations present
   complete_all = y_rescaled[rowSums(is.na(y_rescaled))==0,,drop=F]
   
@@ -150,7 +179,11 @@ function(rv,Xtest=NA) {
   toplot3 = svd(complete_all_center)
   plot.eigentrends(toplot1, "Raw Data")
   plot.eigentrends(toplot3, "Normalized Data")
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> 4ccdcb99e71707b6d2e6cfcfae418ec4bdb9aae3
   print("Done with normalization!!!")
   colnames(V0) =  paste("Trend", 1:ncol(V0), sep="_")
   

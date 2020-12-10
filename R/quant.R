@@ -1,5 +1,6 @@
 quant <-
 function(Xmat=NA,Ymat=NA,Wmat=NA,Zmat=NA,feature_table,class_file,ref_list,foldchange_list,outloc,
+<<<<<<< HEAD
                  num_replicates=1,
                  summarize_replicates=FALSE,
                  rep.max.missing.thresh=0.5,
@@ -17,6 +18,25 @@ function(Xmat=NA,Ymat=NA,Wmat=NA,Zmat=NA,feature_table,class_file,ref_list,foldc
                  lowcolor='blue'
 ) {
   theme_set(theme_classic())
+=======
+                    num_replicates=1,
+                    summarize_replicates=FALSE,
+                    rep.max.missing.thresh=0.5,
+                    summary.method="mean",
+                    mass_error= 10,
+                    time_error= 30,
+                    percent_node=0.6,
+                    foldchange_thresh=2,
+                    steps="123",
+                    min_num_nonmissing=3,
+                    targetID=NA,
+                    minhit=3,
+                    groupcheck=TRUE,
+                    highcolor='red',
+                    lowcolor='blue'
+) {
+    theme_set(theme_classic())
+>>>>>>> 4ccdcb99e71707b6d2e6cfcfae418ec4bdb9aae3
   
   #read in data tables
   if(!is.na(feature_table)){

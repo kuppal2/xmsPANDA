@@ -18,12 +18,20 @@ ui<-fluidPage(
     tags$head(
       tags$meta(charset="utf-8"),
       tags$meta(name="description",content="Free Web tutorials"),
+<<<<<<< HEAD
       tags$title("xmsPANDA - v1.1.74"),
+=======
+      tags$title("xmsPANDA - v1.1.73"),
+>>>>>>> 4ccdcb99e71707b6d2e6cfcfae418ec4bdb9aae3
       tags$link(rel = "stylesheet", type = "text/css", href = "mystyle.css")
     ),
     column(12,
         tags$div(id="form",
+<<<<<<< HEAD
           h3(tags$img(style="float:left;margin-right:15px;",src="images/xmsPANDA_log.png",height='80px',width="80px"),"xmsPANDA - R package for biomarker discovery, supervised and unsupervised learning, and network analysis (v1.1.74)")),
+=======
+          h3(tags$img(style="float:left;margin-right:15px;",src="images/xmsPANDA_log.png",height='80px',width="80px"),"xmsPANDA - R package for biomarker discovery, supervised and unsupervised learning, and network analysis (v1.1.73)")),
+>>>>>>> 4ccdcb99e71707b6d2e6cfcfae418ec4bdb9aae3
         tabsetPanel(
          
             tabPanel("Introduction", introduction_page), 

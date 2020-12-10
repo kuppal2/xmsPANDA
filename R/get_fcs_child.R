@@ -23,7 +23,11 @@ function(metab_data,reference_sets,itrs=1000,fcs.min.hits=2,numnodes=2){
   
   metab_data_sets<-merge(metab_data,reference_sets,by="XID")
   
+<<<<<<< HEAD
   ##save(metab_data_sets,metab_data,reference_sets,file="metab_data_sets.Rda")
+=======
+  #save(metab_data_sets,metab_data,reference_sets,file="metab_data_sets.Rda")
+>>>>>>> 4ccdcb99e71707b6d2e6cfcfae418ec4bdb9aae3
   
   metab_data_sets<-metab_data_sets[order(metab_data_sets$SetID,metab_data_sets$Statistic,decreasing=TRUE),]
   
@@ -54,7 +58,11 @@ function(metab_data,reference_sets,itrs=1000,fcs.min.hits=2,numnodes=2){
     
     set_statistic1=aggregate(metab_data_sets$Statistic,by=list(metab_data_sets$SetID),FUN=function(x){
       x<-as.numeric(as.character(x))
+<<<<<<< HEAD
       # max_mean<-max(abs(mean(x[which(x>0)],na.rm=TRUE)),abs(mean(x[which(x<0)],na.rm=TRUE)),na.rm=TRUE)
+=======
+     # max_mean<-max(abs(mean(x[which(x>0)],na.rm=TRUE)),abs(mean(x[which(x<0)],na.rm=TRUE)),na.rm=TRUE)
+>>>>>>> 4ccdcb99e71707b6d2e6cfcfae418ec4bdb9aae3
       
       #max_mean<-max(c((sum(x[which(x>=0)],na.rm=TRUE)/length(x)),((-1)*sum(x[which(x<0)],na.rm=TRUE)/length(x))),na.rm=TRUE)
       
@@ -106,9 +114,15 @@ function(metab_data,reference_sets,itrs=1000,fcs.min.hits=2,numnodes=2){
       randmetab_data_sets<-merge(metab_data,rand_reference_sets,by="XID")
       
       
+<<<<<<< HEAD
       # randmetab_data_sets<-metab_data_sets
       #  randmetab_data_sets$Statistic<-metab_data_sets$Statistic[all]
       # randmetab_data_sets$XID<-metab_data_sets$XID[all]
+=======
+     # randmetab_data_sets<-metab_data_sets
+    #  randmetab_data_sets$Statistic<-metab_data_sets$Statistic[all]
+     # randmetab_data_sets$XID<-metab_data_sets$XID[all]
+>>>>>>> 4ccdcb99e71707b6d2e6cfcfae418ec4bdb9aae3
       
       #randmetab_data_sets[,1]<-randkeggids
       #randmetab_data_sets[,2]<-randstat
@@ -116,6 +130,7 @@ function(metab_data,reference_sets,itrs=1000,fcs.min.hits=2,numnodes=2){
       randset_statistic1=aggregate(randmetab_data_sets$Statistic,by=list(randmetab_data_sets$SetID),FUN=function(x){
         
         x<-as.numeric(as.character(x))
+<<<<<<< HEAD
         
         #  max_mean<-max(abs(mean(x[which(x>0)],na.rm=TRUE)),abs(mean(x[which(x<0)],na.rm=TRUE)),na.rm=TRUE)
         
@@ -124,6 +139,16 @@ function(metab_data,reference_sets,itrs=1000,fcs.min.hits=2,numnodes=2){
         
         
         #  max_mean<-max(max(x[which(x>0)],na.rm=TRUE)/length(which(x<0)),max(x[which(x<0)],na.rm=TRUE)/length(which(x<0)),na.rm=TRUE)
+=======
+       
+      #  max_mean<-max(abs(mean(x[which(x>0)],na.rm=TRUE)),abs(mean(x[which(x<0)],na.rm=TRUE)),na.rm=TRUE)
+        
+        
+       # max_mean<-max(abs(max(x[which(x>0)],na.rm=TRUE)/length(which(x>0))+1),abs(min(x[which(x<0)],na.rm=TRUE)/length(which(x<0))+1),na.rm=TRUE)
+        
+         
+      #  max_mean<-max(max(x[which(x>0)],na.rm=TRUE)/length(which(x<0)),max(x[which(x<0)],na.rm=TRUE)/length(which(x<0)),na.rm=TRUE)
+>>>>>>> 4ccdcb99e71707b6d2e6cfcfae418ec4bdb9aae3
         
         max_mean<-max(c((sum(x[which(x>=0)],na.rm=TRUE)/length(x)),((-1)*sum(x[which(x<0)],na.rm=TRUE)/length(x))),na.rm=TRUE)
         
@@ -176,7 +201,11 @@ function(metab_data,reference_sets,itrs=1000,fcs.min.hits=2,numnodes=2){
     
     set_statistic1<-merge(set_statistic1,randset_maxmean,by="SetID")
     
+<<<<<<< HEAD
     # set_statistic1<-merge(set_statistic1,randset_agg,by="SetID")
+=======
+   # set_statistic1<-merge(set_statistic1,randset_agg,by="SetID")
+>>>>>>> 4ccdcb99e71707b6d2e6cfcfae418ec4bdb9aae3
     
     set_statistic1$Z.score<-round((set_statistic1$Agg.Statistic-mean(set_statistic1$Agg.Statistic,na.rm=TRUE))/sd(set_statistic1$Agg.Statistic,na.rm=TRUE),3)
     
@@ -194,12 +223,21 @@ function(metab_data,reference_sets,itrs=1000,fcs.min.hits=2,numnodes=2){
     #set_statistic1A=merge(set_statistic1,set_size,by="SetID")
     #Norm.Agg.Statistic=set_statistic1A$Agg.Statistic/set_statistic1A$Size
     
+<<<<<<< HEAD
     #   #save(set_statistic1,metab_data_sets,randset_maxmean,randmetabset_res,sid_list,file="set_statistic1.Rda")
     
     # set_statistic1$Agg.Statistic<-as.numeric(as.character(set_statistic1$Agg.Statistic))/as.numeric(as.character(metab_data_sets$Total.Size)) 
     #set_statistic1$Z.score<-as.numeric(as.character(set_statistic1$Z.score))/as.numeric(as.character(metab_data_sets$Total.Size)) 
     #set_statistic1$MaxMean<-as.numeric(as.character(set_statistic1$MaxMean))/as.numeric(as.character(metab_data_sets$Total.Size))  
     
+=======
+#   save(set_statistic1,metab_data_sets,randset_maxmean,randmetabset_res,sid_list,file="set_statistic1.Rda")
+   
+  # set_statistic1$Agg.Statistic<-as.numeric(as.character(set_statistic1$Agg.Statistic))/as.numeric(as.character(metab_data_sets$Total.Size)) 
+  #set_statistic1$Z.score<-as.numeric(as.character(set_statistic1$Z.score))/as.numeric(as.character(metab_data_sets$Total.Size)) 
+   #set_statistic1$MaxMean<-as.numeric(as.character(set_statistic1$MaxMean))/as.numeric(as.character(metab_data_sets$Total.Size))  
+   
+>>>>>>> 4ccdcb99e71707b6d2e6cfcfae418ec4bdb9aae3
     metabset_res1<-lapply(1:length(sid_list),function(c){
       
       
@@ -210,13 +248,21 @@ function(metab_data,reference_sets,itrs=1000,fcs.min.hits=2,numnodes=2){
         
         #pval_zscore=2*pt(-abs(as.numeric(as.character(cur_sid_orig[8]))),df=as.numeric(as.character(cur_sid_orig[5]))-1) 
         #pval_zscore=round(pnorm(abs(as.numeric(as.character(cur_sid_orig[8]))),lower.tail = FALSE),3)
+<<<<<<< HEAD
         pval_zscore<-length(which(as.numeric(as.character(cur_sid_rand[,9]))>as.numeric(as.character(cur_sid_orig[8]))))/itrs
+=======
+       pval_zscore<-length(which(as.numeric(as.character(cur_sid_rand[,9]))>as.numeric(as.character(cur_sid_orig[8]))))/itrs
+>>>>>>> 4ccdcb99e71707b6d2e6cfcfae418ec4bdb9aae3
         
         
         pval_stdmaxmean=length(which(as.numeric(as.character(cur_sid_rand[,4]))>as.numeric(as.character(cur_sid_orig[4]))))/itrs
         
         #meanp_val=mean(c(pval_agg.stat,pval_zscore,pval_stdmaxmean),na.rm=TRUE)
+<<<<<<< HEAD
         # zval=(0.5-meanp_val)*sqrt(12*3)
+=======
+       # zval=(0.5-meanp_val)*sqrt(12*3)
+>>>>>>> 4ccdcb99e71707b6d2e6cfcfae418ec4bdb9aae3
         
         #log(pval_agg.stat),
         chisq_stat<-(-2)*sum(c(log(pval_zscore),log(pval_stdmaxmean)))
@@ -238,11 +284,19 @@ function(metab_data,reference_sets,itrs=1000,fcs.min.hits=2,numnodes=2){
     res<-merge(set_statistic1,metabset_res_pvalmat,by="SetID")
     
     res<-merge(res,set_size,by="SetID")
+<<<<<<< HEAD
     #  #save(res,file="reschild.Rda")
     
     pdf("QQplot.FCS.pdf")
     
     
+=======
+  #  save(res,file="reschild.Rda")
+    
+    pdf("QQplot.FCS.pdf")
+    
+ 
+>>>>>>> 4ccdcb99e71707b6d2e6cfcfae418ec4bdb9aae3
     
     #if(FALSE)
     {
