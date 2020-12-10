@@ -7,7 +7,7 @@ BiocManager::install(c("mixOmics","CMA","GO.db","impute","limma","qvalue","pcaMe
 install.packages(c('rgl', 'snow', 'doSNOW', 'foreach', 'e1071', 'WGCNA','reshape2',
 'randomForest', 'party', 'fdrtool', 'GeneNet', 'corpcor', 'earth',
 'pROC', 'multcomp', 'pls', 'plsgenomics', 'igraph', 'ROCR',
-'flashClust', 'data.table', 'dplyr', 'mclust', 'RankAggreg', 'pamr', "tidyverse",
+'flashClust', 'data.table', 'dplyr', 'mclust', 'RankAggreg', 'pamr', "tidyverse","grid",
 'sandwich', 'Boruta', 'lsmeans', 'car', 'ggpubr', 'extrafont', 'stepPlr', 'h2o','shinyBS', 'V8', 'shinyWidgets', 
                    'plotly','shinycssloaders', 'colourpicker',"raster","ROSE","devtools"),dependencies=TRUE,
                  repos="https://cran.r-project.org")
