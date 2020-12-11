@@ -10,7 +10,11 @@ library(shinyjs)
 library(shinyBS)
 library(DT)
 
+<<<<<<< HEAD
 source("R/source_codes/xmsPANDA_v1.0.8.64.R")
+=======
+source("R/source_codes/xmsPANDA_v1.0.8.62.R")
+>>>>>>> 1cb98cefbc2519d10cd9cbe26a9e0f5a6fe10820
 
 # Server logic
 server <- function(input, output, session) {

@@ -1,0 +1,26 @@
+Package: robust
+Version: 0.4-18
+Date: 2017-04-26
+Title: Port of the S+ "Robust Library"
+Description: Methods for robust statistics, a state of the art in the early
+  2000s, notably for robust regression and robust multivariate analysis.
+Author: Jiahui Wang,
+        Ruben Zamar <ruben@stat.ubc.ca>,
+        Alfio Marazzi <Alfio.Marazzi@inst.hospvd.ch>,
+        Victor Yohai <vyohai@dm.uba.ar>,
+        Matias Salibian-Barrera <matias@stat.ubc.ca>,
+        Ricardo Maronna <maron@mate.unlp.edu.ar>,
+        Eric Zivot <ezivot@u.washington.edu>,
+        David Rocke <dmrocke@ucdavis.edu>,
+        Doug Martin,
+        Martin Maechler <maechler@stat.math.ethz.ch>,
+        Kjell Konis <kjell.konis@me.com>.
+Maintainer: Kjell Konis <kjell.konis@me.com>
+Depends: fit.models
+Imports: graphics, stats, utils, lattice, MASS, robustbase, rrcov
+License: GPL-2
+NeedsCompilation: yes
+Packaged: 2017-04-26 23:09:03 UTC; kjellk
+Repository: CRAN
+Date/Publication: 2017-04-27 17:21:05 UTC
+Built: R 3.5.1; x86_64-pc-linux-gnu; 2018-12-06 22:13:34 UTC; unix

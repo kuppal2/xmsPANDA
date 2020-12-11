@@ -600,7 +600,11 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
           par(omd=c(0, 1-w, 0, 1),cex.main=0.7)
           
           #    print(cex)
+<<<<<<< HEAD
         #  save(temp_dm2,cur_d,mzname,boxplot.col.opt,col_vec,ylabel,Class,goodfeats,class_labels_levels,cex.plots,boxplot.type,multiple.groups,add.jitter,add.pvalues,fill.plots,file="temp_dm2.Rda")
+=======
+          ###save(temp_dm2,cur_d,mzname,boxplot.col.opt,col_vec,ylabel,Class,goodfeats,class_labels_levels,cex,boxplot.type,multiple.groups,add.jitter,add.pvalues,fill.plots,file="temp_dm2.Rda")
+>>>>>>> 1cb98cefbc2519d10cd9cbe26a9e0f5a6fe10820
           
           if(boxplot.type=="simple"){
             
@@ -628,8 +632,13 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
             }
             }
            
+<<<<<<< HEAD
             #if(add.pvalues==FALSE && fill.plots==TRUE){
             if(TRUE){
+=======
+            if(add.pvalues==FALSE && fill.plots==TRUE){
+              
+>>>>>>> 1cb98cefbc2519d10cd9cbe26a9e0f5a6fe10820
               suppressMessages(library(ggplot2))
               if(multiple.groups==FALSE){
                 p <- ggplot(temp_dm2, aes(y=as.numeric(Feature),x=Class,fill=Class)) + labs(title=mzname)
@@ -701,8 +710,13 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
                                                         strip.background=element_rect(colour="#f0f0f0",fill="#f0f0f0"),
                                                         strip.text = element_text(face="bold")) + scale_fill_manual(values=(col_vec[1:length(class_labels_levels)])) + scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) + theme(axis.text.x = element_text(angle = 45, hjust = 1))
               }
+<<<<<<< HEAD
               fname_c<-paste("d2",m,".Rda",sep="")
          #save(p,temp_dm2,file=fname_c)
+=======
+              
+         #     save(p,temp_dm2,file="d2.Rda")
+>>>>>>> 1cb98cefbc2519d10cd9cbe26a9e0f5a6fe10820
               if(pairedanalysis==TRUE)
                 {
                 
@@ -754,6 +768,7 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
                 {
               if(add.jitter==TRUE){
                 
+<<<<<<< HEAD
                 if(multiple.groups==FALSE){
                   
                       p=p+ geom_point(aes(Class, as.numeric(Feature),fill=Class),
@@ -800,6 +815,28 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
                     p<-p + stat_compare_means(data=temp_dm2,aes(group = Factor2),paired=TRUE,label = "p.format",size = 5*cex.plots)
                   }
                 }
+=======
+                #p<-p+geom_jitter()
+                if(is.na(ggplot.type1)==FALSE){
+                if(ggplot.type1==TRUE){
+                  p=p+ geom_point(aes(Factor1, as.numeric(Feature),fill=Factor1),
+                                  shape=21, #factor(gsub(temp_dm2$SID,pattern="[a-z|A-Z|0-9]*_",replacement="")),
+                                  position = position_dodge(position_dodge_width))
+                }else{
+                  p=p+ geom_point(aes(Factor2, as.numeric(Feature),fill=Factor2),
+                                  shape=21, #factor(gsub(temp_dm2$SID,pattern="[a-z|A-Z|0-9]*_",replacement="")),
+                                  position = position_dodge(position_dodge_width))
+                  
+                }
+                }else{
+                  p=p+ geom_point(aes(Factor1, as.numeric(Feature),fill=Factor1),
+                                  shape=21, #factor(gsub(temp_dm2$SID,pattern="[a-z|A-Z|0-9]*_",replacement="")),
+                                  position = position_dodge(position_dodge_width))
+                  
+                }
+              }
+              
+>>>>>>> 1cb98cefbc2519d10cd9cbe26a9e0f5a6fe10820
               }
             #  p=p+geom_line(aes(group=SubjectID))
               
@@ -990,6 +1027,10 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
         #save(res,file="res.Rda")
         
       suppressMessages(library(grid))
+<<<<<<< HEAD
+=======
+     
+>>>>>>> 1cb98cefbc2519d10cd9cbe26a9e0f5a6fe10820
         for(i in 1:length(res)){
        
           
@@ -1008,7 +1049,11 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
         
         legend <- cowplot::get_legend(plot_res[[i]])
         
+<<<<<<< HEAD
        
+=======
+      
+>>>>>>> 1cb98cefbc2519d10cd9cbe26a9e0f5a6fe10820
         
         grid.newpage()
         grid.draw(legend)

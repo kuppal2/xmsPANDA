@@ -2,11 +2,18 @@
 #load xmsPANDA
 library(xmsPANDA)
 
+<<<<<<< HEAD
 source("/Users/karanuppal/Documents/Emory/JonesLab/Projects/DifferentialExpression/xmsPaNDA/xmsPANDA_v1.0.8.63.R")
 #change the input and output locations
 feature_table_file<-"/Users/karanuppal/Desktop/H1N1/exh1n1_metabolome.txt"
 class_labels_file<-"/Users/karanuppal/Desktop/H1N1/exh1n1_classlabels.txt"
 outloc<-"/Users/karanuppal/Desktop/H1N1/testlog2knnv63C/"
+=======
+#change the input and output locations
+feature_table_file<-"/Users/karanuppal/Desktop/H1N1/exh1n1_metabolome.txt"
+class_labels_file<-"/Users/karanuppal/Desktop/H1N1/exh1n1_classlabels.txt"
+outloc<-"/Users/karanuppal/Desktop/H1N1/testlog2knn4/"
+>>>>>>> 1cb98cefbc2519d10cd9cbe26a9e0f5a6fe10820
 
 
 #start: see manual for additional arguments and description
@@ -18,8 +25,11 @@ demetabs_res<-diffexp(
         input.intensity.scale="raw",
 
         ##2) data preprocessing order: 1) summarization, 2) filtering by missing values, 3) imputation; 4) transformation and normalization
+<<<<<<< HEAD
         #options for normalization methods: log2quantilenorm, log2transform, znormtransform, lowess_norm, quantile_norm, rangescaling, paretoscaling, mstus, eigenms_norm,
         #vsn_norm, sva_norm, none, tic_norm, cubicspline_norm, mad_norm
+=======
+>>>>>>> 1cb98cefbc2519d10cd9cbe26a9e0f5a6fe10820
         num_replicates = 1,
         summarize.replicates =TRUE, summary.method="median",summary.na.replacement="knn",
         rep.max.missing.thresh=0.3,
@@ -27,8 +37,12 @@ demetabs_res<-diffexp(
         log2transform = FALSE, medcenter=FALSE, znormtransform = FALSE,
         quantile_norm = FALSE, lowess_norm = FALSE, madscaling = FALSE,
         TIC_norm=FALSE,
+<<<<<<< HEAD
         rsd.filt.list = c(1),
         normalization.method="log2transform",
+=======
+        rsd.filt.list = c(1),normalization.method="autoscaling",
+>>>>>>> 1cb98cefbc2519d10cd9cbe26a9e0f5a6fe10820
 
         ##3) options for feature seletion: "limma","ttest","wilcox","lm1wayanova","lmreg","pls",
         #"pamr","spls","pls","o1pls","MARS","RF","rfesvm","logitreg", "poissonreg",
@@ -62,8 +76,13 @@ demetabs_res<-diffexp(
         boxplot.col.opt=c("journal"),barplot.col.opt=c("journal"),individualsampleplot.col.opt="journal",
         lineplot.col.opt="journal",hca_type="two-way",cex.plots=0.6,
         lineplot.lty.option=c("dotted", "solid", "dashed", "dotdash", "longdash", "twodash"),
+<<<<<<< HEAD
         timeseries.lineplots=FALSE,lme.modeltype="RI",ylab_text="Intensity",boxplot.type="ggplot",
         multiple.figures.perpanel = FALSE,add.jitter=TRUE,add.pvalues=TRUE
+=======
+        timeseries.lineplots=FALSE,lme.modeltype="RI",ylab_text="Intensity",boxplot.type="simple",
+        multiple.figures.perpanel = FALSE,fill.plots=TRUE
+>>>>>>> 1cb98cefbc2519d10cd9cbe26a9e0f5a6fe10820
 )
 sink(file=NULL)
 #end

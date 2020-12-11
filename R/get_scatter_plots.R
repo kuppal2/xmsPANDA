@@ -1,8 +1,13 @@
 get_scatter_plots <-
+<<<<<<< HEAD
 function(X=NA,Y=NA,feature_table_file,parentoutput_dir,class_labels_file,group_by_mat_file=NA,scatterplot.col.opt="journal",
                             alphacol=0.3,newdevice=TRUE,cex.plots=0.6,replace.by.NA=FALSE,pairedanalysis=FALSE,filename="",ylabel="Response",
                             alphabetical.order=FALSE,name=NA,add.jitter=TRUE,add.pvalues=TRUE,
                             xlabel="Predictor",ellipse=FALSE,ypos.adj.factor=0.5,group_by_mat=NA,cor.method="pearson",...)
+=======
+function(X=NA,Y=NA,feature_table_file,parentoutput_dir,class_labels_file,scatterplot.col.opt="journal",alphacol=0.3,newdevice=TRUE,cex.plots=0.6,replace.by.NA=FALSE,pairedanalysis=FALSE,filename="",ylabel="Intensity",
+                            alphabetical.order=FALSE,name=NA,add.jitter=TRUE,add.pvalues=TRUE,xlabel="Dependent variable",ellipse=FALSE,ypos.adj.factor=0.5,...)
+>>>>>>> 1cb98cefbc2519d10cd9cbe26a9e0f5a6fe10820
 {
   
   #df=cbind(Y[,2],X)
@@ -19,11 +24,14 @@ function(X=NA,Y=NA,feature_table_file,parentoutput_dir,class_labels_file,group_b
   }else{
     classlabels<-Y
   }
+<<<<<<< HEAD
   
   if(is.na(group_by_mat_file)==FALSE){
     
     group_by_mat<-read.table(group_by_mat_file,sep="\t",header=TRUE)
   }
+=======
+>>>>>>> 1cb98cefbc2519d10cd9cbe26a9e0f5a6fe10820
   class_labels_levels<-c("A")
   
   sample.col.opt=scatterplot.col.opt
@@ -165,11 +173,19 @@ function(X=NA,Y=NA,feature_table_file,parentoutput_dir,class_labels_file,group_b
       check_names2<-grep(cnames,pattern="^time$")
       
       if(length(check_names1)<1 & length(check_names2)<1){
+<<<<<<< HEAD
         mz<-seq(1.00001,nrow(data_matrix)+1,1)
         time<-seq(1.01,nrow(data_matrix)+1,1.00)
         check_ind<-gregexpr(cnames,pattern="^name$")
         check_ind<-which(check_ind>0)
         X<-as.data.frame(data_matrix)
+=======
+        mz<-seq(1.00001,nrow(X)+1,1)
+        time<-seq(1.01,nrow(X)+1,1.00)
+        check_ind<-gregexpr(cnames,pattern="^name$")
+        check_ind<-which(check_ind>0)
+        X<-as.data.frame(X)
+>>>>>>> 1cb98cefbc2519d10cd9cbe26a9e0f5a6fe10820
         
         
         Name<-as.character(X[,check_ind])
@@ -243,9 +259,13 @@ function(X=NA,Y=NA,feature_table_file,parentoutput_dir,class_labels_file,group_b
   par(mfrow=c(1,1),family="sans",cex=cex.plots)
   class_vec<-classlabels[,2]
   #for(m in 1:dim(goodfeats)[1])
+<<<<<<< HEAD
   
   #dim(goodfeats)[1]
   lapply(1:10,function(m)
+=======
+  lapply(1:dim(goodfeats)[1],function(m)
+>>>>>>> 1cb98cefbc2519d10cd9cbe26a9e0f5a6fe10820
   {
     
     if(m%%9==0){
@@ -284,6 +304,7 @@ function(X=NA,Y=NA,feature_table_file,parentoutput_dir,class_labels_file,group_b
     
     cur_d<-new("list")
     feat_vec<-{}
+<<<<<<< HEAD
     
     
  # save(goodfeats,class_vec,cex.plots,mzname,group_by_mat,m,mzvec,timevec,file="d1.Rda")
@@ -293,12 +314,18 @@ function(X=NA,Y=NA,feature_table_file,parentoutput_dir,class_labels_file,group_b
     colnames(temp_dm)<-c("SID","Class","Feature")
     
     temp_dm$Class<-as.numeric(as.character(temp_dm$Class))
+=======
+    temp_dm<-cbind(class_vec,as.vector(t(goodfeats[m,])))
+    temp_dm<-as.data.frame(temp_dm)
+    colnames(temp_dm)<-c("Class","Feature")
+>>>>>>> 1cb98cefbc2519d10cd9cbe26a9e0f5a6fe10820
     temp_dm$Feature<-as.numeric(as.character(temp_dm$Feature))
     par(mfrow=c(1,1),family="sans",cex=cex.plots)
     
     w <- 0.1
     par(omd=c(0, 1-w, 0, 1),cex.main=0.7)
     
+<<<<<<< HEAD
 #   save(temp_dm,mzname,ylabel,xlabel,file="temp_dm.Rda")
 
     
@@ -325,11 +352,50 @@ function(X=NA,Y=NA,feature_table_file,parentoutput_dir,class_labels_file,group_b
     if(is.na(group_by_mat)==TRUE){
     p<-ggscatter(temp_dm,y="Class",x="Feature",title=mzname,xlab=xlabel,ylab=ylabel,
                  palette=col_vec[1], col=col_vec[1],shape = 20, size = 3,  # Points color, shape and size
+=======
+    #  #save(temp_dm,mzname,ylabel,xlabel,file="temp_dm.Rda")
+    
+    if(FALSE){ 
+      p <- ggplot(temp_dm, aes(y=as.numeric(Feature),x=Class)) + labs(title=mzname)
+      if(boxplot.col.opt=="white"){
+        p<-p + geom_boxplot(lwd=1)
+      }else{
+        geom_col_vec=unique(col_vec[1:length(class_labels_levels)])
+        p<-p + geom_boxplot(lwd=1,colour=geom_col_vec)
+      }
+    }
+    
+    
+    
+    temp_dm<-temp_dm[,c("Class","Feature")]
+    temp_dm<-apply(temp_dm,2,as.numeric)
+    temp_dm<-as.data.frame(temp_dm)
+    if(FALSE){
+      p<-ggscatter(temp_dm,x="x",y="PCscore",xlab="Outcome",col=class_col_vec,
+                   palette=col_vec, shape = 20, size = 3, # Points color, shape and size
+                   add = "reg.line",  # Add regressin line
+                   add.params = list(color = "#0072B2", fill = "lightgray"), # Customize reg. line
+                   conf.int = TRUE, # Add confidence interval
+                   #  cor.coef = TRUE, # Add correlation coefficient. see ?stat_cor
+                   #cor.coeff.args = list(method = "spearman", label.sep = "\n")
+      )+stat_cor(method = "spearman",
+                 #aes(label = paste(..r.label.., ..p.label..),
+                 label.x = 3,label.y=max(df.sub1$PCscore+1)
+      )
+    }
+    
+    s1=summary(temp_dm$Feature)
+    
+    sadj=(s1[5]-s1[3])*ypos.adj.factor
+    p<-ggscatter(temp_dm,x="Class",y="Feature",title=mzname,xlab=xlabel,ylab=ylabel,
+                 palette=col_vec[1], col=col_vec[1],shape = 20, size = 3, ellipse=ellipse, # Points color, shape and size
+>>>>>>> 1cb98cefbc2519d10cd9cbe26a9e0f5a6fe10820
                  add = "reg.line",  # Add regressin line
                  add.params = list(color = "black", fill = "lightgray"), # Customize reg. line
                  conf.int = TRUE, # Add confidence interval
                  #  cor.coef = TRUE, # Add correlation coefficient. see ?stat_cor
                  # cor.coeff.args = list(method = "spearman", label.x=3,label.y=max(temp_dm$Class))
+<<<<<<< HEAD
     )+theme(plot.title = element_text(hjust = 0.5,size=10))+stat_cor(method =cor.method,
                                                                      #aes(label = paste(..r.label.., ..p.label..),
                                                                      label.x = 3,label.y=max(temp_dm$Feature+(sadj)))
@@ -352,6 +418,13 @@ function(X=NA,Y=NA,feature_table_file,parentoutput_dir,class_labels_file,group_b
                    
        
     }
+=======
+    )+theme(plot.title = element_text(hjust = 0.5,size=10))+stat_cor(method = "spearman",
+                                                                     #aes(label = paste(..r.label.., ..p.label..),
+                                                                     label.x = 3,label.y=max(temp_dm$Feature+(sadj)))
+    
+    
+>>>>>>> 1cb98cefbc2519d10cd9cbe26a9e0f5a6fe10820
     print(p)    
     
     

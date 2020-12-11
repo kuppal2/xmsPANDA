@@ -416,10 +416,14 @@ function(Xmat=NA,Ymat=NA,feature_table_file,parentoutput_dir,class_labels_file,n
         pass_method_list<-c(pass_method_list,i)
         print(paste("Done with ",featselmethod[i],sep=""))
       }
+<<<<<<< HEAD
       
       fname_del<-paste(outloc,"/Rplots.pdf",sep="")
       try(unlink(fname_del),silent=TRUE)
       
+=======
+  
+>>>>>>> 1cb98cefbc2519d10cd9cbe26a9e0f5a6fe10820
     }
     
     ##save(diffexp.res,featselmethod,file="diffexp.res.Rda")
@@ -1019,10 +1023,18 @@ function(Xmat=NA,Ymat=NA,feature_table_file,parentoutput_dir,class_labels_file,n
       
       
       s1<-"Stage 1 results: Preprocessing (Normalization, transformation)"
+<<<<<<< HEAD
       s2<-"Stage 2 results: Feature selection & evaluation results for each feature selection method. Description of files and folder: A) *selected.features.final.txt file includes final table of selected features; B) Figures subfolder: includes Manhattan plots, boxplots, barplots, and other graphics, and C) Tables sub-folder: includes data files with feature selection results for all features, PCA (and PLS) scores and loadings, HCA clusters, k-fold CV results, and files for generating boxplots and barplots."
      # s3<-"Stage 3 results: Correlation based network analysis"
       #s4<-"Stage 4 results: Correlation based targeted network analysis"
       #s5<-"Consensus results: HCA, k-fold CV, boxplots, and barplots for aggregated selected features"
+=======
+      s2<-"Stage 2 results: Feature selection & evaluation results for each feature selection method. Description of files and folder: 
+      A) *selected.features.final.txt file includes final table of selected features; B) Figures subfolder: includes Manhattan plots, boxplots, and other graphics, and C) Tables sub-folder: includes data files with feature selection results for all features, PCA (and PLS) scores and loadings, HCA clusters, k-fold CV results, and files for generating boxplots and barplots."
+   #   s3<-"Stage 3 results: Correlation based network analysis"
+    #  s4<-"Stage 4 results: Correlation based targeted network analysis"
+  #    s5<-"Consensus results: HCA, k-fold CV, boxplots, and barplots for aggregated selected features"
+>>>>>>> 1cb98cefbc2519d10cd9cbe26a9e0f5a6fe10820
       sm<-rbind(s1,s2) #,s3,s4,s5)
       setwd(parentoutput_dir)
       write.table(sm,file="ReadMe.txt",sep="\t",row.names=FALSE)
