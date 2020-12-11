@@ -1,0 +1,22 @@
+Package: RankAggreg
+Type: Package
+Title: Weighted Rank Aggregation
+Version: 0.6.5
+Date: 2018-05-14
+Author: Vasyl Pihur <vpihur@gmail.com>, Somnath Datta
+        <somnath.datta@louisville.edu>, Susmita Datta
+        <susmita.datta@louisville.edu>
+Maintainer: Vasyl Pihur <vpihur@gmail.com>
+Depends: R (>= 2.12.0)
+Imports: gtools
+Suggests: xtable, kohonen, mclust, clValid
+Description: Performs aggregation of ordered lists based
+        on the ranks using several different algorithms:
+        Cross-Entropy Monte Carlo algorithm, Genetic algorithm, and a
+        brute force algorithm (for small problems).
+License: LGPL
+NeedsCompilation: yes
+Packaged: 2018-05-15 02:30:50 UTC; vpihur
+Repository: CRAN
+Date/Publication: 2018-05-15 03:57:53 UTC
+Built: R 3.5.1; x86_64-pc-linux-gnu; 2018-12-06 21:58:01 UTC; unix
