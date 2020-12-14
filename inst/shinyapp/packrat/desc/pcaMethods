@@ -1,0 +1,42 @@
+Package: pcaMethods
+Maintainer: Henning Redestig <henning.red@gmail.com>
+License: GPL (>= 3)
+Title: A collection of PCA methods
+LinkingTo: Rcpp
+LazyLoad: Yes
+Author: Wolfram Stacklies, Henning Redestig, Kevin Wright
+SystemRequirements: Rcpp
+Description: Provides Bayesian PCA, Probabilistic PCA, Nipals PCA,
+    Inverse Non-Linear PCA and the conventional SVD PCA. A cluster
+    based method for missing value estimation is included for
+    comparison. BPCA, PPCA and NipalsPCA may be used to perform PCA
+    on incomplete data as well as for accurate missing value
+    estimation. A set of methods for printing and plotting the
+    results is also provided. All PCA methods make use of the same
+    data structure (pcaRes) to provide a common interface to the
+    PCA results. Initiated at the Max-Planck Institute for
+    Molecular Plant Physiology, Golm, Germany.
+Version: 1.74.0
+URL: https://github.com/hredestig/pcamethods
+BugReports: https://github.com/hredestig/pcamethods/issues
+Depends: Biobase, methods
+Imports: BiocGenerics, Rcpp (>= 0.11.3), MASS
+Suggests: matrixStats, lattice, ggplot2
+Collate: 'derrorHierarchic.R' 'errorHierarchic.R' 'AllClasses.R'
+        'AllGenerics.R' 'BPCA_dostep.R' 'BPCA_initmodel.R' 'bpca.R'
+        'checkData.R' 'forkNlpcaNet.R' 'kEstimate.R' 'kEstimateFast.R'
+        'lineSearch.R' 'llsImpute.R' 'methods-ExpressionSet.R'
+        'methods-nniRes.R' 'methods-pcaRes.R' 'nipalsPca.R' 'nlpca.R'
+        'optiAlgCgd.R' 'orth.R' 'pca.R' 'pcaMethods-package.R' 'ppca.R'
+        'prep.R' 'repmat.R' 'robustPca.R' 'sortFeatures.R'
+        'svdImpute.R' 'vector2matrices.R' 'xval.R'
+Packaged: 2018-10-30 22:55:56 UTC; biocbuild
+biocViews: Bayesian
+RoxygenNote: 5.0.1
+git_url: https://git.bioconductor.org/packages/pcaMethods
+git_branch: RELEASE_3_8
+git_last_commit: 1b8f0a5
+git_last_commit_date: 2018-10-30
+Date/Publication: 2018-10-30
+NeedsCompilation: yes
+Built: R 3.5.1; x86_64-pc-linux-gnu; 2018-12-06 22:02:51 UTC; unix
