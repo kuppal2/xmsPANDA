@@ -5906,7 +5906,7 @@ get_scatter_plots<-function(X=NA,Y=NA,feature_table_file,parentoutput_dir,class_
   #df=cbind(Y[,2],X)
   
   #	colnames(df)<-c("Response",colnames(X))
-  
+  suppressMessages(library(ggpubr))
   if(is.na(X[1])==TRUE){
     data_matrix<-read.table(feature_table_file,sep="\t",header=TRUE)
   }else{
@@ -6114,6 +6114,7 @@ get_scatter_plots<-function(X=NA,Y=NA,feature_table_file,parentoutput_dir,class_
   dir.create(parentoutput_dir)
   setwd(parentoutput_dir)
   
+  data_matrix<-X
   data_m<-data_matrix[,-c(1:2)]
   
   data_m<-as.matrix(data_m)
@@ -6142,8 +6143,8 @@ get_scatter_plots<-function(X=NA,Y=NA,feature_table_file,parentoutput_dir,class_
   class_vec<-classlabels[,2]
   #for(m in 1:dim(goodfeats)[1])
   
-  #dim(goodfeats)[1]
-  lapply(1:10,function(m)
+  #
+  lapply(1:dim(goodfeats)[1],function(m)
   {
     
     if(m%%9==0){

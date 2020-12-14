@@ -4,10 +4,8 @@ function(X=NA,Y=NA,feature_table_file,parentoutput_dir,class_labels_file,group_b
                             alphabetical.order=FALSE,name=NA,add.jitter=TRUE,add.pvalues=TRUE,
                             xlabel="Predictor",ellipse=FALSE,ypos.adj.factor=0.5,group_by_mat=NA,cor.method="pearson",...)
 {
-  
-  #df=cbind(Y[,2],X)
-  
-  #	colnames(df)<-c("Response",colnames(X))
+
+  suppressMessages(library(ggpubr))  
   
   if(is.na(X[1])==TRUE){
     data_matrix<-read.table(feature_table_file,sep="\t",header=TRUE)
@@ -215,7 +213,8 @@ function(X=NA,Y=NA,feature_table_file,parentoutput_dir,class_labels_file,group_b
   
   dir.create(parentoutput_dir)
   setwd(parentoutput_dir)
-  
+ 
+  data_matrix<-X 
   data_m<-data_matrix[,-c(1:2)]
   
   data_m<-as.matrix(data_m)
@@ -245,7 +244,8 @@ function(X=NA,Y=NA,feature_table_file,parentoutput_dir,class_labels_file,group_b
   #for(m in 1:dim(goodfeats)[1])
   
   #dim(goodfeats)[1]
-  lapply(1:10,function(m)
+  #lapply(1:10,function(m)
+  lapply(1:dim(goodfeats)[1],function(m) 
   {
     
     if(m%%9==0){

@@ -8,8 +8,8 @@
 \tabular{ll}{
 Package: \tab xmsPANDA\cr
 Type: \tab Package\cr
-Version: \tab 1.1.75\cr
-Date: \tab 2020-12-11\cr
+Version: \tab 1.1.76\cr
+Date: \tab 2020-12-14\cr
 License: \tab gpl2.0\cr
 LazyLoad: \tab yes\cr
 }
