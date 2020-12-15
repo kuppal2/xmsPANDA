@@ -7,7 +7,8 @@ function(data_m_fc_withfeats,subindex=NA,targetindex=NA,outloc,networkscope,cor.
   allsig_pcornetwork<-{}
   cormat<-{}
   
-  
+  suppressWarnings(dir.create("Figures"))
+  suppressWarnings(dir.create("Tables"))
   suppressMessages(library(fdrtool))
   suppressMessages(library(igraph))
   
