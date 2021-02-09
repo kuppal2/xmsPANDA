@@ -201,7 +201,8 @@ function(Xmat=NA,Ymat=NA,Zmat=NA,feature_table_file=NA,parentoutput_dir,class_la
       check_ylabel<-regexpr(rnames_ymat[1],pattern="^[0-9]*",perl=TRUE)
       check_xlabel<-regexpr(rnames_xmat[1],pattern="^X[0-9]*",perl=TRUE)
       
-      
+      check_ylabel<-regexpr(rnames_ymat[1],pattern="^ ",perl=TRUE)
+      check_xlabel<-regexpr(rnames_xmat[1],pattern="^ ",perl=TRUE)
       if(length(check_ylabel)>0 && length(check_xlabel)>0){
         if(attr(check_ylabel,"match.length")>0 && attr(check_xlabel,"match.length")>0){
           
@@ -226,10 +227,19 @@ function(Xmat=NA,Ymat=NA,Zmat=NA,feature_table_file=NA,parentoutput_dir,class_la
       
       if(is.na(all(diff(match(rnames_xmat,rnames_ymat))))==FALSE){
         if(all(diff(match(rnames_xmat,rnames_ymat)) > 0)==FALSE){
-          stop("Sample names do not match between feature table and class labels files.\n Please try replacing any \"-\" with \".\" in sample names. Please try again.")
+         
+          print(head(rnames_xmat))
+          print("Sample names in classlabels file")
+          
+          print(head(rnames_ymat))
+          
+           stop("Sample names do not match between feature table and class labels files.\n Please try replacing any \"-\" with \".\" in sample names. Please try again.")
         }
       }else{
+        print(head(rnames_xmat))
+        print("Sample names in classlabels file")
         
+        print(head(rnames_ymat))
         stop("Sample names do not match between feature table and class labels files.\n Please try replacing any \"-\" with \".\" in sample names. Please try again.")
       }
       

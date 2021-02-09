@@ -10,7 +10,7 @@ function(Xmat=NA,Ymat=NA,feature_table_file=NA,parentoutput_dir,class_labels_fil
   options(warn=-1)
   
   #read file; First row is column headers
-  if(is.na(Xmat==TRUE)){
+  if(is.na(Xmat)==TRUE){
     data_matrix<-read.table(feature_table_file,sep="\t",header=TRUE)
   }else{
     data_matrix<-Xmat

@@ -1,4 +1,4 @@
-get_scatter_plots <-
+get_scatter_plots_vold1 <-
 function (X = NA, Y = NA, feature_table_file, parentoutput_dir, 
                              class_labels_file, group_by_mat_file = NA, scatterplot.col.opt = "journal", 
                              alphacol = 0.3, newdevice = TRUE, cex.plots = 0.6, replace.by.NA = FALSE, 
@@ -6,7 +6,6 @@ function (X = NA, Y = NA, feature_table_file, parentoutput_dir,
                              alphabetical.order = FALSE, name = NA, add.jitter = TRUE, 
                              add.pvalues = TRUE, xlabel = "Predictor", ellipse = FALSE, 
                              ypos.adj.factor = 0.5, group_by_mat = NA, cor.method = "pearson", multiple.facets=TRUE,
-                             conf.int=TRUE,
                              ...) 
 {
   suppressMessages(library(ggpubr))
@@ -274,37 +273,36 @@ function (X = NA, Y = NA, feature_table_file, parentoutput_dir,
     }
     temp_dm <- as.data.frame(temp_dm)
     s1 = summary(temp_dm$Feature)
-    
     sadj = (s1[5] - s1[3]) * ypos.adj.factor
-    if (is.na(group_by_mat[1]) == TRUE) {
-      p <- ggscatter(temp_dm, y = "Class", x = "Feature", conf.int=conf.int,
+    if (is.na(group_by_mat) == TRUE) {
+      p <- ggscatter(temp_dm, y = "Class", x = "Feature", 
                      title = mzname, xlab = xlabel, ylab = ylabel, 
                      palette = col_vec[1], col = col_vec[1], shape = 20, 
                      size = 3, add = "reg.line", add.params = list(color = "black", 
-                                                                   fill = "lightgray")) + theme(plot.title = element_text(hjust = 0.5, 
-                                                                                                                          size = 10)) + stat_cor(method = cor.method, 
-                                                                                                                                                 label.y = max(temp_dm$Feature + (sadj)))
+                                                                   fill = "lightgray"), conf.int = TRUE, 
+      ) + theme(plot.title = element_text(hjust = 0.5, 
+                                          size = 10)) + stat_cor(method = cor.method, label.x = 3, 
+                                                                 label.y = max(temp_dm$Feature + (sadj)))
     }
     else {
       temp_dm$GroupBy <- as.factor(temp_dm$GroupBy)
       
       if(multiple.facets==TRUE){
-        p <- ggscatter(temp_dm, y = "Class", x = "Feature", conf.int=conf.int,
-                       title = mzname, xlab = xlabel, ylab = ylabel,
-                       add = "reg.line", color = "GroupBy", facet.by="GroupBy", scales="free",
-                       palette = col_vec, fullrange = TRUE, shapez = 20, 
-                       size = 3) + theme(plot.title = element_text(hjust = 0.5, 
-                                                                   size = 10)) + stat_cor(method = cor.method, aes(color = GroupBy))
+        p <- ggscatter(temp_dm, y = "Class", x = "Feature", 
+                       title = mzname, xlab = xlabel, ylab = ylabel, 
+                       add = "reg.line", color = "GroupBy", facet.by="GroupBy",
+                       palette = col_vec, fullrange = TRUE, shape = 20, 
+                       size = 3, conf.int = FALSE, ) + theme(plot.title = element_text(hjust = 0.5, 
+                                                                                       size = 10)) + stat_cor(method = cor.method, aes(color = GroupBy))
       }else{
         
-        #ylim=c(s1[1],s1[6]),
         
-        p <- ggscatter(temp_dm, y = "Class", x = "Feature", conf.int=conf.int,
+        p <- ggscatter(temp_dm, y = "Class", x = "Feature", 
                        title = mzname, xlab = xlabel, ylab = ylabel, 
                        add = "reg.line", color = "GroupBy", 
                        palette = col_vec, fullrange = TRUE, shape = 20, 
-                       size = 3) + theme(plot.title = element_text(hjust = 0.5, 
-                                                                   size = 10)) + stat_cor(method = cor.method, aes(color = GroupBy))
+                       size = 3, conf.int = FALSE, ) + theme(plot.title = element_text(hjust = 0.5, 
+                                                                                       size = 10)) + stat_cor(method = cor.method, aes(color = GroupBy))
       }
     }
     print(p)

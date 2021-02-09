@@ -27,7 +27,7 @@ function(X,samplelabels,legendlocation="topright",filename=NA,ncomp=5,pcacenter=
   }
   
   
-  
+if(FALSE){
   
   if(dim(classlabelsorig)[2]==2){
     X=X[order(classlabelsorig[,2]),]
@@ -68,11 +68,18 @@ function(X,samplelabels,legendlocation="topright",filename=NA,ncomp=5,pcacenter=
       }
     }
   }
+}
+  
+  classlabelsorig<-classlabelsorig[match(rownames(X),classlabelsorig[,1]),]
   
   if(alphabetical.order==FALSE){
     samplelabels <- factor(samplelabels, levels=unique(samplelabels))
   }
   l2<-levels(as.factor(samplelabels))
+  
+  print(X[1:3,1:4])
+  print(classlabelsorig[1:4,])
+  
   col_all=topo.colors(256)
   
   t1<-table(samplelabels)
@@ -85,7 +92,7 @@ function(X,samplelabels,legendlocation="topright",filename=NA,ncomp=5,pcacenter=
     
   }
   l1<-levels(as.factor(samplelabels))
-  ###save(X,file="pcaX.Rda")
+ # save(X,classlabelsorig,samplelabels,file="pcaX.Rda")
   #print(dim(X))
   if(pcascale=="pareto"){
     
@@ -103,7 +110,7 @@ function(X,samplelabels,legendlocation="topright",filename=NA,ncomp=5,pcacenter=
     
   }
   
-  ###save(X,file="pcaX1.Rda")
+ # save(X,file="pcaX1.Rda")
   class_labels_levels<-l1
   
   ncomp=min(c(10,dim(X)[1],dim(X)[2]))
@@ -119,12 +126,13 @@ function(X,samplelabels,legendlocation="topright",filename=NA,ncomp=5,pcacenter=
   
   
   fname1<-paste("pcares",filename,".Rda",sep="")
-  ##save(result,file=fname1)
+ # save(result,X,ncomp,pcacenter,pcascale,file=fname1)
   if(analysistype=="regression"){
     
   }
-  ##save(X,result,samplelabels,ellipse.conf.level,classlabelsorig,analysistype,file="debug3.Rda")
+ # save(X,result,samplelabels,ellipse.conf.level,classlabelsorig,analysistype,file="pcadebug3.Rda")
   
+ 
   
   s1<-summary(result)
   r1<-s1$importance[2,]
@@ -447,8 +455,8 @@ function(X,samplelabels,legendlocation="topright",filename=NA,ncomp=5,pcacenter=
     w <- 0.1 #grconvertX(l$rect$w, to='ndc') - grconvertX(0, to='ndc')
     par(omd=c(0, 1-w, 0, 1),cex.main=0.7)
     
-    iqr_xlim=2*sd(result$variates$X[,1],na.rm=TRUE) #4*(summary(result$variates$X[,1])[5]-summary(result$variates$X[,1])[3])
-    iqr_ylim=2*sd(result$variates$X[,2],na.rm=TRUE) #4*(summary(result$variates$X[,2])[5]-summary(result$variates$X[,2])[3])
+    iqr_xlim=0.1*sd(result$variates$X[,1],na.rm=TRUE) #4*(summary(result$variates$X[,1])[5]-summary(result$variates$X[,1])[3])
+    iqr_ylim=0.1*sd(result$variates$X[,2],na.rm=TRUE) #4*(summary(result$variates$X[,2])[5]-summary(result$variates$X[,2])[3])
     
     #  #save(X,result,samplelabels,ellipse.conf.level,iqr_ylim,iqr_xlim,r1,classlabelsorig,col_per_group,main_text,analysistype,l1,pch,file="debug3.Rda")
     
@@ -484,7 +492,10 @@ function(X,samplelabels,legendlocation="topright",filename=NA,ncomp=5,pcacenter=
         
         #de1<-(dataEllipse(x=result$x[,1], y=result$x[,2],groups=as.factor(classlabelsorig[,2]),grid=FALSE,lwd=0.5,levels=NULL,col=col_per_group,pch=pch,xlab=paste("PC1 (",r1[1],"% variation)",sep=""),ylab=paste("PC2 (",r1[2],"% variation)",sep=""),group.labels="",main=main_text,fill=FALSE,add=FALSE,cex.main=0.7,ylim=range(pretty(c(floor(min(result$variates$X[,2])-iqr_ylim),ceiling(max(result$variates$X[,2])+iqr_ylim)))),xlim=range(pretty(c(floor(min(result$variates$X[,1])-iqr_xlim),ceiling(max(result$variates$X[,1])+iqr_xlim))))))
         
-        de1<-(dataEllipse(x=result$x[,1], y=result$x[,2],groups=as.factor(samplelabels),grid=FALSE,lwd=0.5,levels=NULL,col=col_per_group,pch=pch,xlab=paste("PC1 (",r1[1],"% variation)",sep=""),ylab=paste("PC2 (",r1[2],"% variation)",sep=""),group.labels="",main=main_text,fill=FALSE,add=FALSE,cex.main=0.6,cex.axis=0.8,cex.lab=0.6,ylim=range(pretty(c(floor(min(result$variates$X[,2])-iqr_ylim),ceiling(max(result$variates$X[,2])+iqr_ylim)))),xlim=range(pretty(c(floor(min(result$variates$X[,1])-iqr_xlim),ceiling(max(result$variates$X[,1])+iqr_xlim))))))
+        de1<-(dataEllipse(x=result$x[,1], y=result$x[,2],groups=as.factor(samplelabels),grid=FALSE,lwd=0.5,levels=NULL,col=col_per_group,pch=pch,
+                          xlab=paste("PC1 (",r1[1],"% variation)",sep=""),ylab=paste("PC2 (",r1[2],"% variation)",sep=""),
+                          group.labels="",main=main_text,fill=FALSE,add=FALSE,cex.main=0.6,cex.axis=0.8,cex.lab=0.6,
+                          ylim=range(pretty(c(floor(min(result$variates$X[,2])-iqr_ylim),ceiling(max(result$variates$X[,2])+iqr_ylim)))),xlim=range(pretty(c(floor(min(result$variates$X[,1])-iqr_xlim),ceiling(max(result$variates$X[,1])+iqr_xlim))))))
         
         
       }
@@ -508,8 +519,8 @@ function(X,samplelabels,legendlocation="topright",filename=NA,ncomp=5,pcacenter=
       w <- 0.1
       par(omd=c(0, 1-w, 0, 1),cex.main=0.7)
       
-      iqr_xlim=2*sd(result$variates$X[,1],na.rm=TRUE) #(summary(result$variates$X[,1])[5]-summary(result$variates$X[,1])[3])
-      iqr_ylim=2*sd(result$variates$X[,3],na.rm=TRUE) #(summary(result$variates$X[,3])[5]-summary(result$variates$X[,3])[3])
+      iqr_xlim=0.1*sd(result$variates$X[,1],na.rm=TRUE) #(summary(result$variates$X[,1])[5]-summary(result$variates$X[,1])[3])
+      iqr_ylim=0.1*sd(result$variates$X[,3],na.rm=TRUE) #(summary(result$variates$X[,3])[5]-summary(result$variates$X[,3])[3])
       
       if(pca.ellipse==TRUE){
         if(dim(classlabelsorig)[2]>=2){
@@ -546,8 +557,8 @@ function(X,samplelabels,legendlocation="topright",filename=NA,ncomp=5,pcacenter=
       w <- 0.1
       par(omd=c(0, 1-w, 0, 1),cex.main=0.7)
       
-      iqr_xlim=2*sd(result$variates$X[,2],na.rm=TRUE) #2.5*(summary(result$variates$X[,2])[5]-summary(result$variates$X[,2])[3])
-      iqr_ylim=2*sd(result$variates$X[,3],na.rm=TRUE) #2.5*(summary(result$variates$X[,3])[5]-summary(result$variates$X[,3])[3])
+      iqr_xlim=0.1*sd(result$variates$X[,2],na.rm=TRUE) #2.5*(summary(result$variates$X[,2])[5]-summary(result$variates$X[,2])[3])
+      iqr_ylim=0.1*sd(result$variates$X[,3],na.rm=TRUE) #2.5*(summary(result$variates$X[,3])[5]-summary(result$variates$X[,3])[3])
       
       if(dim(classlabelsorig)[2]==2){
         if(do_pca_anova==TRUE){

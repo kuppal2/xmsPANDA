@@ -1,12 +1,13 @@
 diffexp <-
-function(Xmat=NA,Ymat=NA,feature_table_file,parentoutput_dir,class_labels_file,num_replicates=3,summarize.replicates=TRUE,summary.method="mean",summary.na.replacement="zeros",missing.val=0,rep.max.missing.thresh=0.3,
+function(Xmat=NA,Ymat=NA,feature_table_file,parentoutput_dir=NA,class_labels_file,num_replicates=1,summarize.replicates=TRUE,summary.method="mean",summary.na.replacement="zeros",missing.val=0,rep.max.missing.thresh=0.3,
                   all.missing.thresh=0.1,group.missing.thresh=0.7,input.intensity.scale="raw",
-                  log2transform=TRUE,medcenter=FALSE,znormtransform=FALSE,quantile_norm=TRUE,lowess_norm=FALSE,madscaling=FALSE,TIC_norm=FALSE,rangescaling=FALSE,mstus=FALSE,paretoscaling=FALSE,sva_norm=FALSE,eigenms_norm=FALSE,vsn_norm=FALSE,
-                  normalization.method=c("none"),rsd.filt.list=1,
+                  log2transform=FALSE,medcenter=FALSE,znormtransform=FALSE,quantile_norm=FALSE,lowess_norm=FALSE,madscaling=FALSE,TIC_norm=FALSE,rangescaling=FALSE,mstus=FALSE,paretoscaling=FALSE,sva_norm=FALSE,eigenms_norm=FALSE,vsn_norm=FALSE,
+                  normalization.method=c("log2quantilenorm","log2transform","znormtransform","lowess_norm","quantile_norm","rangescaling",
+                                                                       "paretoscaling","mstus","eigenms_norm","vsn_norm","sva_norm","tic_norm","cubicspline_norm","mad_norm","none"),rsd.filt.list=1,
                   pairedanalysis=FALSE,featselmethod=c("limma","pls"),fdrthresh=0.05,fdrmethod="BH",cor.method="spearman",networktype="complete",abs.cor.thresh=0.4,cor.fdrthresh=0.05,kfold=10,
                   pred.eval.method="BER",globalcor=TRUE,
                   target.metab.file=NA,target.mzmatch.diff=10,target.rtmatch.diff=NA,max.cor.num=100, 
-                  numtrees=20000,analysismode="classification",net_node_colors=c("green","red"), net_legend=TRUE,
+                  numtrees=20000,analysismode="classification",net_node_colors=c("green","red"), net_legend=TRUE,network.label.cex=0.6,
                   svm_kernel="radial",heatmap.col.opt="brewer.RdBu",manhattanplot.col.opt=c("darkblue","red3"),boxplot.col.opt=c("journal"),barplot.col.opt=c("journal"),sample.col.opt="journal",lineplot.col.opt="journal",scatterplot.col.opt=c("journal"),hca_type="two-way",pls_vip_thresh=2,num_nodes=2,max_varsel=100,
                   pls_ncomp=5,pca.stage2.eval=FALSE,scoreplot_legend=TRUE,pca.global.eval=TRUE,rocfeatlist=seq(2,6,1),rocfeatincrement=TRUE,rocclassifier="svm",foldchangethresh=1,wgcnarsdthresh=20,WGCNAmodules=FALSE,
                   optselect=TRUE,max_comp_sel=1,saveRda=FALSE,legendlocation="topleft",pcacenter=TRUE,pcascale=TRUE,pca.cex.val=6,
@@ -19,7 +20,8 @@ function(Xmat=NA,Ymat=NA,feature_table_file,parentoutput_dir,class_labels_file,n
                   samplermindex=NA,differential.network.analysis=TRUE,
                   degree.centrality.method="eigenvector",log2.transform.constant=1,
                   balance.classes=FALSE,balance.classes.sizefactor=10,
-                  balance.classes.seed=1,cv.perm.count=100,multiple.figures.perpanel=FALSE,...)
+                  balance.classes.seed=1,cv.perm.count=100,multiple.figures.perpanel=FALSE,
+                  hca.labRow.value = TRUE, hca.labCol.value = TRUE,...)
 {
   
   time_start<-Sys.time()
@@ -33,6 +35,22 @@ function(Xmat=NA,Ymat=NA,feature_table_file,parentoutput_dir,class_labels_file,n
   modeltype=lme.modeltype
   balance.classes.method="ROSE"
   
+  labRow.value=hca.labRow.value
+  labCol.value=hca.labCol.value
+  
+  if(is.na(parentoutput_dir)==TRUE){
+    
+    parentoutput_dir=getwd()
+  }
+  
+  if(is.na(Xmat)==FALSE){
+    
+    feature_table_file=NA
+  }
+  if(is.na(Ymat)==FALSE){
+    
+    class_labels_file=NA
+  }
   if(differential.network.analysis==TRUE){
     
     
@@ -53,7 +71,7 @@ function(Xmat=NA,Ymat=NA,feature_table_file,parentoutput_dir,class_labels_file,n
   alphacol=0.3
   
   
-  print(parentoutput_dir)
+ # print(parentoutput_dir)
   dir.create(parentoutput_dir)
   
   
@@ -63,11 +81,7 @@ function(Xmat=NA,Ymat=NA,feature_table_file,parentoutput_dir,class_labels_file,n
     if(group.missing.thresh<0.8){
       
       
-      print("********************************************************************************")
-      print("***** WARNING: group.missing.thresh is set to below 0.8. This can lead to false significance for class or group-wise comparisons.****")
-      print("********************************************************************************")
-      print("**")
-      print("**")
+   
       
     }
   }
@@ -76,7 +90,7 @@ function(Xmat=NA,Ymat=NA,feature_table_file,parentoutput_dir,class_labels_file,n
   if(input.intensity.scale=="raw" || input.intensity.scale=="log2"){
     
     print("##################################################################################")
-    print("Note 1: The order of samples should be same in the feature table and classlabels file")
+    print("Note 1: The order of samples should be the same in the feature table and classlabels files")
     print(paste("Note 2: Treating input intensities as ",input.intensity.scale," values",sep=""))
     
   }else{
@@ -106,7 +120,7 @@ function(Xmat=NA,Ymat=NA,feature_table_file,parentoutput_dir,class_labels_file,n
   fname<-paste(fname,x1[4],sep="_")
   
   
-  dir.create(parentoutput_dir)
+  suppressWarnings(dir.create(parentoutput_dir))
   setwd(parentoutput_dir)
   
   
@@ -122,7 +136,7 @@ function(Xmat=NA,Ymat=NA,feature_table_file,parentoutput_dir,class_labels_file,n
     }
   }
   
-  if(featselmethod=="limma2way")
+  if(featselmethod[1]=="limma2way")
   {
     
     print("Note 3: lm2wayanova option is recommended for greater than 2x2 designs and this includes post-hoc comparisons")
@@ -131,12 +145,12 @@ function(Xmat=NA,Ymat=NA,feature_table_file,parentoutput_dir,class_labels_file,n
   }
   
   
-  if(featselmethod=="lm1wayanovarepeat" | featselmethod=="spls1wayrepeat" | featselmethod=="limma1wayrepeat")
+  if(featselmethod[1]=="lm1wayanovarepeat" | featselmethod[1]=="spls1wayrepeat" | featselmethod[1]=="limma1wayrepeat")
   {
     print("Note 3: Class labels format should be: Sample ID, Subject, Time. lm1wayanovarepeat is based on the nlme::lme() function with post-hoc Tukey HSD test.")
   }else{
     
-    if(featselmethod=="lm2wayanovarepeat" | featselmethod=="spls2wayrepeat" | featselmethod=="limma2wayrepeat")
+    if(featselmethod[1]=="lm2wayanovarepeat" | featselmethod[1]=="spls2wayrepeat" | featselmethod[1]=="limma2wayrepeat")
     {
       print("Note 3: Class labels format should be: Sample ID, Subject, Factor, Time. lm2wayanovarepeat is based on the nlme::lme() funciton with post-hoc Tukey HSD test. ")
     }
@@ -386,11 +400,12 @@ function(Xmat=NA,Ymat=NA,feature_table_file,parentoutput_dir,class_labels_file,n
       }
       
       outloc<-paste(parentoutput_dir,featselmethod[i],sep="/")
-      suppressWarnings(diffexp.res[[i]]<-try(diffexp.child(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_replicates,feat.filt.thresh,summarize.replicates,summary.method,summary.na.replacement,missing.val,rep.max.missing.thresh,
+     if(FALSE){
+       suppressWarnings(diffexp.res[[i]]<-try(diffexp.child(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_replicates,feat.filt.thresh,summarize.replicates,summary.method,summary.na.replacement,missing.val,rep.max.missing.thresh,
                                                            all.missing.thresh,group.missing.thresh,input.intensity.scale,
                                                            log2transform,medcenter,znormtransform,quantile_norm,lowess_norm,madscaling,TIC_norm,rangescaling,mstus,paretoscaling,sva_norm,eigenms_norm,vsn_norm,
                                                            normalization.method,rsd.filt.list,
-                                                           pairedanalysis,featselmethod[i],fdrthresh,fdrmethod,cor.method,networktype,abs.cor.thresh,cor.fdrthresh,kfold,pred.eval.method,feat_weight,globalcor,
+                                                           pairedanalysis,featselmethod[i],fdrthresh,fdrmethod,cor.method,networktype,network.label.cex,abs.cor.thresh,cor.fdrthresh,kfold,pred.eval.method,feat_weight,globalcor,
                                                            target.metab.file,target.mzmatch.diff,target.rtmatch.diff,max.cor.num,samplermindex,pcacenter,pcascale,
                                                            numtrees,analysismode,net_node_colors,net_legend,svm_kernel,heatmap.col.opt,manhattanplot.col.opt,boxplot.col.opt,barplot.col.opt,sample.col.opt,lineplot.col.opt, scatterplot.col.opt,hca_type,alphacol,pls_vip_thresh,num_nodes,max_varsel, pls_ncomp=pls_ncomp,pca.stage2.eval=pca.stage2.eval,scoreplot_legend=scoreplot_legend,pca.global.eval=pca.global.eval,rocfeatlist=rocfeatlist,rocfeatincrement=rocfeatincrement,rocclassifier=rocclassifier,foldchangethresh=foldchangethresh,wgcnarsdthresh=wgcnarsdthresh,WGCNAmodules=WGCNAmodules,
                                                            optselect=optselect,max_comp_sel=max_comp_sel,saveRda=saveRda,legendlocation=legendlocation,degree_rank_method=degree_rank_method,pca.cex.val=pca.cex.val,pca.ellipse=pca.ellipse,ellipse.conf.level=ellipse.conf.level,pls.permut.count=pls.permut.count,
@@ -401,9 +416,30 @@ function(Xmat=NA,Ymat=NA,feature_table_file,parentoutput_dir,class_labels_file,n
                                                            degree.centrality.method=degree.centrality.method,log2.transform.constant=log2.transform.constant,
                                                            balance.classes=balance.classes,balance.classes.sizefactor=balance.classes.sizefactor,
                                                            balance.classes.method=balance.classes.method,balance.classes.seed=balance.classes.seed,
-                                                           cv.perm.count=cv.perm.count,multiple.figures.perpanel=multiple.figures.perpanel)
+                                                           cv.perm.count=cv.perm.count,
+                                                           multiple.figures.perpanel=multiple.figures.perpanel,labRow.value = labRow.value, labCol.value = labCol.value)
                                              
                                              ,silent=TRUE))
+    }
+     diffexp.res[[i]]<-diffexp.child(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_replicates,feat.filt.thresh,summarize.replicates,summary.method,summary.na.replacement,missing.val,rep.max.missing.thresh,
+                                                           all.missing.thresh,group.missing.thresh,input.intensity.scale,
+                                                           log2transform,medcenter,znormtransform,quantile_norm,lowess_norm,madscaling,TIC_norm,rangescaling,mstus,paretoscaling,sva_norm,eigenms_norm,vsn_norm,
+                                                           normalization.method,rsd.filt.list,
+                                                           pairedanalysis,featselmethod[i],fdrthresh,fdrmethod,cor.method,networktype,network.label.cex,abs.cor.thresh,cor.fdrthresh,kfold,pred.eval.method,feat_weight,globalcor,
+                                                           target.metab.file,target.mzmatch.diff,target.rtmatch.diff,max.cor.num,samplermindex,pcacenter,pcascale,
+                                                           numtrees,analysismode,net_node_colors,net_legend,svm_kernel,heatmap.col.opt,manhattanplot.col.opt,boxplot.col.opt,barplot.col.opt,sample.col.opt,lineplot.col.opt, scatterplot.col.opt,hca_type,alphacol,pls_vip_thresh,num_nodes,max_varsel, pls_ncomp=pls_ncomp,pca.stage2.eval=pca.stage2.eval,scoreplot_legend=scoreplot_legend,pca.global.eval=pca.global.eval,rocfeatlist=rocfeatlist,rocfeatincrement=rocfeatincrement,rocclassifier=rocclassifier,foldchangethresh=foldchangethresh,wgcnarsdthresh=wgcnarsdthresh,WGCNAmodules=WGCNAmodules,
+                                                           optselect=optselect,max_comp_sel=max_comp_sel,saveRda=saveRda,legendlocation=legendlocation,degree_rank_method=degree_rank_method,pca.cex.val=pca.cex.val,pca.ellipse=pca.ellipse,ellipse.conf.level=ellipse.conf.level,pls.permut.count=pls.permut.count,
+                                                           svm.acc.tolerance=svm.acc.tolerance,limmadecideTests=limmadecideTests,pls.vip.selection=pls.vip.selection,globalclustering=globalclustering,plots.res=plots.res,plots.width=plots.width,plots.height=plots.height,plots.type=plots.type,
+                                                           output.device.type=output.device.type,pvalue.thresh,individualsampleplot.col.opt,pamr.threshold.select.max,mars.gcv.thresh,error.bar,cex.plots,modeltype,barplot.xaxis,lineplot.lty.option,match_class_dist=match_class_dist,
+                                                           timeseries.lineplots=timeseries.lineplots,alphabetical.order=alphabetical.order,kegg_species_code=kegg_species_code,database=database,reference_set=reference_set,target.data.annot=target.data.annot,add.pvalues=add.pvalues,
+                                                           add.jitter=add.jitter,fcs.permutation.type=fcs.permutation.type,fcs.method=fcs.method,fcs.min.hits=fcs.min.hits,names_with_mz_time=names_with_mz_time,ylab_text=ylab_text,xlab_text=xlab_text,boxplot.type=boxplot.type,
+                                                           degree.centrality.method=degree.centrality.method,log2.transform.constant=log2.transform.constant,
+                                                           balance.classes=balance.classes,balance.classes.sizefactor=balance.classes.sizefactor,
+                                                           balance.classes.method=balance.classes.method,balance.classes.seed=balance.classes.seed,
+                                                           cv.perm.count=cv.perm.count,multiple.figures.perpanel=multiple.figures.perpanel,labRow.value = labRow.value, labCol.value = labCol.value)
+                                             
+                                             
+      
       if(is(diffexp.res[[i]],"try-error")){
         print(paste("Error processing option ",featselmethod[i],sep=""))
         print(paste("Error message: ",diffexp.res[[i]],sep=""))
@@ -575,7 +611,7 @@ function(Xmat=NA,Ymat=NA,feature_table_file,parentoutput_dir,class_labels_file,n
         
         bad_colind<-grep(tolower(cnames_1),pattern="rank")
         
-        bad_colind_2<-grep(tolower(cnames_1),pattern="max.fold.change.log2")
+        bad_colind_2<-grep(tolower(cnames_1),pattern="fold.change.log2")
         
         if(length(bad_colind_2)>1){
           bad_colind_2<-bad_colind_2[-c(1)]
@@ -637,7 +673,7 @@ function(Xmat=NA,Ymat=NA,feature_table_file,parentoutput_dir,class_labels_file,n
           input.intensity.scale="raw"
         }
         
-        dir.create(outloc)
+        suppressWarnings(dir.create(outloc))
         setwd(outloc)
         
         dir.create("Tables")
@@ -1088,7 +1124,7 @@ function(Xmat=NA,Ymat=NA,feature_table_file,parentoutput_dir,class_labels_file,n
                                  all.missing.thresh,group.missing.thresh,input.intensity.scale,
                                  log2transform,medcenter,znormtransform,quantile_norm,lowess_norm,madscaling,TIC_norm,rangescaling,mstus,paretoscaling,sva_norm,eigenms_norm,vsn_norm,
                                  normalization.method,rsd.filt.list,
-                                 pairedanalysis,featselmethod,fdrthresh,fdrmethod,cor.method,networktype,abs.cor.thresh,cor.fdrthresh,kfold,pred.eval.method,feat_weight,globalcor,
+                                 pairedanalysis,featselmethod,fdrthresh,fdrmethod,cor.method,networktype,network.label.cex,abs.cor.thresh,cor.fdrthresh,kfold,pred.eval.method,feat_weight,globalcor,
                                  target.metab.file,target.mzmatch.diff,target.rtmatch.diff,max.cor.num,samplermindex,pcacenter,pcascale,
                                  numtrees,analysismode,net_node_colors,net_legend,svm_kernel,heatmap.col.opt,manhattanplot.col.opt,boxplot.col.opt,barplot.col.opt,sample.col.opt,lineplot.col.opt,scatterplot.col.opt,hca_type,alphacol,pls_vip_thresh,num_nodes,max_varsel, pls_ncomp,pca.stage2.eval,scoreplot_legend,pca.global.eval,rocfeatlist,rocfeatincrement,rocclassifier,foldchangethresh,wgcnarsdthresh,WGCNAmodules,
                                  optselect,max_comp_sel,saveRda,legendlocation,degree_rank_method,pca.cex.val,pca.ellipse,ellipse.conf.level,pls.permut.count,svm.acc.tolerance,limmadecideTests,pls.vip.selection,globalclustering,plots.res,plots.width,plots.height,
@@ -1103,7 +1139,8 @@ function(Xmat=NA,Ymat=NA,feature_table_file,parentoutput_dir,class_labels_file,n
                                  balance.classes=balance.classes,
                                  balance.classes.sizefactor=balance.classes.sizefactor,
                                  balance.classes.method=balance.classes.method,
-                                 balance.classes.seed=balance.classes.seed,cv.perm.count=cv.perm.count,multiple.figures.perpanel=multiple.figures.perpanel)
+                                 balance.classes.seed=balance.classes.seed,cv.perm.count=cv.perm.count,
+                                 multiple.figures.perpanel=multiple.figures.perpanel,labRow.value = labRow.value, labCol.value = labCol.value)
     )
     
     time_end<-Sys.time()

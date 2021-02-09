@@ -6,9 +6,9 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
                                                                   "twowayanovarepeat"),
                              multiple.figures.perpanel=TRUE,
                              ggplot.type1=TRUE,replace.outliers=FALSE,plot.height=8,plot.width=8,
-                             extra_text=NA,group_by_mat=NA,position_dodge_width=0.75,numnodes=2,...)
+                             extra_text=NA,group_by_mat=NA,position_dodge_width=0.75,numnodes=2,hightlight.points=FALSE,...)
 {
-  
+  options(warn=-1)
   analysistype=study.design[1]
   
   paireddesign=NA
@@ -343,41 +343,45 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
   
   #tiff(boxplots_fname, width=2000,height=3000,res=plots.res, compression="lzw")
   
-  if(newdevice==TRUE){
-    pdf(boxplots_fname,width=plot.width,height=plot.height)
+  if(newdevice==TRUE & boxplot.type=="simple"){
+    pdf(boxplots_fname) #,width=plot.width,height=plot.height)
   }
   #par(mfrow=c(par_rows,max_per_row))
   ###save(goodfeats,class_labels_levels,file="debug1.Rda")
   
   
-  plot(0:10, type = "n", xaxt="n", yaxt="n", bty="n", xlab = "", ylab = "")
+  #plot(0:10, type = "n", xaxt="n", yaxt="n", bty="n", xlab = "", ylab = "")
   
   
   # text(5,9,"Description:",font=2,col="blue")
   
-  text(5, 8, "This PDF includes boxplots of individual variables for each group.\n The box represents the interquartile range,
-       the whiskers represent the 1.5 +/- IQR range,\n and the bold horizontal line represents the median.
-       \n\n\n Note: The panels are grouped by factor 1 (e.g. group)\n or factor 2 (e.g. timepoint).",cex=1.5,font=2)
+  #text(5, 8, "This PDF includes boxplots of individual variables for each group.\n The box represents the interquartile range,
+   #    the whiskers represent the 1.5 +/- IQR range,\n and the bold horizontal line represents the median.
+    #   \n\n\n Note: The panels are grouped by factor 1 (e.g. group)\n or factor 2 (e.g. timepoint).",cex=1.5,font=2)
   
     # text(5, 7, "The figures include: ")
   if(is.na(extra_text)==FALSE){
     
-    plot(0:10, type = "n", xaxt="n", yaxt="n", bty="n", xlab = "", ylab = "")
+    #plot(0:10, type = "n", xaxt="n", yaxt="n", bty="n", xlab = "", ylab = "")
     
     
     # text(5,9,"Description:",font=2,col="blue")
     
-    text(5, 8, extra_text,cex=1.5,font=2)
+    #text(5, 8, extra_text,cex=1.5,font=2)
     #text(extra_text)
   }
   
   temp_dm<-cbind(as.character(Class),(t(goodfeats)))
   temp_dm<-as.data.frame(temp_dm)
   colnames(temp_dm)<-c("Class",rownames(goodfeats))
-  class_levels<-levels(as.factor(temp_dm$Class))
+  
   #keeps the class order same as in the input file; avoids arrangement by alphabetical order
   if(alphabetical.order==FALSE){
     temp_dm$Class <- factor(temp_dm$Class, levels=unique(temp_dm$Class))
+    class_levels<-levels(as.factor(temp_dm$Class))
+  }else{
+    
+    class_levels<-levels(as.factor(temp_dm$Class))
   }
   
   if(is.na(class.levels)==FALSE){
@@ -444,7 +448,7 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
         cvec<-as.vector(t(goodfeats[m,c(groupwiseindex[[c]])]))
         
         if(replace.outliers==TRUE){
-        cvec<-replace_outliers(cvec,replace.by.NA)
+           cvec<-replace_outliers(cvec,replace.by.NA)
         }
         cur_d[[c]]<-cvec
         feat_vec<-c(feat_vec,cvec)
@@ -575,14 +579,23 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
             fname1<-paste("temp_dm2",mzname,"A.Rda")
             #save(Class,Factor1,Factor2,temp_dm2,file=fname1)
             temp_dm2<-cbind(temp_dm2,Factor1,Factor2)
+            
+            temp_dm2<-as.data.frame(temp_dm2)
+            
+            if(alphabetical.order==FALSE){
+              temp_dm2$Factor1 <- factor(temp_dm2$Factor1, levels=unique(Factor1))
+              
+              temp_dm2$Factor2 <- factor(temp_dm2$Factor2, levels=unique(Factor2))
+            }
+            
           }
-          
+          #save(temp_dm2,group_by_mat,file="d1.Rda")
           if(is.na(group_by_mat)==FALSE){
           
             colnames(group_by_mat)<-c("SID","GroupBy")
             
-          #  save(temp_dm2,group_by_mat,file="d1.Rda")
-          temp_dm2<-merge(temp_dm2,group_by_mat,by="SID")
+             # save(temp_dm2,group_by_mat,file="d1.Rda")
+             temp_dm2<-merge(temp_dm2,group_by_mat,by="SID")
           }
           
           if(pairedanalysis==TRUE && connectpairedsamples==TRUE){
@@ -600,7 +613,7 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
           par(omd=c(0, 1-w, 0, 1),cex.main=0.7)
           
           #    print(cex)
-        #  save(temp_dm2,cur_d,mzname,boxplot.col.opt,col_vec,ylabel,Class,goodfeats,class_labels_levels,cex.plots,boxplot.type,multiple.groups,add.jitter,add.pvalues,fill.plots,file="temp_dm2.Rda")
+          #save(temp_dm2,cur_d,mzname,boxplot.col.opt,col_vec,ylabel,Class,goodfeats,class_labels_levels,cex.plots,boxplot.type,multiple.groups,add.jitter,add.pvalues,fill.plots,file="temp_dm2.Rda")
           
           if(boxplot.type=="simple"){
             
@@ -628,11 +641,25 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
             }
             }
            
+         #   save(temp_dm2,file=fname1)
             #if(add.pvalues==FALSE && fill.plots==TRUE){
             if(TRUE){
               suppressMessages(library(ggplot2))
+              
+              
               if(multiple.groups==FALSE){
-                p <- ggplot(temp_dm2, aes(y=as.numeric(Feature),x=Class,fill=Class)) + labs(title=mzname)
+                #p <- ggplot(temp_dm2, aes(y=as.numeric(Feature),x=Class,fill=Class)) + labs(title=mzname)
+                
+                if(is.na(group_by_mat)==FALSE){
+                  #if(ggplot.type1==TRUE){
+                  p <- ggplot(temp_dm2, aes(y=as.numeric(Feature),x=Class,fill=Class)) +labs(title=mzname) + facet_wrap(~GroupBy, scale="free_x")  
+                    
+                  #}
+                }else{
+                  p <- ggplot(temp_dm2, aes(y=as.numeric(Feature),x=Class,fill=Class)) + labs(title=mzname)
+                  
+                }
+                
         
                 }else{
                             
@@ -701,8 +728,9 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
                                                         strip.background=element_rect(colour="#f0f0f0",fill="#f0f0f0"),
                                                         strip.text = element_text(face="bold")) + scale_fill_manual(values=(col_vec[1:length(class_labels_levels)])) + scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) + theme(axis.text.x = element_text(angle = 45, hjust = 1))
               }
-              fname_c<-paste("d2",m,".Rda",sep="")
-         #save(p,temp_dm2,file=fname_c)
+         #     fname_c<-paste("d2",m,".Rda",sep="")
+          #  save(p,temp_dm2,file=fname_c)
+              
               if(pairedanalysis==TRUE)
                 {
                 
@@ -726,29 +754,33 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
         
         #         p<-p+geom_line(aes(y  = as.numeric(Feature), x = Factor1)) #, group = SubjectID))
                   
-               if(add.jitter==TRUE){
-                 
-                 #p<-p+geom_jitter(aes(colour=factor(GroupBy)))
-                 #position = position_jitterdodge(),
-                if(is.na(ggplot.type1)==FALSE){
-                 if(ggplot.type1==TRUE){
-                p=p+ geom_point(aes(Factor1, as.numeric(Feature),fill=GroupBy),
-                            shape=21, #factor(gsub(temp_dm2$SID,pattern="[a-z|A-Z|0-9]*_",replacement="")),
-                            position = position_dodge(position_dodge_width))
-                 }else{
-                   p=p+ geom_point(aes(Factor2, as.numeric(Feature),fill=GroupBy),
-                                   shape=21, #factor(gsub(temp_dm2$SID,pattern="[a-z|A-Z|0-9]*_",replacement="")),
-                                   position = position_dodge(position_dodge_width))
-                   
-                 }
-                }else{
-                  p=p+ geom_point(aes(Factor1, as.numeric(Feature),fill=GroupBy),
-                                  shape=21, #factor(gsub(temp_dm2$SID,pattern="[a-z|A-Z|0-9]*_",replacement="")),
-                                  position = position_dodge(position_dodge_width))
-                  
-               }
-            
-              }
+                       if(add.jitter==TRUE){
+                         
+                         #p<-p+geom_jitter(aes(colour=factor(GroupBy)))
+                         #position = position_jitterdodge(),
+                        if(is.na(ggplot.type1)==FALSE){
+                               if(ggplot.type1==TRUE){
+                                          p=p+ geom_point(aes(Factor1, as.numeric(Feature),fill=GroupBy),
+                                          shape=21, #factor(gsub(temp_dm2$SID,pattern="[a-z|A-Z|0-9]*_",replacement="")),
+                                          position = position_dodge(position_dodge_width))
+                               }else{
+                                           p=p+ geom_point(aes(Factor2, as.numeric(Feature),fill=GroupBy),
+                                                 shape=21, #factor(gsub(temp_dm2$SID,pattern="[a-z|A-Z|0-9]*_",replacement="")),
+                                                 position = position_dodge(position_dodge_width))
+                                 
+                               }
+                        }else{
+                          p=p+ geom_point(aes(Factor1, as.numeric(Feature),fill=GroupBy),
+                                          shape=21, #factor(gsub(temp_dm2$SID,pattern="[a-z|A-Z|0-9]*_",replacement="")),
+                                          position = position_dodge(position_dodge_width))
+                          
+                        }
+                         
+                         if(highlight.points==TRUE){
+                           #p=p+geom_point(data=subset(df.2, highlight),aes(x=variable, y=value), color="red", size=5)
+                         }
+                    
+                      }
                 #  p <- ggplot(temp_dm2, aes(y=as.numeric(Feature),x=Factor1,fill=Factor1)) +
               }else
                 {
@@ -784,20 +816,26 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
               
                 }
               
+              
               if(add.pvalues==TRUE){
                 suppressMessages(library(ggpubr))
+                
+               # max_yval1=max_yval1*0.5
                 if(multiple.groups==FALSE){
-                  p<-p + stat_compare_means(data=temp_dm2,aes(group = Class),size = 5*cex.plots,label = "p.format",label.x = 1.5, label.y = max_yval1,size = 5*cex.plots)
+                  p<-p + stat_compare_means(data=temp_dm2,aes(group = Class),size = 5*cex.plots,label = "p.format",
+                                            label.x = 0.5, label.y = max_yval1,size = 5*cex.plots)
                 }else{
                   if(pairedanalysis==FALSE){
                     #label = "p.format",
                     
-                    p<-p + stat_compare_means(data=temp_dm2,aes(group = Factor1),label = "p.format",label.x = 1.5, label.y = max_yval1,size = 5*cex.plots)
+                    p<-p + stat_compare_means(data=temp_dm2,aes(group = Factor1),label = "p.format",size = 5*cex.plots)
                     p<-p + stat_compare_means(data=temp_dm2,aes(group = Factor2),label = "p.format",size = 5*cex.plots)
                   }else{
                     
-                    p<-p + stat_compare_means(data=temp_dm2,aes(group = Factor1),label = "p.format",label.x = 1.5, label.y = max_yval1,size = 5*cex.plots)
-                    p<-p + stat_compare_means(data=temp_dm2,aes(group = Factor2),paired=TRUE,label = "p.format",size = 5*cex.plots)
+                    p<-p + stat_compare_means(data=temp_dm2,aes(group = Factor1),label = "p.format",
+                                              size = 5*cex.plots)
+                    p<-p + stat_compare_means(data=temp_dm2,aes(group = Factor2),paired=TRUE,label = "p.format",
+                                              size = 5*cex.plots)
                   }
                 }
               }
@@ -819,7 +857,7 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
               p=p + theme(legend.title = element_text(size = 13*cex.plots),
                         legend.text = element_text(size=13*cex.plots))
               
-              #save(p,file="p1.Rda")
+        #      save(p,file="p1.Rda")
               
               
             }else{
@@ -878,7 +916,7 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
                   }else{
                     
                     if(pairedanalysis==TRUE && connectpairedsamples==TRUE){
-                      print(head(temp_dm2))
+       #               print(head(temp_dm2))
                       
                       if(add.jitter==TRUE){
                         p<-ggpaired(temp_dm2,x="Factor1",y="Feature",color="Factor2",palette=geom_col_vec,add="jitter",title=mzname,line.color = "gray", line.size = 0.4)
@@ -902,16 +940,16 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
                 if(add.pvalues==TRUE){
                   
                   if(multiple.groups==FALSE){
-                    p<-p + stat_compare_means(size = 5*cex.plots,label = "p.format",label.x = 1.5, label.y = max_yval1,size = 5*cex.plots)
+                    p<-p + stat_compare_means(size = 5*cex.plots,label = "p.format",label.x = 0.5, label.y = max_yval1,size = 5*cex.plots)
                   }else{
                     if(pairedanalysis==FALSE){
                       #label = "p.format",
                       
-                      p<-p + stat_compare_means(aes(group = Factor1),label = "p.format",label.x = 1.5, label.y = max_yval1,size = 5*cex.plots)
+                      p<-p + stat_compare_means(aes(group = Factor1),label = "p.format",label.x = 0.5, label.y = max_yval1,size = 5*cex.plots)
                       p<-p + stat_compare_means(aes(group = Factor2),label = "p.format",size = 5*cex.plots)
                     }else{
                       
-                      p<-p + stat_compare_means(aes(group = Factor1),label = "p.format",label.x = 1.5, label.y = max_yval1,size = 5*cex.plots)
+                      p<-p + stat_compare_means(aes(group = Factor1),label = "p.format",label.x = 0.5, label.y = max_yval1,size = 5*cex.plots)
                       p<-p + stat_compare_means(aes(group = Factor2),paired=TRUE,label = "p.format",size = 5*cex.plots)
                     }
                   }
@@ -943,7 +981,7 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
     },mzvec,timevec,check_names,name,class_labels_levels,sampleclass,col_vec,goodfeats,pairedanalysis,connectpairedsamples,boxplot.type,ggplot.type1,group_by_mat,cex.plots,boxplot.col.opt,add.jitter,add.pvalues,
     fill.plots,multiple.figures.perpanel)
     
-      #save(plot_res,multiple.figures.perpanel,file="boxplot_plot.Rda")
+      #save(plot_res,multiple.figures.perpanel,plot.height,plot.width,file="boxplot_plot.Rda")
       
     if(boxplot.type=="ggplot"){
       
@@ -954,7 +992,7 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
            
           res<-lapply(seq(1,length(plot_res),1),function(i){
             p1=plot_res[[i]]
-            figure<-ggpubr::ggarrange(p1,ncol = 1, nrow = 1,heights=c(6),width=c(10),legend=TRUE,align = c("hv"))
+            figure<-ggpubr::ggarrange(p1,ncol = 1, nrow = 1,heights=c(plot.height),width=c(plot.width),legend=TRUE,align = c("hv"))
                return(figure)
           })
           }else{
@@ -987,39 +1025,27 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
           
       
         
-        #save(res,file="res.Rda")
+     #save(res,plot.width,plot.height,plot_res,file="res.Rda")
         
-      suppressMessages(library(grid))
-        for(i in 1:length(res)){
-       
-          
-            
-          p_fixed <- set_panel_size(res[[i]][[1]],
-                                    width  = unit(plot.width-0.5, "in"),
-                                    height = unit(plot.height-0.5, "in"))
-          
-          
-         grid.newpage()
-          grid.draw(p_fixed)
-          
-         #print(p_fixed) #res[[i]][[1]])
-        }
+    res<-lapply(1:length(res),function(x){res[[x]][[1]]})
+    
+     res<-append(res, cowplot::get_legend(plot_res[[1]]))
+       # res[[length(res)+1]][[1]] <- cowplot::get_legend(plot_res[[i]])
         
-        
-        legend <- cowplot::get_legend(plot_res[[i]])
+        ggpubr::ggexport(res,filename =boxplots_fname,width=unit(plot.width-0.5, "in"),
+        height=unit(plot.height-0.5, "in"))
         
        
-        
-        grid.newpage()
-        grid.draw(legend)
         
       
     }
+      
   }
-  
+ 
   if(newdevice==TRUE){
-    try(dev.off(),silent=TRUE)
+    try(dev.off(boxplots_fname),silent=TRUE)
   }
   
-  par(mfrow=c(1,1))
+  #par(mfrow=c(1,1))
+  options(warn=0)
 }

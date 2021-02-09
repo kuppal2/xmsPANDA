@@ -640,7 +640,7 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
   }
   
   if(newdevice==TRUE){
-    try(dev.off(),silent=TRUE)
+    try(dev.off(boxplots_fname),silent=TRUE)
   }
   
   par(mfrow=c(1,1))

@@ -4,7 +4,7 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
                         all.missing.thresh,group.missing.thresh,input.intensity.scale,
                         log2transform,medcenter,znormtransform,quantile_norm,lowess_norm,madscaling,TIC_norm,rangescaling,mstus,paretoscaling,sva_norm,eigenms_norm,vsn_norm,
                         normalization.method,rsd.filt.list,
-                        pairedanalysis,featselmethod,fdrthresh,fdrmethod,cor.method,networktype,abs.cor.thresh,cor.fdrthresh,kfold,pred.eval.method,feat_weight,globalcor,
+                        pairedanalysis,featselmethod,fdrthresh,fdrmethod,cor.method,networktype,network.label.cex,abs.cor.thresh,cor.fdrthresh,kfold,pred.eval.method,feat_weight,globalcor,
                         target.metab.file,target.mzmatch.diff,target.rtmatch.diff,max.cor.num, samplermindex,pcacenter,pcascale,
                         numtrees,analysismode,net_node_colors,net_legend,svm_kernel,heatmap.col.opt,manhattanplot.col.opt,boxplot.col.opt,barplot.col.opt,sample.col.opt,lineplot.col.opt,scatterplot.col.opt,hca_type,alphacol,pls_vip_thresh,num_nodes,max_varsel,
                         pls_ncomp,pca.stage2.eval,scoreplot_legend,pca.global.eval,rocfeatlist,rocfeatincrement,rocclassifier,foldchangethresh,wgcnarsdthresh,WGCNAmodules,optselect,max_comp_sel,saveRda,legendlocation,degree_rank_method,
@@ -14,12 +14,13 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
                         fcs.min.hits,names_with_mz_time,ylab_text,xlab_text,boxplot.type,
                         degree.centrality.method,log2.transform.constant,balance.classes,
                         balance.classes.sizefactor,balance.classes.method,balance.classes.seed,
-                        cv.perm.count=100,multiple.figures.perpanel=TRUE,...)
+                        cv.perm.count=100,multiple.figures.perpanel=TRUE,labRow.value = TRUE, labCol.value = TRUE,...)
 {
   
   
   
   #############
+  options(warn=-1)
   
   lme.modeltype=modeltype
   remove_firstrun=FALSE #TRUE or FALSE
@@ -28,6 +29,8 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
   pca.CV=TRUE
   max_rf_var=5000
   
+  hca.labRow.value=labRow.value
+  hca.labCol.value=labCol.value
   logistic_reg=FALSE
   poisson_reg=FALSE
   goodfeats_allfields={}
@@ -365,7 +368,7 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
   dir.create(parentoutput_dir1,showWarnings=FALSE)
   
   setwd(parentoutput_dir1)	
-  if(is.na(Xmat)==TRUE){
+  if(is.na(Xmat[1])==TRUE){
     X<-read.table(feature_table_file,sep="\t",header=TRUE)
     
     cnames<-colnames(X)
@@ -539,7 +542,7 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
     #log2.fold.change.thresh_list<-c(0)
     
     print("Performing regression analysis")
-    if(is.na(Ymat)==TRUE){
+    if(is.na(Ymat[1])==TRUE){
       classlabels<-read.table(class_labels_file,sep="\t",header=TRUE)
       Ymat<-classlabels			
     }else{
@@ -616,7 +619,7 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
     
     bad_colnames<-length(which(is.na(match_names)==TRUE))
     
-    ###save(rnames_xmat,rnames_ymat,Xmat,Ymat,file="debugnames.Rda")
+   # save(rnames_xmat,rnames_ymat,Xmat,Ymat,file="debugnames.Rda")
     #   print("Check here2")
     #if(is.na()==TRUE){
     
@@ -1480,6 +1483,8 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
             Xmat<-Xmat_temp[,-c(1:factor_lastcol[length(factor_lastcol)])]
             
             
+            
+            
             #write.table(Xmat_temp,file="organized_featuretableA.txt",sep="\t",row.names=FALSE)
             #write.table(Xmat,file="organized_featuretableB1.txt",sep="\t",row.names=FALSE)
             pairedanalysis=TRUE
@@ -1488,26 +1493,7 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
               
             }
           }
-          
-          if(FALSE){    
-            if(featselmethod=="lmreg" | featselmethod=="logitreg" | featselmethod=="poissonreg"){
-              
-              classlabels<-as.data.frame(classlabels)
-              classlabels_response_mat<-classlabels[,-c(1)]
-              classlabels_response_mat<-as.data.frame(classlabels_response_mat)
-              
-              classlabels_response_mat[,1]<-as.factor(classlabels_response_mat)
-              Ymat<-classlabels
-              
-              #classlabels_orig<-classlabels
-              Ymat<-as.data.frame(Ymat)
-              Xmat<-t(Xmat)
-              Xmat<-cbind(X[,c(1:2)],Xmat)
-              Xmat<-as.data.frame(Xmat)
-              classlabels_xyplots<-classlabels
-              
-            }
-          }
+      
           
           
         }
@@ -1515,8 +1501,10 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
       }
       
       
-      ###save(Xmat,file="Xmat1.Rda")
-      ###save(Ymat,file="Ymat1.Rda")
+      rownames(Xmat)<-as.character(Xmat_temp[,1])
+      
+     # save(Xmat,Xmat_temp,file="Xmat1.Rda")
+      #save(Ymat,file="Ymat1.Rda")
       rnames_xmat<-rownames(Xmat)
       rnames_ymat<-as.character(Ymat[,1])
       
@@ -1558,7 +1546,7 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
       
       #print(match_names) 
       #if(is.na()==TRUE){
-      #  ##save(rnames_xmat,rnames_ymat,Xmat,Ymat,file="debugnames.Rda")
+     #save(rnames_xmat,rnames_ymat,Xmat,Ymat,file="debugnames.Rda")
       
       if(bad_colnames>0){
         print("Sample names do not match between feature table and class labels files.\n Please try replacing any \"-\" with \".\" in sample names.")
@@ -3735,8 +3723,10 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
           }
           
           ###savelist=ls(),file="hca_factor1.Rda")
-          get_hca(feature_table_file=NA,parentoutput_dir=output_dir,class_labels_file=NA,X=X1,Y=Y1,heatmap.col.opt=heatmap.col.opt,cor.method=cor.method,is.data.znorm=FALSE,analysismode="classification",
-                  sample.col.opt=sample.col.opt,plots.width=2000,plots.height=2000,plots.res=300, alphacol=0.3, hca_type=hca_type,newdevice=FALSE,input.type="intensity",mainlab="Factor1",alphabetical.order=alphabetical.order,study.design=analysistype)
+          hca_f1<-get_hca(feature_table_file=NA,parentoutput_dir=output_dir,class_labels_file=NA,X=X1,Y=Y1,heatmap.col.opt=heatmap.col.opt,cor.method=cor.method,is.data.znorm=FALSE,analysismode="classification",
+                  sample.col.opt=sample.col.opt,plots.width=2000,plots.height=2000,plots.res=300, alphacol=0.3,
+                  hca_type=hca_type,newdevice=FALSE,input.type="intensity",mainlab="Factor1",
+                  alphabetical.order=alphabetical.order,study.design=analysistype,labRow.value = labRow.value, labCol.value = labCol.value)
           
           if(output.device.type!="pdf"){
             
@@ -3762,8 +3752,10 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
             png(temp_filename_1,width=plots.width,height=plots.height,res=plots.res,type=plots.type,units="in")
           }
           
-          get_hca(feature_table_file=NA,parentoutput_dir=output_dir,class_labels_file=NA,X=X2,Y=Y2,heatmap.col.opt=heatmap.col.opt,cor.method=cor.method,is.data.znorm=FALSE,analysismode="classification",
-                  sample.col.opt=sample.col.opt,plots.width=2000,plots.height=2000,plots.res=300, alphacol=0.3, hca_type=hca_type,newdevice=FALSE,input.type="intensity",mainlab="Factor2",alphabetical.order=alphabetical.order,study.design=analysistype)
+          hca_f2<-get_hca(feature_table_file=NA,parentoutput_dir=output_dir,class_labels_file=NA,X=X2,Y=Y2,heatmap.col.opt=heatmap.col.opt,cor.method=cor.method,is.data.znorm=FALSE,analysismode="classification",
+                  sample.col.opt=sample.col.opt,plots.width=2000,plots.height=2000,plots.res=300, alphacol=0.3,
+                  hca_type=hca_type,newdevice=FALSE,input.type="intensity",mainlab="Factor2",
+                  alphabetical.order=alphabetical.order,study.design=analysistype,labRow.value = labRow.value, labCol.value = labCol.value)
           
           if(output.device.type!="pdf"){
             
@@ -3798,8 +3790,10 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
             
             png(temp_filename_1,width=plots.width,height=plots.height,res=plots.res,type=plots.type,units="in")
           }
-          get_hca(feature_table_file=NA,parentoutput_dir=output_dir,class_labels_file=NA,X=X3,Y=Y3,heatmap.col.opt=heatmap.col.opt,cor.method=cor.method,is.data.znorm=FALSE,analysismode="classification",
-                  sample.col.opt=sample.col.opt,plots.width=2000,plots.height=2000,plots.res=300, alphacol=0.3, hca_type=hca_type,newdevice=FALSE,input.type="intensity",mainlab="Factor1 x Factor2",alphabetical.order=alphabetical.order,study.design=analysistype)
+          hca_f3<-get_hca(feature_table_file=NA,parentoutput_dir=output_dir,class_labels_file=NA,X=X3,Y=Y3,heatmap.col.opt=heatmap.col.opt,cor.method=cor.method,is.data.znorm=FALSE,analysismode="classification",
+                  sample.col.opt=sample.col.opt,plots.width=2000,plots.height=2000,plots.res=300, alphacol=0.3,
+                  hca_type=hca_type,newdevice=FALSE,input.type="intensity",mainlab="Factor1 x Factor2",
+                  alphabetical.order=alphabetical.order,study.design=analysistype,labRow.value = labRow.value, labCol.value = labCol.value)
           
           if(output.device.type!="pdf"){
             
@@ -5629,8 +5623,10 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
                 png(temp_filename_1,width=plots.width,height=plots.height,res=plots.res,type=plots.type,units="in")
               }
               
-              get_hca(feature_table_file=NA,parentoutput_dir=output_dir,class_labels_file=NA,X=X1,Y=Y1,heatmap.col.opt=heatmap.col.opt,cor.method=cor.method,is.data.znorm=FALSE,analysismode="classification",
-                      sample.col.opt=sample.col.opt,plots.width=2000,plots.height=2000,plots.res=300, alphacol=0.3, hca_type=hca_type,newdevice=FALSE,input.type="intensity",mainlab="Factor1",alphabetical.order=alphabetical.order,study.design=analysistype)
+              hca_f1<-get_hca(feature_table_file=NA,parentoutput_dir=output_dir,class_labels_file=NA,X=X1,Y=Y1,heatmap.col.opt=heatmap.col.opt,cor.method=cor.method,is.data.znorm=FALSE,analysismode="classification",
+                      sample.col.opt=sample.col.opt,plots.width=2000,plots.height=2000,plots.res=300,
+                      alphacol=0.3, hca_type=hca_type,newdevice=FALSE,input.type="intensity",mainlab="Factor1",
+                      alphabetical.order=alphabetical.order,study.design=analysistype,labRow.value = labRow.value, labCol.value = labCol.value)
               
               if(output.device.type!="pdf"){
                 
@@ -5660,8 +5656,10 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
               }
               
               
-              get_hca(feature_table_file=NA,parentoutput_dir=output_dir,class_labels_file=NA,X=X2,Y=Y2,heatmap.col.opt=heatmap.col.opt,cor.method=cor.method,is.data.znorm=FALSE,analysismode="classification",
-                      sample.col.opt=sample.col.opt,plots.width=2000,plots.height=2000,plots.res=300, alphacol=0.3, hca_type=hca_type,newdevice=FALSE,input.type="intensity",mainlab="Factor2",alphabetical.order=alphabetical.order,study.design=analysistype)
+             hca_f2<-get_hca(feature_table_file=NA,parentoutput_dir=output_dir,class_labels_file=NA,X=X2,Y=Y2,heatmap.col.opt=heatmap.col.opt,cor.method=cor.method,is.data.znorm=FALSE,analysismode="classification",
+                      sample.col.opt=sample.col.opt,plots.width=2000,plots.height=2000,plots.res=300, alphacol=0.3,
+                      hca_type=hca_type,newdevice=FALSE,input.type="intensity",mainlab="Factor2",
+                      alphabetical.order=alphabetical.order,study.design=analysistype,labRow.value = labRow.value, labCol.value = labCol.value)
               
               
               if(output.device.type!="pdf"){
@@ -5689,8 +5687,10 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
                 png(temp_filename_1,width=plots.width,height=plots.height,res=plots.res,type=plots.type,units="in")
               }
               
-              get_hca(feature_table_file=NA,parentoutput_dir=output_dir,class_labels_file=NA,X=X3,Y=Y3,heatmap.col.opt=heatmap.col.opt,cor.method=cor.method,is.data.znorm=FALSE,analysismode="classification",
-                      sample.col.opt=sample.col.opt,plots.width=2000,plots.height=2000,plots.res=300, alphacol=0.3, hca_type=hca_type,newdevice=FALSE,input.type="intensity",mainlab="Factor1 x Factor2",alphabetical.order=alphabetical.order,study.design=analysistype)
+              hca_f3<-get_hca(feature_table_file=NA,parentoutput_dir=output_dir,class_labels_file=NA,X=X3,Y=Y3,heatmap.col.opt=heatmap.col.opt,cor.method=cor.method,is.data.znorm=FALSE,analysismode="classification",
+                      sample.col.opt=sample.col.opt,plots.width=2000,plots.height=2000,plots.res=300, alphacol=0.3,
+                      hca_type=hca_type,newdevice=FALSE,input.type="intensity",mainlab="Factor1 x Factor2",
+                      alphabetical.order=alphabetical.order,study.design=analysistype,labRow.value = labRow.value, labCol.value = labCol.value)
               
               
               if(output.device.type!="pdf"){
@@ -6185,8 +6185,10 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
               }
               
               
-              get_hca(feature_table_file=NA,parentoutput_dir=output_dir,class_labels_file=NA,X=X1,Y=Y1,heatmap.col.opt=heatmap.col.opt,cor.method=cor.method,is.data.znorm=FALSE,analysismode="classification",
-                      sample.col.opt=sample.col.opt,plots.width=2000,plots.height=2000,plots.res=300, alphacol=0.3, hca_type=hca_type,newdevice=FALSE,input.type="intensity",mainlab="Factor 1",alphabetical.order=alphabetical.order,study.design="oneway")
+              hca_f1<-get_hca(feature_table_file=NA,parentoutput_dir=output_dir,class_labels_file=NA,X=X1,Y=Y1,heatmap.col.opt=heatmap.col.opt,cor.method=cor.method,is.data.znorm=FALSE,analysismode="classification",
+                      sample.col.opt=sample.col.opt,plots.width=2000,plots.height=2000,plots.res=300, 
+                      alphacol=0.3, hca_type=hca_type,newdevice=FALSE,input.type="intensity",mainlab="Factor 1",
+                      alphabetical.order=alphabetical.order,study.design="oneway",labRow.value = labRow.value, labCol.value = labCol.value)
               
               if(output.device.type!="pdf"){
                 
@@ -6212,8 +6214,10 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
               }
               
               print("Performing HCA using features selected for Factor2")
-              get_hca(feature_table_file=NA,parentoutput_dir=output_dir,class_labels_file=NA,X=X2,Y=Y2,heatmap.col.opt=heatmap.col.opt,cor.method=cor.method,is.data.znorm=FALSE,analysismode="classification",
-                      sample.col.opt=sample.col.opt,plots.width=2000,plots.height=2000,plots.res=300, alphacol=0.3, hca_type=hca_type,newdevice=FALSE,input.type="intensity",mainlab="Factor 2",alphabetical.order=alphabetical.order,study.design="oneway")
+              hca_f2<-get_hca(feature_table_file=NA,parentoutput_dir=output_dir,class_labels_file=NA,X=X2,Y=Y2,heatmap.col.opt=heatmap.col.opt,cor.method=cor.method,is.data.znorm=FALSE,analysismode="classification",
+                      sample.col.opt=sample.col.opt,plots.width=2000,plots.height=2000,plots.res=300, 
+                      alphacol=0.3, hca_type=hca_type,newdevice=FALSE,input.type="intensity",mainlab="Factor 2",
+                      alphabetical.order=alphabetical.order,study.design="oneway",labRow.value = labRow.value, labCol.value = labCol.value)
               
               if(output.device.type!="pdf"){
                 
@@ -6242,8 +6246,10 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
               }
               
               print("Performing HCA using features selected for Factor1x2")
-              get_hca(feature_table_file=NA,parentoutput_dir=output_dir,class_labels_file=NA,X=X3,Y=Y3,heatmap.col.opt=heatmap.col.opt,cor.method=cor.method,is.data.znorm=FALSE,analysismode="classification",
-                      sample.col.opt=sample.col.opt,plots.width=2000,plots.height=2000,plots.res=300, alphacol=0.3, hca_type=hca_type,newdevice=FALSE,input.type="intensity",mainlab="Factor 1 x Factor 2",alphabetical.order=alphabetical.order,study.design="oneway")
+              hca_f3<-get_hca(feature_table_file=NA,parentoutput_dir=output_dir,class_labels_file=NA,X=X3,Y=Y3,heatmap.col.opt=heatmap.col.opt,cor.method=cor.method,is.data.znorm=FALSE,analysismode="classification",
+                      sample.col.opt=sample.col.opt,plots.width=2000,plots.height=2000,plots.res=300,
+                      alphacol=0.3, hca_type=hca_type,newdevice=FALSE,input.type="intensity",mainlab="Factor 1 x Factor 2",
+                      alphabetical.order=alphabetical.order,study.design="oneway",labRow.value = labRow.value, labCol.value = labCol.value)
               
               
               if(output.device.type!="pdf"){
@@ -6349,9 +6355,14 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
             
             
             
-            Targetvar<-classlabels[,1]
+            Targetvar<-factor(classlabels[,1])
             dataA<-cbind(Targetvar,t(data_m_fc))
+            
             dataA<-as.data.frame(dataA)
+            
+            dataA$Targetvar<-factor(Targetvar)
+            
+            
             #df.summary <- dataA %>% group_by(Targetvar) %>%  summarize_all(funs(mean))
             
             # df.summary <- dataA %>% group_by(Targetvar) %>%  summarize_all(funs(mean))
@@ -6370,15 +6381,15 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
             
             group_means<-t(df.summary)
             
-            #  #save(classlabels,Targetvar,dataA,data_m_fc,df.summary,df2,group_means,file="debugfoldchange.Rda")
+        #   save(classlabels,Targetvar,dataA,data_m_fc,df.summary,df2,group_means,file="debugfoldchange.Rda")
             
-            colnames(group_means)<-paste("mean",levels(as.factor(Targetvar)),sep="") #paste("Group",seq(1,length(unique(dataA$Targetvar))),sep="")
+            colnames(group_means)<-paste("mean",levels(as.factor(dataA$Targetvar)),sep="") #paste("Group",seq(1,length(unique(dataA$Targetvar))),sep="")
             
             group_means<-cbind(data_m_fc_withfeats[,c(1:2)],group_means[-c(1:2),])
             
             group_sd<-t(df.summary.sd)
             
-            colnames(group_sd)<-paste("std.dev",levels(as.factor(Targetvar)),sep="") #paste("Group",seq(1,length(unique(dataA$Targetvar))),sep="")
+            colnames(group_sd)<-paste("std.dev",levels(as.factor(dataA$Targetvar)),sep="") #paste("Group",seq(1,length(unique(dataA$Targetvar))),sep="")
             
             group_sd<-cbind(data_m_fc_withfeats[,c(1:2)],group_sd[-c(1),])
             
@@ -6580,6 +6591,12 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
               
             }
             
+            if(x1increment<1){
+              x1increment=0.5
+              
+            }
+            
+            
             if(featselmethod=="lmreg" | featselmethod=="lm1wayanova" | featselmethod=="lm2wayanova" | featselmethod=="lm1wayanovarepeat" | featselmethod=="lm2wayanovarepeat"
                | featselmethod=="limma" | featselmethod=="limma2way" | featselmethod=="logitreg" | featselmethod=="limma2wayrepeat" | featselmethod=="wilcox" | featselmethod=="ttest" |  featselmethod=="poissonreg" | featselmethod=="lmregrepeat")
             {
@@ -6623,7 +6640,7 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
               y2thresh=(-1)*log10(0.05)
               
               
-              ###save(list=c("d4","logp","yvec_val","ythresh","zvec","x1increment","yincrement","maintext1","x2increment","maintext2","ylabel","y2thresh"),file="manhattanplot_objects.Rda")
+           # save(list=c("d4","logp","yvec_val","ythresh","zvec","x1increment","yincrement","maintext1","x2increment","maintext2","ylabel","y2thresh"),file="manhattanplot_objects.Rda")
               
               
               if(output.device.type!="pdf"){
@@ -6963,113 +6980,13 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
               
               best_feats<-goodip
               
-              
+              print("HERE112")
               
             }else{
               
               print("No features meet the fold change criteria.")
               
-              if(input.intensity.scale=="raw" && log2transform==FALSE){
-                
-                
-                
-                max.fold.change.log2<-maxfoldchange
-                data_limma_fdrall_withfeats_2<-cbind(max.fold.change.log2,data_limma_fdrall_withfeats)
-                
-                
-              }else{
-                
-                if(input.intensity.scale=="log2" || log2transform==TRUE){
-                  
-                  max.fold.change.log2<-maxfoldchange
-                  data_limma_fdrall_withfeats_2<-cbind(max.fold.change.log2,data_limma_fdrall_withfeats)
-                }
-                
-              }
-              
-              if(logistic_reg==TRUE){
-                
-                fname4<-paste("logitreg","results_allfeatures.txt",sep="")
-              }else{
-                
-                
-                if(poisson_reg==TRUE){
-                  fname4<-paste("poissonreg","results_allfeatures.txt",sep="")
-                  
-                }else{
-                  fname4<-paste(parentfeatselmethod,"results_allfeatures.txt",sep="")
-                }
-              }
-              
-              fname4<-paste("Tables/",fname4,sep="")
-              
-              
-              allmetabs_res<-data_limma_fdrall_withfeats_2
-              
-              
-              #if(length(check_names)>0){
-              #if(check_names==1){
-              if(FALSE){
-                if(is.na(names_with_mz_time)==FALSE){
-                  
-                  # ##save(names_with_mz_time,allmetabs_res,file="check.Rda")
-                  allmetabs_res_withnames<-merge(names_with_mz_time,allmetabs_res,by=c("mz","time"))
-                  
-                  write.table(allmetabs_res_withnames, file=filename,sep="\t",row.names=FALSE)
-                  
-                  rm(data_allinf_withfeats_withnames)
-                  #}
-                }else{
-                  write.table(data_limma_fdrall_withfeats_2,file=fname4,sep="\t",row.names=FALSE)
-                }
-              }
-              
-              
-              if(analysismode=="classification"){
-                if(is.na(names_with_mz_time)==FALSE){
-                  
-                  group_means1<-merge(group_means,group_sd,by=c("mz","time"))
-                  
-                  allmetabs_res_temp<-merge(group_means1,allmetabs_res,by=c("mz","time"))
-                  
-                  
-                  allmetabs_res_withnames<-merge(names_with_mz_time,allmetabs_res_temp,by=c("mz","time"))
-                  
-                  write.table(allmetabs_res_withnames, file=fname4,sep="\t",row.names=FALSE)
-                  
-                  rm(data_allinf_withfeats_withnames)
-                  #}
-                }else{
-                  
-                  group_means1<-merge(group_means,group_sd,by=c("mz","time"))
-                  
-                  allmetabs_res_temp<-merge(group_means1,allmetabs_res,by=c("mz","time"))
-                  
-                  #allmetabs_res_temp<-merge(group_means,allmetabs_res,by=c("mz","time"))
-                  
-                  write.table(allmetabs_res_temp,file=fname4,sep="\t",row.names=FALSE)
-                }
-                rm(allmetabs_res_temp)
-              }else{
-                if(is.na(names_with_mz_time)==FALSE){
-                  
-                  
-                  
-                  
-                  allmetabs_res_withnames<-merge(names_with_mz_time,allmetabs_res,by=c("mz","time"))
-                  
-                  write.table(allmetabs_res_withnames, file=fname4,sep="\t",row.names=FALSE)
-                  
-                  rm(data_allinf_withfeats_withnames)
-                  #}
-                }else{
-                  
-                  
-                  
-                  write.table(allmetabs_res,file=fname4,sep="\t",row.names=FALSE)
-                }
-                
-              }
+             
               
               
             }
@@ -7106,6 +7023,18 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
           t1<-table(classlabels)
           
           
+          if(is.na(names_with_mz_time)==FALSE){
+            data_m_fc_withfeats_A1<-merge(names_with_mz_time,data_m_fc_withfeats,by=c("mz","time"))
+            
+            rownames(data_m_fc_withfeats)<-as.character(data_m_fc_withfeats_A1$Name)
+            
+            
+          }else{
+            
+            rownames(data_m_fc_withfeats)<-as.character(paste(data_m_fc_withfeats[,1],data_m_fc_withfeats[,2],sep="_"))
+          }
+          
+          
           #patientcolors <- unlist(lapply(sampleclass, color.map))
           if(length(goodip)>2){
             
@@ -7114,7 +7043,7 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
             goodfeats<-unique(goodfeats)
             
             
-            rnames_goodfeats<-as.character(paste(goodfeats[,1],goodfeats[,2],sep="_"))
+            rnames_goodfeats<-rownames(goodfeats) #as.character(paste(goodfeats[,1],goodfeats[,2],sep="_"))
             
             if(length(which(duplicated(rnames_goodfeats)==TRUE))>0){
               
@@ -7124,427 +7053,92 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
             }
             
             
-            rownames(goodfeats)<-as.character(paste(goodfeats[,1],goodfeats[,2],sep="_"))
+            #rownames(goodfeats)<-as.character(paste(goodfeats[,1],goodfeats[,2],sep="_"))
             
             
             
             data_m<-as.matrix(goodfeats[,-c(1:2)])
             
             
-            rownames(data_m)<-as.character(paste(goodfeats[,1],goodfeats[,2],sep="_"))
+            rownames(data_m)<-rownames(goodfeats) #as.character(paste(goodfeats[,1],goodfeats[,2],sep="_"))
+            
+          
+            
             
             data_m<-unique(data_m)			
             
             X<-t(data_m)
             
-            
-            if(heatmap.col.opt=="RdBu"){
-              
-              heatmap.col.opt="redblue"
-            }
-            
-            heatmap_cols <- colorRampPalette(brewer.pal(10, "RdBu"))(256)
-            heatmap_cols<-rev(heatmap_cols)
-            
-            if(heatmap.col.opt=="topo"){
-              heatmap_cols<-topo.colors(256)
-              heatmap_cols<-rev(heatmap_cols)
-            }else{
-              if(heatmap.col.opt=="heat"){
-                heatmap_cols<-heat.colors(256)
-                heatmap_cols<-rev(heatmap_cols)
-              }else{
-                
-                if(heatmap.col.opt=="yellowblue"){
-                  
-                  heatmap_cols<-colorRampPalette(c("yellow","blue"))(256) #colorRampPalette(c("yellow","white","blue"))(256)
-                  #heatmap_cols<-blue2yellow(256) #colorRampPalette(c("yellow","blue"))(256)
-                  heatmap_cols<-rev(heatmap_cols)
-                }else{
-                  
-                  if(heatmap.col.opt=="redblue"){
-                    
-                    heatmap_cols <- colorRampPalette(brewer.pal(10, "RdBu"))(256)
-                    heatmap_cols<-rev(heatmap_cols)
-                  }else{
-                    
-                    #my_palette <- colorRampPalette(c("red", "yellow", "green"))(n = 299)
-                    if(heatmap.col.opt=="redyellowgreen"){
-                      
-                      heatmap_cols <- colorRampPalette(c("red", "yellow", "green"))(n = 299)
-                      heatmap_cols<-rev(heatmap_cols)
-                    }else{
-                      if(heatmap.col.opt=="yellowwhiteblue"){
-                        
-                        heatmap_cols<-colorRampPalette(c("yellow2","white","blue"))(256) #colorRampPalette(c("yellow","white","blue"))(256)
-                        heatmap_cols<-rev(heatmap_cols)
-                      }else{
-                        
-                        if(heatmap.col.opt=="redwhiteblue"){
-                          
-                          heatmap_cols<-colorRampPalette(c("red","white","blue"))(256) #colorRampPalette(c("yellow","white","blue"))(256)
-                          heatmap_cols<-rev(heatmap_cols)
-                        }else{
-                          
-                          
-                          
-                          heatmap_cols <- colorRampPalette(brewer.pal(10, heatmap.col.opt))(256)
-                          heatmap_cols<-rev(heatmap_cols)
-                          
-                        }
-                        
-                      }
-                      
-                    }
-                    
-                  }
-                  
-                }
-              }
-              
-            }
-            
-            
-            #   ##save(classlabels,file="hcaclasslabels.Rda")
-            distr<-as.dist(1-WGCNA::cor(t(data_m),method=cor.method,use="pairwise.complete.obs"))
-            
-            distc<-as.dist(1-WGCNA::cor(data_m,method=cor.method,use="pairwise.complete.obs"))
-            
-            hr <- try(hclust(distr),silent=TRUE) #metabolites
-            hc <- try(hclust(distc),silent=TRUE) #samples
-            
-            if(is(hr,"try-error") || is(hc,"try-error")){
-              
-              print("Hierarchical clustering can not be performed. ")
-            }
-            else{
+       
+              {
               
               heatmap_file<-paste("heatmap_",featselmethod,".tiff",sep="")
               
               heatmap_mainlabel="" #2-way HCA using all significant features"
               
-              if(output.device.type!="pdf"){
-                
-                temp_filename_1<-"Figures/HCA_All_selectedfeats.png"
-                png(temp_filename_1,width=plots.width,height=plots.height,res=plots.res,type=plots.type,units="in")
-              }
-              
-              if(FALSE)
+            if(FALSE)
               {
-                print("this step")
-                ##save(hc,file="hc.Rda")
-                ##save(hr,file="hr.Rda")
-                ##save(distc,file="distc.Rda")
-                ##save(distr,file="distr.Rda")
-                ##save(data_m,file="data_m.Rda")
-                ##save(classlabels,file="classlabels.Rda")
+               # print("this step")
+              #  save(hc,file="hc.Rda")
+               # save(hr,file="hr.Rda")
+                #save(distc,file="distc.Rda")
+                #save(distr,file="distr.Rda")
+              #  save(data_m,heatmap.col.opt,hca_type,classlabels,classlabels_orig,outloc,goodfeats,data_m_fc_withfeats,goodip,names_with_mz_time,plots.height,plots.width,plots.res,file="hcadata_m.Rda")
+                #save(classlabels,file="classlabels.Rda")
               }
               
+             
+             # pdf("Testhca.pdf")
               
-              mycl_samples <- cutree(hc, h=max(hc$height)/2)
-              mycl_metabs <- cutree(hr, h=max(hr$height)/2)
+              #try(
+               # 
+              #dev.off()
               
-              
-              s1.samp<- silhouette(mycl_samples,distc)
-              
-              
-              s2.metab<- silhouette(mycl_metabs,distr)
-              
-              
-              if(is.na(s1.samp)==FALSE){
-                s1.samp=round(mean(s1.samp[,3],na.rm=TRUE),2)
-              }
-              if(is.na(s2.metab)==FALSE){
-                s2.metab=try(round(mean(s2.metab[,3],na.rm=TRUE),2),silent=TRUE)
-              }
-              
-              
-              
-              
-              
-              classgroup_levels<-levels(as.factor(classlabels[,1]))
-              
-              classgroup<-as.data.frame(classlabels)
-              colnames(classgroup)<-"factor_levels"
-              
-              
-              class_df <- data.frame(factor_levels = classgroup_levels,
-                                     Class = seq(1,length(classgroup_levels)),
-                                     stringsAsFactors = FALSE)
-              
-              
-              dt3 <- merge(classgroup, class_df, by = "factor_levels", all.x = TRUE)
-              
-              
-              ari_val<-round(adjustedRandIndex(x=classgroup[,1], y=mycl_samples),2)
-              
-              
-              mainlab1<-"" #paste("HCA using ",mainlab," selected features",sep="")
-              
-              mainlab1<-paste("Average Silhouette width samples: ",s1.samp,"\n ","Average Silhouette width features: ", s2.metab," \n ", "Adjusted Rand index (comparison with true class labels): ",ari_val,sep="")
-              
-              heatmap_mainlabel<-mainlab1
-              
-              
-              
-              if(znormtransform==FALSE){
+              #fixhere
+              if(output.device.type!="pdf"){
                 
-                if(hca_type=="two-way"){
-                  
-                  w <- 0.1
-                  par(omd=c(0, 1-w, 0, 1),cex.main=0.7)
-                  
-                  
-                  h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=as.dendrogram(hc),  col=heatmap_cols, scale="row",key=TRUE, symkey=FALSE, density.info="none", trace="none", cexRow=1, cexCol=1,xlab="",ylab="", main=heatmap_mainlabel, ColSideColors=patientcolors,labRow = FALSE, labCol = FALSE)
-                  
-                  (le1<-(legend(par('usr')[2], par('usr')[4], bty='n', xpd=NA,class_labels_levels, col = col_vec,pch = rep(19,length(col_vec)), pt.cex = 0.6, title = "Class",cex=0.8)))
-                  
-                  
-                }else{
-                  
-                  w<-0.1
-                  par(omd=c(0, 1-w, 0, 1),cex.main=0.7)
-                  
-                  h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=NULL,  col=heatmap_cols, scale="row",key=TRUE, symkey=FALSE, density.info="none", trace="none", cexRow=1, cexCol=1,xlab="",ylab="", main=heatmap_mainlabel, ColSideColors=patientcolors,labRow = FALSE, labCol = FALSE)
-                  
-                  (le1<-(legend(par('usr')[2], par('usr')[4], bty='n', xpd=NA,class_labels_levels, col = col_vec,pch = rep(19,length(col_vec)), pt.cex = 0.6, title = "Class",cex=0.8)))
-                }
+              #  print(getwd())
+                
+               # save(data_m,heatmap.col.opt,hca_type,classlabels,classlabels_orig,outloc,output_dir,goodfeats,data_m_fc_withfeats,goodip,names_with_mz_time,
+                #     plots.height,plots.width,plots.res,alphabetical.order,analysistype,file="hcadata_mD.Rda")
+                
+              
+                temp_filename_1<-"Figures/HCA_All_selectedfeats.png"
+                png(temp_filename_1,width=plots.width,height=plots.height,res=plots.res,type="cairo",units="in")
+                
+              #  hca_res<-get_hca(parentoutput_dir=getwd(),X=goodfeats,Y=classlabels_orig,heatmap.col.opt=heatmap.col.opt,cor.method="spearman",is.data.znorm=FALSE,analysismode="classification",
+               #         sample.col.opt="rainbow",plots.width=2000,plots.height=2000,plots.res=300, alphacol=0.3, hca_type=hca_type,newdevice=FALSE) #,silent=TRUE)
+                
+                hca_res<-get_hca(feature_table_file=NA,parentoutput_dir=output_dir,class_labels_file=NA,X=goodfeats,Y=classlabels_orig,heatmap.col.opt=heatmap.col.opt,cor.method=cor.method,is.data.znorm=FALSE,analysismode="classification",
+                                 sample.col.opt=sample.col.opt,plots.width=2000,plots.height=2000,plots.res=300, alphacol=0.3, hca_type=hca_type,newdevice=FALSE,
+                                 input.type="intensity",mainlab="Factor1",alphabetical.order=alphabetical.order,study.design=analysistype,labRow.value = labRow.value, labCol.value = labCol.value)
+                
+                dev.off()
+                
               }else{
-                if(hca_type=="two-way"){
+                
+                hca_res<-get_hca(feature_table_file=NA,parentoutput_dir=output_dir,class_labels_file=NA,X=goodfeats,Y=classlabels_orig,heatmap.col.opt=heatmap.col.opt,cor.method=cor.method,is.data.znorm=FALSE,analysismode="classification",
+                                 sample.col.opt=sample.col.opt,plots.width=2000,plots.height=2000,plots.res=300, alphacol=0.3, hca_type=hca_type,newdevice=FALSE,
+                                 input.type="intensity",mainlab="Factor1",alphabetical.order=alphabetical.order,study.design=analysistype,labRow.value = labRow.value, labCol.value = labCol.value)
+                
                   
-                  w <- 0.1
-                  
-                  par(omd=c(0, 1-w, 0, 1),cex.main=0.7)
-                  h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=as.dendrogram(hc),  col=heatmap_cols, scale="none",key=TRUE, symkey=FALSE, density.info="none", trace="none", cexRow=1, cexCol=1,xlab="",ylab="", main=heatmap_mainlabel, ColSideColors=patientcolors,labRow = FALSE, labCol = FALSE)
-                  
-                  (le1<-(legend(par('usr')[2], par('usr')[4], bty='n', xpd=NA,class_labels_levels, col = col_vec,pch = rep(19,length(col_vec)), pt.cex = 0.6, title = "Class",cex=0.8)))
-                }else{
-                  
-                  w <- 0.1
-                  par(omd=c(0, 1-w, 0, 1),cex.main=0.7)
-                  h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=NULL,  col=heatmap_cols, scale="none",key=TRUE, symkey=FALSE, density.info="none", trace="none", cexRow=1, cexCol=1,xlab="",ylab="", main=heatmap_mainlabel, ColSideColors=patientcolors,labRow = FALSE, labCol = FALSE)
-                  
-                  (le1<-(legend(par('usr')[2], par('usr')[4], bty='n', xpd=NA,class_labels_levels, col = col_vec,pch = rep(19,length(col_vec)), pt.cex = 0.6, title = "Class",cex=0.8)))
-                }
-              }
-              
-              if(output.device.type!="pdf"){
-                
-                try(dev.off(),silent=TRUE)
-              }
-              
-              
-              ord_data<-cbind(mycl_metabs[rev(h73$rowInd)],goodfeats[rev(h73$rowInd),c(1:2)],data_m[rev(h73$rowInd),h73$colInd])
-              
-              cnames1<-colnames(ord_data)
-              cnames1[1]<-"mz_cluster_label"
-              colnames(ord_data)<-cnames1
-              fname1<-paste("Tables/Clustering_based_sorted_intensity_data.txt",sep="")
-              write.table(ord_data,file=fname1,sep="\t",row.names=FALSE)
-              
-              fname2<-paste("Tables/Sample_clusterlabels.txt",sep="")
-              
-              sample_clust_num<-mycl_samples[h73$colInd]
-              classlabels_temp<-as.data.frame(classlabels)
-              temp1<-classlabels_temp[h73$colInd,1]
-              
-              
-              #		print("class labels")
-              #		print(classlabels)
-              temp2<-classlabels
-              
-              #print(head(temp2))
-              #temp1<-as.data.frame(temp1)
-              
-              #print(dim(temp1))
-              temp2<-as.data.frame(temp2)
-              
-              match_ind<-match(temp1,temp2[,1])
-              
-              temp3<-temp2[match_ind,]
-              
-              #print(head(temp3))
-              temp4<-cbind(temp1,temp3,sample_clust_num)
-              
-              #print(head(temp1))
-              
-              
-              rnames1<-rownames(temp4)
-              temp4<-cbind(rnames1,temp4)
-              temp4<-as.data.frame(temp4)
-              #temp4<-temp4[,-c(1)]
-              
-              
-              if(output.device.type!="pdf"){
-                
-                temp_filename_1<-"Figures/barplot_dependent_variable_ordered_by_HCA.png"
-                
-                png(temp_filename_1,width=plots.width,height=plots.height,res=plots.res,type=plots.type,units="in")
-              }
-              
-              
-              
-              if(analysismode=="regression"){
-                
-                
-                names(temp3)<-as.character(temp4[,1])
-                
-                #tiff("Barplot_sample_cluster_ymat.tiff", width=plots.width,height=plots.height,res=plots.res, compression="lzw")
-                barplot(temp3,col="brown",ylab="Y",cex.axis=0.5,cex.names=0.5,main="Dependent variable levels in samples; \n ordered based on hierarchical clustering")
-                #dev.off()
-                
-                
+                 # get_hca(parentoutput_dir=getwd(),X=goodfeats,Y=classlabels_orig,heatmap.col.opt=heatmap.col.opt,cor.method="spearman",is.data.znorm=FALSE,analysismode="classification",
+                       # sample.col.opt="rainbow",plots.width=2000,plots.height=2000,plots.res=300, alphacol=0.3, hca_type=hca_type,newdevice=FALSE) #,silent=TRUE)
                 
               }
               
+             
               
-              if(output.device.type!="pdf"){
-                
-                try(dev.off(),silent=TRUE)
-              }
+         
               
-              #temp4<-temp4[,-c(2)]
-              #colnames(temp4)<-c("SampleID","Class","HCA Cluster #")
-              write.table(temp4,file=fname2,sep="\t",row.names=FALSE)
-              
-              
-              
-              fname3<-paste("Tables/Metabolite_clusterlabels.txt",sep="")
-              
-              mycl_metabs_ord<-mycl_metabs[rev(h73$rowInd)]
-              mz_rt_info<-rownames(mycl_metabs_ord)
-              mycl_metabs_ord<-cbind(mz_rt_info,mycl_metabs_ord)
-              write.table(mycl_metabs_ord,file=fname3,sep="\t",row.names=TRUE)
-              
+             
             }
             
             
             #print("no  problem here")
             
           }
-          else{
-            if(length(goodip)>1){
-              print("Number of FDR significant features is too small to perform PCA and hierarchical clustering using correlation as similarity measure. Using distance measure for hierarchical clustering.")
-              
-              goodfeats<-as.data.frame(data_m_fc_withfeats[sel.diffdrthresh==TRUE,])
-              
-              
-              #rownames(goodfeats)<-as.character(goodfeats[,1])
-              rownames(goodfeats)<-as.character(paste(goodfeats[,1],goodfeats[,2],sep="_"))
-              
-              #assign colors by sample class
-              
-              
-              data_m<-as.matrix(goodfeats[,-c(1:2)])
-              rownames(data_m)<-as.character(paste(goodfeats[,1],goodfeats[,2],sep="_"))
-              
-              
-              if(heatmap.col.opt=="RdBu"){
-                
-                heatmap.col.opt="redblue"
-              }
-              
-              heatmap_cols <- colorRampPalette(brewer.pal(10, "RdBu"))(256)
-              heatmap_cols<-rev(heatmap_cols)
-              
-              if(heatmap.col.opt=="topo"){
-                heatmap_cols<-topo.colors(256)
-                heatmap_cols<-rev(heatmap_cols)
-              }else{
-                if(heatmap.col.opt=="heat"){
-                  heatmap_cols<-heat.colors(256)
-                  heatmap_cols<-rev(heatmap_cols)
-                }else{
-                  
-                  if(heatmap.col.opt=="yellowblue"){
-                    
-                    heatmap_cols<-colorRampPalette(c("yellow","blue"))(256) #colorRampPalette(c("yellow","white","blue"))(256)
-                    #heatmap_cols<-blue2yellow(256) #colorRampPalette(c("yellow","blue"))(256)
-                    heatmap_cols<-rev(heatmap_cols)
-                  }else{
-                    
-                    if(heatmap.col.opt=="redblue"){
-                      
-                      heatmap_cols <- colorRampPalette(brewer.pal(10, "RdBu"))(256)
-                      heatmap_cols<-rev(heatmap_cols)
-                    }else{
-                      
-                      #my_palette <- colorRampPalette(c("red", "yellow", "green"))(n = 299)
-                      if(heatmap.col.opt=="redyellowgreen"){
-                        
-                        heatmap_cols <- colorRampPalette(c("red", "yellow", "green"))(n = 299)
-                        heatmap_cols<-rev(heatmap_cols)
-                      }else{
-                        if(heatmap.col.opt=="yellowwhiteblue"){
-                          
-                          heatmap_cols<-colorRampPalette(c("yellow2","white","blue"))(256) #colorRampPalette(c("yellow","white","blue"))(256)
-                          heatmap_cols<-rev(heatmap_cols)
-                        }else{
-                          
-                          if(heatmap.col.opt=="redwhiteblue"){
-                            
-                            heatmap_cols<-colorRampPalette(c("red","white","blue"))(256) #colorRampPalette(c("yellow","white","blue"))(256)
-                            heatmap_cols<-rev(heatmap_cols)
-                          }else{
-                            
-                            
-                            
-                            heatmap_cols <- colorRampPalette(brewer.pal(10, heatmap.col.opt)) #(256)
-                            heatmap_cols<-rev(heatmap_cols)
-                            
-                          }
-                          
-                        }
-                        
-                      }
-                      
-                    }
-                    
-                  }
-                }
-                
-              }
-              
-              
-              heatmap_file<-paste("heatmap_",featselmethod,".tiff",sep="")
-              hr=TRUE
-              hc=TRUE
-              heatmap_mainlabel="" #"2-way HCA using all significant features"
-              
-              
-              
-              if(output.device.type!="pdf"){
-                
-                temp_filename_1<-"Figures/HCA_all_selectedfeats.png"
-                
-                png(temp_filename_1,width=plots.width,height=plots.height,res=plots.res,type=plots.type,units="in")
-              }
-              
-              suppressMessages(library(gplots))
-              
-              
-              
-              if(znormtransform==FALSE){
-                
-                h73<-heatmap.2(as.matrix(data_m), col=heatmap_cols, scale="row",key=TRUE, symkey=FALSE, density.info="none", trace="none", cexRow=1, cexCol=1,xlab="",ylab="", main="", ColSideColors=patientcolors,labRow = FALSE, labCol = FALSE)
-              }else{
-                h73<-heatmap.2(as.matrix(data_m), col=heatmap_cols, scale="none",key=TRUE, symkey=FALSE, density.info="none", trace="none", cexRow=1, cexCol=1,xlab="",ylab="", main="", ColSideColors=patientcolors,labRow = FALSE, labCol = FALSE)
-              }
-              #dev.off()
-              
-              
-              if(output.device.type!="pdf"){
-                
-                try(dev.off(),silent=TRUE)
-              }
-              
-              
-              
-              
-            }
-            
-            
-          }
+         
           
           
         }
@@ -7619,6 +7213,9 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
             
             d4<-as.data.frame(data_limma_fdrall_withfeats)
             # d4<-as.data.frame(d1)
+            
+            
+           # save(d4,file="mtype1.rda")
             x1increment=round_any(max(d4$mz)/10,10,f=floor)
             x2increment=round_any(max(d4$time)/10,10,f=floor)
             
@@ -7668,9 +7265,9 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
                 png(temp_filename_1,width=plots.width,height=plots.height,res=plots.res,type=plots.type,units="in")
               }
               
-              
-              
-              try(get_manhattanplots(xvec=d4$mz,yvec=logp,ythresh=ythresh,up_or_down=zvec,xlab="mass-to-charge (m/z)",ylab="-logP",xincrement=x1increment,yincrement=1,maintext=maintext1,col_seq=c("black"),y2thresh=1.30103,colorvec=manhattanplot.col.opt),silent=TRUE)
+             
+              try(get_manhattanplots(xvec=d4$mz,yvec=logp,ythresh=ythresh,up_or_down=zvec,xlab="mass-to-charge (m/z)",ylab="-logP",xincrement=x1increment,yincrement=1,
+                                     maintext=maintext1,col_seq=c("black"),y2thresh=1.30103,colorvec=manhattanplot.col.opt),silent=TRUE)
               
               
               
@@ -7689,7 +7286,8 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
               
               
               
-              try(get_manhattanplots(xvec=d4$time,yvec=logp,ythresh=ythresh,up_or_down=zvec,xlab="Retention time",ylab="-logP",xincrement=x2increment,yincrement=1,maintext=maintext2,col_seq=c("black"),y2thresh=1.30103,colorvec=manhattanplot.col.opt),silent=TRUE)
+              try(get_manhattanplots(xvec=d4$time,yvec=logp,ythresh=ythresh,up_or_down=zvec,xlab="Retention time",ylab="-logP",xincrement=x2increment,yincrement=1,
+                                     maintext=maintext2,col_seq=c("black"),y2thresh=1.30103,colorvec=manhattanplot.col.opt),silent=TRUE)
               
               
               if(output.device.type!="pdf"){
@@ -7883,7 +7481,8 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
           if(is.na(names_with_mz_time)==FALSE){
             goodfeats_with_names<-merge(names_with_mz_time,goodfeats,by=c("mz","time"))
             goodfeats_with_names<-goodfeats_with_names[match(goodfeats$mz,goodfeats_with_names$mz),]
-            #save(names_with_mz_time,goodfeats,goodfeats_with_names,file="goodfeats_with_names.Rda")
+            
+            save(names_with_mz_time,goodfeats,goodfeats_with_names,file="goodfeats_with_names.Rda")
             
             goodfeats_name<-goodfeats_with_names$Name
             #}
@@ -8017,9 +7616,11 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
               
               
               if(znormtransform==FALSE){
-                h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=as.dendrogram(hc),  col=heatmap_cols, scale="row",key=TRUE, symkey=FALSE, density.info="none", trace="none", cexRow=1, cexCol=1,xlab="",ylab="", main="Using all selected features",labRow = FALSE, labCol = FALSE)
+                h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=as.dendrogram(hc),  col=heatmap_cols, scale="row",key=TRUE, symkey=FALSE, 
+                               density.info="none", trace="none", cexRow=1, cexCol=1,xlab="",ylab="", main="Using all selected features",labRow = hca.labRow.value, labCol = hca.labCol.value)
               }else{
-                h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=as.dendrogram(hc),  col=heatmap_cols, scale="none",key=TRUE, symkey=FALSE, density.info="none", trace="none", cexRow=1, cexCol=1,xlab="",ylab="", main="Using all selected features",labRow = FALSE, labCol = FALSE)
+                h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=as.dendrogram(hc),  col=heatmap_cols, scale="none",key=TRUE, 
+                               symkey=FALSE, density.info="none", trace="none", cexRow=1, cexCol=1,xlab="",ylab="", main="Using all selected features",labRow = hca.labRow.value, labCol = hca.labCol.value)
               }
               
               
@@ -8254,16 +7855,16 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
             
             
             
-            max.fold.change.log2<-maxfoldchange
-            data_limma_fdrall_withfeats_2<-cbind(max.fold.change.log2,degree_rank,diffexp_rank,data_limma_fdrall_withfeats)
+            fold.change.log2<-maxfoldchange
+            data_limma_fdrall_withfeats_2<-cbind(fold.change.log2,degree_rank,diffexp_rank,data_limma_fdrall_withfeats)
             
             
           }else{
             
             if(input.intensity.scale=="log2" || log2transform==TRUE){
               
-              max.fold.change.log2<-maxfoldchange
-              data_limma_fdrall_withfeats_2<-cbind(max.fold.change.log2,degree_rank,diffexp_rank,data_limma_fdrall_withfeats)
+              fold.change.log2<-maxfoldchange
+              data_limma_fdrall_withfeats_2<-cbind(fold.change.log2,degree_rank,diffexp_rank,data_limma_fdrall_withfeats)
             }
             
             
@@ -8291,6 +7892,7 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
           
           allmetabs_res<-data_limma_fdrall_withfeats_2
           
+          if(FALSE){
           if(analysismode=="classification"){
             allmetabs_res_temp<-merge(group_means,allmetabs_res,by=c("mz","time"))
             
@@ -8324,6 +7926,130 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
             
             
           }
+          
+          }
+          
+          
+          if(input.intensity.scale=="raw" && log2transform==FALSE){
+            
+            
+            
+            fold.change.log2<-maxfoldchange
+            data_limma_fdrall_withfeats_2<-cbind(fold.change.log2,data_limma_fdrall_withfeats)
+            
+            
+          }else{
+            
+            if(input.intensity.scale=="log2" || log2transform==TRUE){
+              
+              fold.change.log2<-maxfoldchange
+              data_limma_fdrall_withfeats_2<-cbind(fold.change.log2,data_limma_fdrall_withfeats)
+            }
+            
+          }
+          
+          if(logistic_reg==TRUE){
+            
+            fname4<-paste("logitreg","results_allfeatures.txt",sep="")
+          }else{
+            
+            
+            if(poisson_reg==TRUE){
+              fname4<-paste("poissonreg","results_allfeatures.txt",sep="")
+              
+            }else{
+              fname4<-paste(parentfeatselmethod,"results_allfeatures.txt",sep="")
+            }
+          }
+          
+          fname4<-paste("Tables/",fname4,sep="")
+          
+          #print("HERE312")
+          
+          allmetabs_res<-data_limma_fdrall_withfeats_2
+          
+          
+          #if(length(check_names)>0){
+          #if(check_names==1){
+          if(FALSE){
+            if(is.na(names_with_mz_time)==FALSE){
+              
+              # ##save(names_with_mz_time,allmetabs_res,file="check.Rda")
+              allmetabs_res_withnames<-merge(names_with_mz_time,allmetabs_res,by=c("mz","time"))
+              
+              write.table(allmetabs_res_withnames, file=filename,sep="\t",row.names=FALSE)
+              
+              rm(data_allinf_withfeats_withnames)
+              #}
+            }else{
+              write.table(data_limma_fdrall_withfeats_2,file=fname4,sep="\t",row.names=FALSE)
+            }
+          }
+          
+          
+          #print("HERE323")
+          #save(group_means,group_sd,allmetabs_res,names_with_mz_time,data_limma_fdrall_withfeats_2,file="pandat1.Rda")
+          
+          if(analysismode=="classification"){
+            if(is.na(names_with_mz_time)==FALSE){
+              
+              
+              #print("DOING THIS ONE")
+              
+              group_means1<-merge(group_means,group_sd,by=c("mz","time"))
+              
+              allmetabs_res_temp<-merge(group_means1,allmetabs_res,by=c("mz","time"))
+              
+              
+              allmetabs_res_withnames<-merge(names_with_mz_time,allmetabs_res_temp,by=c("mz","time"))
+              
+              allmetabs_res_withnames<-cbind(degree_rank,diffexp_rank,allmetabs_res_withnames)
+              
+              write.table(allmetabs_res_withnames, file=fname4,sep="\t",row.names=FALSE)
+              
+              rm(data_allinf_withfeats_withnames)
+              #}
+            }else{
+              
+              group_means1<-merge(group_means,group_sd,by=c("mz","time"))
+              
+              allmetabs_res_temp<-merge(group_means1,allmetabs_res,by=c("mz","time"))
+              
+              #allmetabs_res_temp<-merge(group_means,allmetabs_res,by=c("mz","time"))
+              
+              allmetabs_res_temp<-cbind(degree_rank,diffexp_rank,allmetabs_res_temp)
+              
+              write.table(allmetabs_res_temp,file=fname4,sep="\t",row.names=FALSE)
+            }
+            rm(allmetabs_res_temp)
+          }else{
+            if(is.na(names_with_mz_time)==FALSE){
+              
+              group_means1<-merge(group_means,group_sd,by=c("mz","time"))
+              
+              allmetabs_res_temp<-merge(group_means1,allmetabs_res,by=c("mz","time"))
+              
+              allmetabs_res_withnames<-merge(names_with_mz_time,allmetabs_res_temp,by=c("mz","time"))
+              
+              allmetabs_res_withnames<-cbind(degree_rank,diffexp_rank,allmetabs_res_withnames)
+              
+              
+              write.table(allmetabs_res_withnames, file=fname4,sep="\t",row.names=FALSE)
+              
+              rm(data_allinf_withfeats_withnames)
+              
+            }else{
+              
+              allmetabs_res_temp<-cbind(degree_rank,diffexp_rank,allmetabs_res)
+              write.table(allmetabs_res_temp,file=fname4,sep="\t",row.names=FALSE)
+            }
+            
+          }
+          
+       #   print("HERE355")
+        #  print(length(goodip))
+        #  print(data_limma_fdrall_withfeats_2[1:3,])
+          
           if(length(goodip)>=1){
             
             data_limma_fdrall_withfeats_2<-data_limma_fdrall_withfeats_2[goodip,]
@@ -8348,7 +8074,7 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
             #degree_rank<-rep(1,nrow(data_limma_fdrall_withfeats_2))
             
             #data_limma_fdrall_withfeats_2$degree_rank<-degree_rank
-            data_limma_fdrall_withfeats_2$diffexp_rank<-diffexp_rank
+         #   data_limma_fdrall_withfeats_2$diffexp_rank<-diffexp_rank
             if(logistic_reg==TRUE){
               
               fname4<-paste("logitreg","results_selectedfeatures.txt",sep="")
@@ -8379,7 +8105,7 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
               numselect<-length(rocfeatlist)
             }
             
-            
+           # print("This step")
             #data_limma_fdrall_withfeats_2<-cbind(maxfoldchange,data_limma_fdrall_withfeats)
             goodfeats<-as.data.frame(data_limma_fdrall_withfeats_2)
             
@@ -8410,7 +8136,7 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
               if(featselmethod=="pamr"){
                 
                 diffexp_rank<-rank_vec
-                data_limma_fdrall_withfeats<-cbind(rank_vec,data_limma_fdrall_withfeats)
+              #  data_limma_fdrall_withfeats<-cbind(rank_vec,data_limma_fdrall_withfeats)
                 
                 
               }else{
@@ -8427,13 +8153,8 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
             
           }
           
-          
-          
-          
-          # degree_rank<-rep(1,dim(data_limma_fdrall_withfeats_2)[1])
-          
-          
-          
+        
+        #  save(goodfeats,diffexp_rank,data_limma_fdrall_withfeats,file="t3.Rda")
           data_limma_fdrall_withfeats_2<-cbind(diffexp_rank,data_limma_fdrall_withfeats)
           # fname4<-paste(featselmethod,"_sigfeats.txt",sep="")
           
@@ -8449,42 +8170,7 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
           
           #  write.table(data_limma_fdrall_withfeats_2[,-which(names(data_limma_fdrall_withfeats_2)%in%c("degree_rank"))],file=fname4,sep="\t",row.names=FALSE)
           
-          if(analysismode=="classification"){
-            if(is.na(names_with_mz_time)==FALSE){
-              
-              allmetabs_res_temp<-merge(group_means,allmetabs_res,by=c("mz","time"))
-              
-              
-              allmetabs_res_withnames<-merge(names_with_mz_time,allmetabs_res_temp,by=c("mz","time"))
-              
-              write.table(allmetabs_res_withnames, file=fname4,sep="\t",row.names=FALSE)
-              
-              rm(data_allinf_withfeats_withnames)
-              #}
-            }else{
-              
-              allmetabs_res_temp<-merge(group_means,allmetabs_res,by=c("mz","time"))
-              
-              write.table(allmetabs_res_temp,file=fname4,sep="\t",row.names=FALSE)
-            }
-            rm(allmetabs_res_temp)
-          }else{
-            if(is.na(names_with_mz_time)==FALSE){
-              
-              
-              allmetabs_res_withnames<-merge(names_with_mz_time,allmetabs_res,by=c("mz","time"))
-              
-              write.table(allmetabs_res_withnames, file=fname4,sep="\t",row.names=FALSE)
-              
-              rm(data_allinf_withfeats_withnames)
-              #}
-            }else{
-              
-              
-              write.table(allmetabs_res,file=fname4,sep="\t",row.names=FALSE)
-            }
-            
-          }
+          
           #  write.table(data_limma_fdrall_withfeats_2,file=fname4,sep="\t",row.names=FALSE)
           
           
@@ -8494,7 +8180,9 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
         
       }
       
+    #  print("HERE455")
       
+     # save(goodfeats,file="goodfeats455.Rda")
       
       if(length(goodip)>1){
         goodfeats_by_DICErank<-{}
@@ -8661,12 +8349,17 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
         goodfeats_name<-NA
       }
       
+      print("HERE555")
       
+      print(goodfeats[1:3,])
       
       class_label_A<-class_labels_levels[1]
       class_label_B<-class_labels_levels[2]
       
       goodfeats_allfields<-{}
+      
+      print("A")
+      print(length(which(sel.diffdrthresh==TRUE)))
       
       if(length(which(sel.diffdrthresh==TRUE))>1){
         
@@ -8699,8 +8392,9 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
         
         mz_ind<-which(cnamesd1=="mz")
         
+       
         goodfeats_temp<-cbind(goodfeats[,mz_ind],goodfeats[,time_ind],goodfeats[,-c(1:time_ind)])
-        
+        print("B")
         cnames_temp<-colnames(goodfeats_temp)
         cnames_temp[1]<-"mz"
         cnames_temp[2]<-"time"
@@ -8728,7 +8422,7 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
           
           subdata=t(goodfeats[,-c(1:time_ind)])
           
-          ###save(kfold,subdata,goodfeats,classlabels,svm_kernel,pred.eval.method,match_class_dist,file="svmdebug.Rda")
+        # save(kfold,subdata,goodfeats,classlabels,svm_kernel,pred.eval.method,match_class_dist,file="svmdebug.Rda")
           
           svm_model<-svm_cv(v=kfold,x=subdata,y=classlabels,kname=svm_kernel,errortype=pred.eval.method,conflevel=95,match_class_dist=match_class_dist) #,silent=TRUE)
           
@@ -9198,9 +8892,10 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
               text(5, 7, "The error bars represent the 95% \nconfidence interval in each group (or timepoint)")
               
               
-              #save(goodfeats_temp,classlabels_orig,lineplot.col.opt,col_vec,pairedanalysis,
-               #    pca.cex.val,pca.ellipse,ellipse.conf.level,legendlocation,ylab_text,error.bar,
-                #   cex.plots,lineplot.lty.option,timeseries.lineplots,analysistype,goodfeats_name,alphabetical.order,file="debuga_lineplots.Rda")
+         #     save(goodfeats_temp,classlabels_orig,lineplot.col.opt,col_vec,pairedanalysis,
+          #         pca.cex.val,pca.ellipse,ellipse.conf.level,legendlocation,ylab_text,error.bar,
+           #       cex.plots,lineplot.lty.option,timeseries.lineplots,analysistype,goodfeats_name,alphabetical.order,
+            #      multiple.figures.perpanel,plot.ylab_text,plots.height,plots.width,file="debuga_lineplots.Rda")
               
               
               #try(
@@ -9213,7 +8908,7 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
                                 ylabel=plot.ylab_text,error.bar=error.bar,cex.plots=cex.plots,
                                 lineplot.lty.option=lineplot.lty.option,timeseries.lineplots=timeseries.lineplots,
                                 name=goodfeats_name,study.design=analysistype,
-                              alphabetical.order=alphabetical.order,multiple.figures.perpanel=multiple.figures.perpanel)
+                              alphabetical.order=alphabetical.order,multiple.figures.perpanel=multiple.figures.perpanel,plot.height = plots.height,plot.width=plots.width)
                 #,silent=TRUE)  #,silent=TRUE)
               #save(var_sum_list,file="var_sum_list.Rda")
               var_sum_mat<-{}
@@ -9264,7 +8959,7 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
             
             
             goodfeats_name<-as.character(goodfeats_name)
-            ###save(goodfeats_name,goodfeats_temp,classlabels_orig,output_dir,boxplot.col.opt,cex.plots,ylab_text,file="boxplotdebug.Rda")
+       #    save(goodfeats_name,goodfeats_temp,classlabels_orig,output_dir,boxplot.col.opt,cex.plots,ylab_text,file="boxplotdebug.Rda")
             
           #  if(FALSE)
             {
@@ -9280,12 +8975,14 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
               par(mfrow=c(1,1),family="sans",cex=cex.plots,cex.main=0.7)
               
              # cor1<-WGCNA::cor(t(goodfeats_temp[,-c(1:2)]))
+              rownames(goodfeats_temp)<-goodfeats_name
               
+              #Pairwise correlations between selected features
               cor1<-WGCNA::cor(t(goodfeats_temp[,-c(1:2)]),nThreads=num_nodes,method=cor.method,use = 'p')
               
               corpval1=apply(cor1,2,function(x){corPvalueStudent(x,n=ncol(goodfeats_temp[,-c(1:2)]))})
               
-           #   save(cor1,goodfeats_temp,corpval1,goodfeats_name,file="cor1.Rda")
+              save(cor1,goodfeats_temp,corpval1,goodfeats_name,file="cor1.Rda")
               
               fdr_adjust_pvalue<-try(fdrtool(as.vector(cor1[upper.tri(cor1)]),statistic="correlation",verbose=FALSE,plot=FALSE),silent=TRUE)
               
@@ -9307,8 +9004,8 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
               cor1=newnet
               rm(newnet)
               
-              rownames(cor1)<-paste(goodfeats_temp[,c(1)],goodfeats_temp[,c(2)],sep="_")
-              colnames(cor1)<-rownames(cor1)
+           #   rownames(cor1)<-paste(goodfeats_temp[,c(1)],goodfeats_temp[,c(2)],sep="_")
+            #  colnames(cor1)<-rownames(cor1)
               
               #dendrogram="none",
               h1<-heatmap.2(cor1,col=brewer.pal(11,"RdBu"),Rowv=TRUE,Colv=TRUE,scale="none",key=TRUE, symkey=FALSE, density.info="none", trace="none",main="Pairwise correlations between selected features",cexRow = 0.5,cexCol = 0.5,cex.main=0.7)
@@ -9324,12 +9021,12 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
               correlations_melted$from<-paste("X",correlations_melted$from,sep="")
               correlations_melted$to<-paste("Y",correlations_melted$to,sep="")
               
-              write.table(correlations_melted,file="Tables/pairwise.correlations.txt",sep="\t",row.names=FALSE)
+              write.table(correlations_melted,file="Tables/pairwise.correlations.selectedfeatures.txt",sep="\t",row.names=FALSE)
               
               if(ncol(cor1)>1000){
-              netres<-plot_graph(correlations_melted,filename="Tables/sigfeats_top1000pairwisecor",interactive=FALSE,maxnodesperclass=1000,label.cex=0.3)
+              netres<-plot_graph(correlations_melted,filename="sigfeats_top1000pairwisecor",interactive=FALSE,maxnodesperclass=1000,label.cex=network.label.cex,mtext.val="Top 1000 pairwise correlations between selected features")
               }
-              netres<-plot_graph(correlations_melted,filename="Tables/sigfeats_pairwisecorrelations",interactive=FALSE,maxnodesperclass=NA,label.cex=0.3)
+              netres<-plot_graph(correlations_melted,filename="sigfeats_pairwisecorrelations",interactive=FALSE,maxnodesperclass=NA,label.cex=network.label.cex,mtext.val="Pairwise correlations between selected features")
               
               if(output.device.type!="pdf"){
                 
@@ -9351,7 +9048,7 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
               
               temp_filename_1<-"Figures/Boxplots.selectedfeats.normalized.pdf"
               
-              pdf(temp_filename_1)
+              pdf(temp_filename_1,height=plots.height,width=plots.width)
             }
             
             goodfeats_name<-as.character(goodfeats_name)
@@ -9359,21 +9056,17 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
             
             par(mfrow=c(1,1),family="sans",cex=cex.plots)
             
-            plot(0:10, type = "n", xaxt="n", yaxt="n", bty="n", xlab = "", ylab = "")
+           # plot(0:10, type = "n", xaxt="n", yaxt="n", bty="n", xlab = "", ylab = "")
             
             
-            text(5, 8, "Boxplots of selected features using the\n normalized intensities/abundance levels",cex=1.5,font=2)
+          #  text(5, 8, "Boxplots of selected features using the\n normalized intensities/abundance levels",cex=1.5,font=2)
             
             plot.ylab_text1=paste("(Normalized) ",plot.ylab_text,sep="")
-            if(normalization.method=="none"){
+            if(normalization.method!="none"){
               get_boxplots(X=goodfeats_temp,Y=classlabels_orig,parentoutput_dir=output_dir,boxplot.col.opt=boxplot.col.opt,
-                           alphacol=0.3,newdevice=FALSE,cex.plots=cex.plots,ylabel=plot.ylab_text1,name=goodfeats_name,add.pvalues=add.pvalues,add.jitter=add.jitter,
-                           alphabetical.order=alphabetical.order,boxplot.type=boxplot.type,study.design=analysistype,multiple.figures.perpanel=multiple.figures.perpanel,numnodes=num_nodes)
-              
-            }else{
-              get_boxplots(X=goodfeats_temp,Y=classlabels_orig,parentoutput_dir=output_dir,boxplot.col.opt=boxplot.col.opt,
-                           alphacol=0.3,newdevice=FALSE,cex.plots=cex.plots,ylabel=plot.ylab_text1,name=goodfeats_name,add.pvalues=add.pvalues,add.jitter=add.jitter,
-                           alphabetical.order=alphabetical.order,boxplot.type=boxplot.type,study.design=analysistype,multiple.figures.perpanel=multiple.figures.perpanel,numnodes=num_nodes)
+                           alphacol=0.3,newdevice=TRUE,cex.plots=cex.plots,ylabel=plot.ylab_text1,name=goodfeats_name,add.pvalues=add.pvalues,add.jitter=add.jitter,
+                           alphabetical.order=alphabetical.order,boxplot.type=boxplot.type,study.design=analysistype,
+                           multiple.figures.perpanel=multiple.figures.perpanel,numnodes=num_nodes,plot.height = plots.height,plot.width=plots.width,filename="Figures/Boxplots.selectedfeats.normalized")
               
             }
             
@@ -9388,19 +9081,21 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
               
               temp_filename_1<-"Figures/Boxplots.selectedfeats.raw.pdf"
               
-              pdf(temp_filename_1)
+              pdf(temp_filename_1,height=plots.height,width=plots.width)
             }
             
-            #save(goodfeats_raw,goodfeats_temp,classlabels_raw_boxplots,classlabels_orig,output_dir,boxplot.col.opt,cex.plots,ylab_text,file="boxplotrawdebug.Rda")
+    #        save(goodfeats_raw,goodfeats_temp,classlabels_raw_boxplots,classlabels_orig,
+     #            output_dir,boxplot.col.opt,cex.plots,ylab_text,boxplot.type,
+      #           analysistype,multiple.figures.perpanel,alphabetical.order,goodfeats_name,plots.height,plots.width,file="boxplotrawdebug.Rda")
             
             par(mfrow=c(1,1),family="sans",cex=cex.plots)
             
            
             
-            plot(0:10, type = "n", xaxt="n", yaxt="n", bty="n", xlab = "", ylab = "")
+           # plot(0:10, type = "n", xaxt="n", yaxt="n", bty="n", xlab = "", ylab = "")
             
             
-            text(5, 8, "Boxplots of selected features using the\n raw intensities/adundance levels",cex=1.5,font=2)
+          #  text(5, 8, "Boxplots of selected features using the\n raw intensities/adundance levels",cex=1.5,font=2)
             par(mfrow=c(1,1),family="sans",cex=cex.plots)
             
             #get_boxplots(X=goodfeats_raw,Y=classlabels_raw_boxplots,parentoutput_dir=output_dir,boxplot.col.opt=boxplot.col.opt,alphacol=0.3,newdevice=FALSE,cex.plots=cex.plots,ylabel=" Intensity",name=goodfeats_name,add.pvalues=add.pvalues,
@@ -9408,11 +9103,13 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
             
             get_boxplots(X=goodfeats_raw,Y=classlabels_orig,parentoutput_dir=output_dir,boxplot.col.opt=boxplot.col.opt,
                          alphacol=0.3,newdevice=FALSE,cex.plots=cex.plots,ylabel=plot.ylab_text,name=goodfeats_name,add.pvalues=add.pvalues,add.jitter=add.jitter,
-                         alphabetical.order=alphabetical.order,boxplot.type=boxplot.type,study.design=analysistype,multiple.figures.perpanel=multiple.figures.perpanel,numnodes=num_nodes)
+                         alphabetical.order=alphabetical.order,boxplot.type=boxplot.type,
+                         study.design=analysistype,multiple.figures.perpanel=multiple.figures.perpanel,numnodes=num_nodes,plot.height = plots.height,plot.width=plots.width,
+                         filename="Figures/Boxplots.selectedfeats.raw")
             
             
             
-            
+            try(dev.off(),silent=TRUE)
             
             if(output.device.type!="pdf"){
               
@@ -9711,6 +9408,8 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
         #pres<-try(do_wgcna(X=X,Y=classlabels_temp,sigfeats=data_m_fc_withfeats[goodip,c(1:2)]),silent=TRUE)
         pres<-try(do_wgcna(X=X,Y=classlabels_temp,sigfeats=data_m_fc_withfeats[goodip,c(1:2)]),silent=TRUE)
         
+        #pres<-do_wgcna(X=X,Y=classlabels_temp,sigfeats=data_m_fc_withfeats[goodip,c(1:2)]) #,silent=TRUE)
+        
         if(is(pres,"try-error")){
           
           print("WGCNA could not be performed. Error: ")
@@ -9887,7 +9586,8 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
             #dir.create("CorrelationAnalysis")
             #setwd("CorrelationAnalysis")
             if(networktype=="complete"){
-              mwan_fdr<-do_cor(data_matrix,subindex=sigfeats_index,targetindex=NA,outloc=output_dir,networkscope="global",cor.method,abs.cor.thresh,cor.fdrthresh,max.cor.num,net_node_colors,net_legend)
+              mwan_fdr<-do_cor(data_matrix,subindex=sigfeats_index,targetindex=NA,outloc=output_dir,networkscope="global",cor.method,abs.cor.thresh,cor.fdrthresh,
+                               max.cor.num,net_node_colors,net_legend,newdevice=TRUE)
             }else{
               if(networktype=="GGM"){
                 mwan_fdr<-get_partial_cornet(data_matrix, sigfeats.index=sigfeats_index,targeted.index=NA,networkscope="global",

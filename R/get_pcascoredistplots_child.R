@@ -1,5 +1,7 @@
 get_pcascoredistplots_child <-
-function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,sample.col.opt="rainbow",plots.width=2000,plots.height=2000,plots.res=300, alphacol=0.3,col_vec=NA,pairedanalysis=FALSE,pca.cex.val=4,legendlocation="topright",pca.ellipse=TRUE,ellipse.conf.level=0.95,filename="all",paireddesign=NA,error.bar=TRUE,lineplot.col.opt="black",lineplot.lty.option=c("solid", "dashed", "dotted", "dotdash", "longdash", "twodash"),newdevice=FALSE,timeseries.lineplots=FALSE,alphabetical.order=FALSE,pcascale=TRUE,pcacenter=TRUE,study.design="oneway",lme.modeltype="RI",cex.plots=0.8,ypos.adj.factor=0.5,...)
+function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,
+                                      sample.col.opt="rainbow",plots.width=2000,plots.height=2000,plots.res=300,
+                                      alphacol=0.3,col_vec=NA,pairedanalysis=FALSE,pca.cex.val=4,legendlocation="topright",pca.ellipse=TRUE,ellipse.conf.level=0.95,filename="all",paireddesign=NA,error.bar=TRUE,lineplot.col.opt="black",lineplot.lty.option=c("solid", "dashed", "dotted", "dotdash", "longdash", "twodash"),newdevice=FALSE,timeseries.lineplots=FALSE,alphabetical.order=FALSE,pcascale=TRUE,pcacenter=TRUE,study.design="oneway",lme.modeltype="RI",cex.plots=0.8,ypos.adj.factor=0.5,...)
 {
   
   analysistype=study.design
@@ -112,7 +114,9 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,sample.col.op
   
   classlabels_orig<-classlabels
   
-  ##save(classlabels,file="pcaclasslabels.Rda")
+  #classlabelsorig<-classlabelsorig[match(rownames(X),classlabelsorig[,1]),]
+  
+ # save(data_m,classlabels,file="pcaclasslabels.Rda")
   
   if(analysistype=="twowayrepeat" | analysistype=="2wayrepeat" | analysistype=="onewayrepeat" | analysistype=="1wayrepeat"){
     
@@ -363,7 +367,9 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,sample.col.op
   
   patientcolors <- rep(col_vec[1:length(t1)], t1)
   
-  # #save(data_m,classgroup,legendlocation,filename,pcacenter,paireddesign,pcascale,col_vec,sample.col.opt,pca.cex.val,pca.ellipse,do_pca_anova,paireddesign,classlabels_orig,alphabetical.order,analysistype,file="pcad1A.Rda")
+ # save(data_m,classgroup,legendlocation,filename,pcacenter,paireddesign,pcascale,col_vec,
+  #     sample.col.opt,pca.cex.val,pca.ellipse,do_pca_anova,paireddesign,classlabels_orig,
+   #    alphabetical.order,analysistype,file="pcad1A.Rda")
   
   
   if(dim(data_m)[1]>2){
@@ -393,6 +399,7 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,sample.col.op
     
     fname<-paste("Tables/PCAscores_",filename,"features.txt",sep="")
     
+    classlabels_orig<-classlabels_orig[match(rownames(scores_res),classlabels_orig[,1]),]
     scores_res1<-cbind(classlabels_orig,scores_res)
     
     
@@ -920,13 +927,21 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,sample.col.op
                 sizeval=1.2
                 
                 
-                
+                if(is.na(lineplot.lty.option)==TRUE){
                 plot_res<-suppressWarnings(ggplot(df.summary, aes(x = as.factor(x), y = PCscore,colour = as.factor(Class),linetype=Class)) + geom_point(size = pca.cex.val,shape=shape_vec1) + geom_line(aes(group =Class),size=sizeval)  + labs(colour = "Class") + geom_errorbar(aes(ymin = ymin, ymax = ymax),size=1,width=0.1)  + theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),
                                                                                                                                                                                                                                                                                                                                                          panel.grid.minor = element_blank(), axis.line = element_line(colour = "black",size=sizeval),
                                                                                                                                                                                                                                                                                                                                                          axis.text= element_text(size=14*cex.plots), axis.title=element_text(size=16*cex.plots,face="bold"),
                                                                                                                                                                                                                                                                                                                                                          strip.background=element_rect(colour="#f0f0f0",fill="#f0f0f0"),
                                                                                                                                                                                                                                                                                                                                                          strip.text = element_text(face="bold")) + scale_y_continuous(breaks = scales::pretty_breaks(n = 10)))
-                
+                }else{
+                  plot_res<-suppressWarnings(ggplot(df.summary, aes(x = as.factor(x), y = PCscore,colour = as.factor(Class))) + geom_point(size = pca.cex.val,shape=shape_vec1) + geom_line(aes(group =Class),size=sizeval)  + labs(colour = "Class") + geom_errorbar(aes(ymin = ymin, ymax = ymax),size=1,width=0.1)  + theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+                                                                                                                                                                                                                                                                                                                                                           panel.grid.minor = element_blank(), axis.line = element_line(colour = "black",size=sizeval),
+                                                                                                                                                                                                                                                                                                                                                           axis.text= element_text(size=14*cex.plots), axis.title=element_text(size=16*cex.plots,face="bold"),
+                                                                                                                                                                                                                                                                                                                                                           strip.background=element_rect(colour="#f0f0f0",fill="#f0f0f0"),
+                                                                                                                                                                                                                                                                                                                                                           strip.text = element_text(face="bold")) + scale_y_continuous(breaks = scales::pretty_breaks(n = 10)))
+                }
+                  
+             
                 if(length(unique_class_col_vec)==1){
                   plot_res<-plot_res+scale_color_manual(values=rep(unique(class_col_vec),length(class_labels_levels)))
                   

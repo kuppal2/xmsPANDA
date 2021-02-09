@@ -1,8 +1,9 @@
 do_cor <-
 function(data_m_fc_withfeats,subindex=NA,targetindex=NA,outloc,networkscope,cor.method,abs.cor.thresh,cor.fdrthresh,
-                 max.cor.num,net_node_colors,net_legend,netrandseed=555,num_nodes=6, plots.width=2000,plots.height=2000,plots.res=300,cex.plots=0.8){
+                 max.cor.num,net_node_colors,net_legend,netrandseed=555,num_nodes=6, plots.width=2000,plots.height=2000,plots.res=300,cex.plots=0.8,newdevice=FALSE){
   
-  dir.create(outloc)
+  
+  suppressWarnings(dir.create(outloc))
   setwd(outloc)
   allsig_pcornetwork<-{}
   cormat<-{}
@@ -48,7 +49,7 @@ function(data_m_fc_withfeats,subindex=NA,targetindex=NA,outloc,networkscope,cor.
     }
     m1<-apply(data_m_fc_withfeats[,-c(1:2)],2,as.numeric)
     
-    print(dim(m1))
+    
     rnames<-paste("mzid_",seq(1,dim(data_m_fc_withfeats)[1]),sep="")
     
     
@@ -57,8 +58,7 @@ function(data_m_fc_withfeats,subindex=NA,targetindex=NA,outloc,networkscope,cor.
     data_mt<-t(m1)
   }else{
     m1<-as.numeric(data_m_fc_withfeats[,-c(1:2)])
-    #print(dim(m1))
-    #rownames(m1)=rnames
+    
     data_mt<-(m1)
     
     data_mt<-as.matrix(data_mt)
@@ -320,12 +320,10 @@ function(data_m_fc_withfeats,subindex=NA,targetindex=NA,outloc,networkscope,cor.
         }
         
         
-        
-        pdfname<-paste("Figures/Networkplot_selectedvsallfeatures",networkscope,"corthresh",abs.cor.thresh,".pdf",sep="")
-        pdf(pdfname,width=8,height=10)
-        
-        
-        
+        if(newdevice==TRUE){
+        pdfname<-paste("Figures/Level2_networkplot_selectedvsall",networkscope,"corthresh",abs.cor.thresh,".pdf",sep="")
+        pdf(pdfname) #,width=8,height=10)
+        }
         
         dup_ind<-which(duplicated(rnames)==TRUE)
         if(length(dup_ind)>0){
@@ -347,12 +345,12 @@ function(data_m_fc_withfeats,subindex=NA,targetindex=NA,outloc,networkscope,cor.
         
         set.seed(netrandseed)
         
-        ####savenonsig_vs_fdr0.05_pearson_mat_bool_filt_1,file="nonsig_vs_fdr0.05_pearson_mat_bool_filt_1.Rda")
+      # save(nonsig_vs_fdr0.05_pearson_mat_bool_filt_1,file="nonsig_vs_fdr0.05_pearson_mat_bool_filt_1.Rda")
         
         net_result<-network(mat=as.matrix(nonsig_vs_fdr0.05_pearson_mat_bool_filt_1), cutoff=abs.cor.thresh,color.node = net_node_colors,
                             shape.node = c("rectangle", "circle"),
                             color.edge = c("red", "blue"), lwd.edge = 1,
-                            show.edge.labels = FALSE, interactive = FALSE,cex.node.name=0.6) #,silent=TRUE)
+                            show.edge.labels = FALSE, interactive = FALSE,cex.node.name=0.3) #,silent=TRUE)
         
         
         if(is(net_result,"try-error")){
@@ -373,15 +371,15 @@ function(data_m_fc_withfeats,subindex=NA,targetindex=NA,outloc,networkscope,cor.
         write.graph(net_result$gR, file =cytoscape_fname, format = "gml")
         
         if(net_legend==TRUE){
-          (legend("bottomright",c("Row #","Column #"),pch=c(22,19),col=net_node_colors, cex=cex.plots,title="Network matrix values:"))
+          (legend("bottomright",c("Selected features","Other features"),pch=c(22,19),col=net_node_colors, cex=cex.plots,title="Legend:"))
         }
         
         
         
         
-        
-        try(dev.off(),silent=TRUE)
-        
+      if(newdevice==TRUE){  
+          try(dev.off(),silent=TRUE)
+        }
         
       }else{
         if(networkscope=="all"){
@@ -464,7 +462,8 @@ function(data_m_fc_withfeats,subindex=NA,targetindex=NA,outloc,networkscope,cor.
       #  nonsig_vs_fdr0.05_pearson_mat_bool_filt<-round(nonsig_vs_fdr0.05_pearson_mat_bool_filt,2)
       
       write.table(nonsig_vs_fdr0.05_pearson_mat_bool_filt,file=fname,sep="\t",row.names=TRUE)
-      
+    
+      if(FALSE){ 
       if(check_cor>=abs.cor.thresh){
         
         
@@ -472,8 +471,6 @@ function(data_m_fc_withfeats,subindex=NA,targetindex=NA,outloc,networkscope,cor.
         
         pdfname<-paste("Figures/Networkplot_selectedvsallfeatures",networkscope,"corthresh",abs.cor.thresh,".pdf",sep="")
         pdf(pdfname,width=8,height=10)
-        
-        
         
         nonsig_vs_fdr0.05_pearson_mat_bool_filt_1<-nonsig_vs_fdr0.05_pearson_mat_bool_filt[-which(duplicated(rnames)==TRUE),]
         set.seed(netrandseed)
@@ -503,11 +500,9 @@ function(data_m_fc_withfeats,subindex=NA,targetindex=NA,outloc,networkscope,cor.
         #dev.off()
         
         
-        
-        
-        
         try(dev.off(),silent=TRUE)
         
+      }
       }
       
     }else{

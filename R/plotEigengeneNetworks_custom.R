@@ -46,7 +46,7 @@ function (multiME, setLabels, letterSubPlots = FALSE, Letters = NULL,
       par(mar = marDendro)
       labels = names(multiME[[set]]$data)
       uselabels = labels[substring(labels, 3) != greyLabel]
-      corME = cor(multiME[[set]]$data[substring(labels,
+      corME = WGCNA::cor(multiME[[set]]$data[substring(labels,
                                                 3) != greyLabel, substring(labels, 3) != greyLabel],
                   use = "p")
       disME = as.dist(1 - corME)
@@ -89,12 +89,13 @@ function (multiME, setLabels, letterSubPlots = FALSE, Letters = NULL,
       }
       nModules = dim(multiME[[i.col]]$data)[2]
       textMat = NULL
+      
+    #  save(multiME,i.col,i.row,setLabels,colorLabels,heatmapColors,textMat,cex.adjacency,cex.preservation,file="debugwgcna.rda")
       if (i.row == i.col) {
-        corME = cor(multiME[[i.col]]$data, use = "p")
+        corME = WGCNA::cor(multiME[[i.col]]$data, use = "p")
         pME = corPvalueFisher(corME, nrow(multiME[[i.col]]$data))
         if (printAdjacency) {
-          textMat = paste(signif(corME, 2), "\n", signif(pME,
-                                                         1))
+          textMat = paste(signif(corME, 2), "\n", signif(pME,1))
           dim(textMat) = dim(corME)
         }
         if (signed) {
@@ -103,13 +104,26 @@ function (multiME, setLabels, letterSubPlots = FALSE, Letters = NULL,
               textMat = paste(signif((1 + corME)/2, 2),
                               "\n", signif(pME, 1))
               dim(textMat) = dim(corME)
+              
             }
+            if(length(nrow(multiME[[i.col]]$data))>0){
             labeledHeatmap((1 + corME)/2, names(multiME[[i.col]]$data),
                            names(multiME[[i.col]]$data), main = paste(letter,
                                                                       setLabels[[i.col]]), invertColors = FALSE,
                            zlim = c(0, 1), colorLabels = colorLabels,
                            colors = heatmapColors, setStdMargins = FALSE,
                            textMatrix = textMat, cex.text = cex.adjacency,cex.lab=cex.adjacency,cex.main=cex.preservation)
+            }else{
+            
+            try(labeledHeatmap((1 + corME)/2, xLabels="",main = paste(letter,
+                                                                      setLabels[[i.col]]), invertColors = FALSE,
+                           zlim = c(0, 1), colorLabels = colorLabels,
+                           colors = heatmapColors, setStdMargins = FALSE,
+                           textMatrix = textMat, cex.text = cex.adjacency,cex.lab=cex.adjacency,cex.main=cex.preservation),silent=TRUE)
+            
+            }
+            
+            
           }
           else {
             labeledHeatmap(corME, names(multiME[[i.col]]$data),
@@ -130,8 +144,8 @@ function (multiME, setLabels, letterSubPlots = FALSE, Letters = NULL,
         }
       }
       else {
-        corME1 = cor(multiME[[i.col]]$data, use = "p")
-        corME2 = cor(multiME[[i.row]]$data, use = "p")
+        corME1 = WGCNA::cor(multiME[[i.col]]$data, use = "p")
+        corME2 = WGCNA::cor(multiME[[i.row]]$data, use = "p")
         cor.dif = (corME1 - corME2)/2
         d = tanh((corME1 - corME2)/(abs(corME1) + abs(corME2))^2)
         if (ipp == 1 | ipp == 3) {

@@ -1,5 +1,13 @@
 get_pcascoredistplots <-
-function(X=NA,Y=NA,feature_table_file,parentoutput_dir,class_labels_file,sample.col.opt="rainbow",plots.width=2000,plots.height=2000,plots.res=300, alphacol=0.3,col_vec=NA,pairedanalysis=FALSE,pca.cex.val=3,legendlocation="topright",pca.ellipse=TRUE,ellipse.conf.level=0.95,filename="all",paireddesign=NA,error.bar=TRUE,lineplot.col.opt="black",lineplot.lty.option=c("solid", "dashed", "dotted", "dotdash", "longdash", "twodash"),newdevice=FALSE,timeseries.lineplots=FALSE,alphabetical.order=FALSE,pcascale=TRUE,pcacenter=TRUE,study.design="oneway",lme.modeltype="RI",cex.plots=0.8,ypos.adj.factor=0.5,...)
+function(X=NA,Y=NA,feature_table_file,parentoutput_dir,class_labels_file,
+                                sample.col.opt="journal",plots.width=2000,plots.height=2000,plots.res=300,
+                                alphacol=0.3,col_vec=NA,pairedanalysis=FALSE,pca.cex.val=3,
+                                legendlocation="topright",pca.ellipse=FALSE,ellipse.conf.level=0.95,
+                                filename="all",paireddesign=NA,error.bar=TRUE,lineplot.col.opt="black",
+                                lineplot.lty.option=c("solid", "dashed", "dotted", "dotdash", "longdash", "twodash"),
+                                newdevice=FALSE,timeseries.lineplots=FALSE,alphabetical.order=FALSE,pcascale=TRUE,
+                                pcacenter=TRUE,study.design="oneway",lme.modeltype="RI",cex.plots=0.8,
+                                ypos.adj.factor=0.5,...)
 {
   
   

@@ -55,6 +55,6 @@ function(data_matrix,ncomp=2,pthresh=0.005,outlier.method="sumtukey"){
       }
     }
   }
-  write.table(cnames,file="Outliers.txt",sep="\t",row.names=FALSE)
+  #write.table(cnames,file="Outliers.txt",sep="\t",row.names=FALSE)
   return(cnames)
 }

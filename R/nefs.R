@@ -102,7 +102,7 @@ function(X=NA,Y=NA,feature_table_file=NA,class_labels_file=NA,feat.sel.methods=c
   
   
   
-  dir.create(outloc)
+  suppressWarnings(dir.create(outloc))
   setwd(outloc)
   
   outloc=getwd()

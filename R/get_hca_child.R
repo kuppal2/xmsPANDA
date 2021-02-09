@@ -1,6 +1,9 @@
 get_hca_child <-
 function(feature_table_file,parentoutput_dir,class_labels_file,X=NA,Y=NA,heatmap.col.opt="RdBu",cor.method="spearman",is.data.znorm=FALSE,analysismode="classification",
-                        sample.col.opt="rainbow",plots.width=8,plots.height=8,plots.res=600, plots.type="cairo", alphacol=0.3, hca_type,newdevice=FALSE,input.type="intensity",mainlab="",cexRow=1, cexCol=1,plot.bycluster=FALSE,color.rows=FALSE,similarity.matrix="correlation",deepsplit=2,minclustsize=10,mergeCutHeight=0.1,num_nodes=2,alphabetical.order=FALSE,pairedanalysis=FALSE,cutree.method="halfheight",study.design="oneway")
+                        sample.col.opt="rainbow",plots.width=8,plots.height=8,plots.res=600, plots.type="cairo", alphacol=0.3, 
+                        hca_type,newdevice=FALSE,input.type="intensity",mainlab="",cexRow=0.5, cexCol=0.5,
+                        plot.bycluster=FALSE,color.rows=FALSE,similarity.matrix="correlation",deepsplit=2,minclustsize=10,mergeCutHeight=0.1,
+                        num_nodes=2,alphabetical.order=FALSE,pairedanalysis=FALSE,cutree.method="halfheight",study.design="oneway",labRow.value = FALSE, labCol.value = FALSE)
 {
   
   
@@ -378,8 +381,11 @@ function(feature_table_file,parentoutput_dir,class_labels_file,X=NA,Y=NA,heatmap
               }else{
                 
                 
-                
-                heatmap_cols <- colorRampPalette(brewer.pal(10, heatmap.col.opt))(n=1000) #(256)
+                if(length(grep(heatmap.col.opt,pattern = "brewer."))>0){
+                 
+                  heatmap.col.opt<-gsub(heatmap.col.opt,pattern="brewer.",replacement="")
+                }
+                heatmap_cols <- colorRampPalette(brewer.pal(10, heatmap.col.opt))(256)
                 heatmap_cols<-rev(heatmap_cols)
                 
               }
@@ -400,6 +406,10 @@ function(feature_table_file,parentoutput_dir,class_labels_file,X=NA,Y=NA,heatmap
   col_vec2 <- topo.colors(255, alpha=alphacol)
   
   mergeCutheight=mergeCutHeight 
+  
+  
+#  save(data_m,heatmap_cols,patientcolors,file="hcaDfalse.Rda")
+  
   if(input.type=="intensity"){
     
     
@@ -569,7 +579,7 @@ function(feature_table_file,parentoutput_dir,class_labels_file,X=NA,Y=NA,heatmap
         
       }
       
-      ###save(hr,deepsplit,minclustsize,mergeCutheight,mycl_metabs,m3,distr_m,data_m,distr,file="hr.Rda")
+   # save(hr,hc,deepsplit,minclustsize,mergeCutheight,mycl_metabs,distr_m,data_m,distr,patientcolors,file="hr_hcC.Rda")
       
       s1.samp<- silhouette(mycl_samples,distc)
       s2.metab<- silhouette(mycl_metabs,distr)
@@ -581,6 +591,8 @@ function(feature_table_file,parentoutput_dir,class_labels_file,X=NA,Y=NA,heatmap
     
     
   }
+  
+
   if(FALSE)
   {
     ##save(hc,file="hc.Rda")
@@ -617,8 +629,8 @@ function(feature_table_file,parentoutput_dir,class_labels_file,X=NA,Y=NA,heatmap
   
   mainlab1<-paste("Average  width samples: ",s1.samp,"\n ","Average Silhouette width features: ", s2.metab," \n ", "Adjusted Rand index (comparison with true class labels): ",ari_val,sep="")
   
-  rownames(data_m)<-NULL
-  colnames(data_m)<-NULL
+  #rownames(data_m)<-NULL
+  #colnames(data_m)<-NULL
   
   if(is(hr,"try-error") || is(hc,"try-error")){
     
@@ -855,9 +867,10 @@ function(feature_table_file,parentoutput_dir,class_labels_file,X=NA,Y=NA,heatmap
         
       }
       
-      #save(list=c("data_m","hr","hc","heatmap_cols","mainlab1","rowcolors","patientcolors","cexRow","cexCol","col_vec","class_labels_levels"),file="debug.Rda")
+#   save(list=c("data_m","hr","hc","heatmap_cols","mainlab1","rowcolors","patientcolors","cexRow","cexCol","col_vec","class_labels_levels"),file="debug.Rda")
       
       
+  
       if(col_samples==FALSE){
         if(is.data.znorm==FALSE){
           
@@ -868,7 +881,9 @@ function(feature_table_file,parentoutput_dir,class_labels_file,X=NA,Y=NA,heatmap
             
             
             
-            h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=as.dendrogram(hc),  col=heatmap_cols, scale="row",key=TRUE, symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,xlab="Samples",ylab="features", main=mainlab1,RowSideColors=rowcolors,labRow = FALSE, labCol = FALSE,cex.main=0.8)
+            h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=as.dendrogram(hc),  col=heatmap_cols, scale="row",key=TRUE, 
+                           symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,xlab="Samples",ylab="features",
+                           main=mainlab1,RowSideColors=rowcolors,labRow = labRow.value, labCol = labCol.value,cex.main=0.8)
             
             
             
@@ -882,7 +897,10 @@ function(feature_table_file,parentoutput_dir,class_labels_file,X=NA,Y=NA,heatmap
             
             
             
-            h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=as.dendrogram(hc),  col=heatmap_cols, scale="row",key=TRUE, symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,xlab="Samples",ylab="features", main=mainlab1,labRow = FALSE, labCol = FALSE,cex.main=0.8)
+            h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=as.dendrogram(hc),  col=heatmap_cols, scale="row",
+                           key=TRUE, symkey=FALSE, density.info="none", trace="none", 
+                           cexRow=cexRow, cexCol=cexCol,xlab="Samples",ylab="features", main=mainlab1,
+                           labRow = labRow.value, labCol = labCol.value,cex.main=0.8)
             
             le1<-(legend(par('usr')[2], par('usr')[4], bty='n', xpd=NA,class_labels_levels, col = col_vec,pch = rep(19,length(col_vec)), pt.cex = 0.6, title = "Class",cex=0.5))
             
@@ -895,7 +913,10 @@ function(feature_table_file,parentoutput_dir,class_labels_file,X=NA,Y=NA,heatmap
             par(omd=c(0, 1-w, 0, 1),cex.main=0.7)
             
             
-            h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=as.dendrogram(hc),  col=heatmap_cols, scale="none",key=TRUE, symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,xlab="Samples",ylab="features", main=mainlab1,RowSideColors=rowcolors,labRow = FALSE, labCol = FALSE,cex.main=0.8)
+            h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=as.dendrogram(hc),  col=heatmap_cols,
+                           scale="none",key=TRUE, symkey=FALSE, density.info="none", trace="none",
+                           cexRow=cexRow, cexCol=cexCol,xlab="Samples",ylab="features", main=mainlab1,
+                           RowSideColors=rowcolors,labRow = labRow.value, labCol = labCol.value,cex.main=0.8)
             
             le1<-(legend(par('usr')[2], par('usr')[4], bty='n', xpd=NA,class_labels_levels, col = col_vec,pch = rep(19,length(col_vec)), pt.cex = 0.6, title = "Class",cex=0.5))
             
@@ -905,7 +926,9 @@ function(feature_table_file,parentoutput_dir,class_labels_file,X=NA,Y=NA,heatmap
             par(omd=c(0, 1-w, 0, 1),cex.main=0.7)
             
             
-            h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=as.dendrogram(hc),  col=heatmap_cols, scale="none",key=TRUE, symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,xlab="Samples",ylab="features", main=mainlab1,labRow = FALSE, labCol = FALSE,cex.main=0.8)
+            h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=as.dendrogram(hc),  col=heatmap_cols, scale="none",
+                           key=TRUE, symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,
+                           xlab="Samples",ylab="features", main=mainlab1,labRow = labRow.value, labCol = labCol.value,cex.main=0.8)
             
             le1<-(legend(par('usr')[2], par('usr')[4], bty='n', xpd=NA,class_labels_levels, col = col_vec,pch = rep(19,length(col_vec)), pt.cex = 0.6, title = "Class",cex=0.5))
             
@@ -922,7 +945,10 @@ function(feature_table_file,parentoutput_dir,class_labels_file,X=NA,Y=NA,heatmap
             w <- 0.1
             par(omd=c(0, 1-w, 0, 1),cex.main=0.7)
             
-            h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=as.dendrogram(hc),  col=heatmap_cols, scale="row",key=TRUE, symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol, xlab="Samples",ylab="features", main=mainlab1, ColSideColors=patientcolors,RowSideColors=rowcolors,labRow = FALSE, labCol = FALSE,cex.main=0.8)
+            h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=as.dendrogram(hc),  col=heatmap_cols, scale="row",key=TRUE, 
+                           symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol, xlab="Samples",ylab="features",
+                           main=mainlab1, ColSideColors=patientcolors,RowSideColors=rowcolors,labRow = labRow.value, labCol = labCol.value,
+                           cex.main=0.8)
             
             (le1<-(legend(par('usr')[2], par('usr')[4], bty='n', xpd=NA,class_labels_levels, col = col_vec,pch = rep(19,length(col_vec)), pt.cex = 0.6, title = "Class",cex=0.5)))
             
@@ -931,12 +957,14 @@ function(feature_table_file,parentoutput_dir,class_labels_file,X=NA,Y=NA,heatmap
             w <- 0.1
             par(omd=c(0, 1-w, 0, 1),cex.main=0.7)
             
-            # print("DOING THIS")
+           print("DOING THIS")
             
             
             
             
-            h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=as.dendrogram(hc),  col=heatmap_cols, scale="row",key=TRUE, symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol, xlab="Samples",ylab="features", main=mainlab1, ColSideColors=patientcolors,labRow = FALSE, labCol = FALSE)
+            h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=as.dendrogram(hc),  col=heatmap_cols, scale="row",key=TRUE, symkey=FALSE, 
+                           density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol, xlab="Samples",ylab="features",
+                           main=mainlab1, ColSideColors=patientcolors,labRow = labRow.value, labCol = labCol.value)
             
             # h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=as.dendrogram(hc), scale="row",key=TRUE, symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol, xlab="Samples",ylab="features", main=mainlab1, ColSideColors=patientcolors) #,labRow = FALSE, labCol = FALSE)
             
@@ -952,7 +980,10 @@ function(feature_table_file,parentoutput_dir,class_labels_file,X=NA,Y=NA,heatmap
             w <- 0.1
             par(omd=c(0, 1-w, 0, 1),cex.main=0.7)
             
-            h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=as.dendrogram(hc),  col=heatmap_cols, scale="none",key=TRUE, symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,xlab="Samples",ylab="features", main=mainlab1, ColSideColors=patientcolors,RowSideColors=rowcolors,labRow = FALSE, labCol = FALSE)
+            h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=as.dendrogram(hc),  col=heatmap_cols, scale="none",
+                           key=TRUE, symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,
+                           xlab="Samples",ylab="features", main=mainlab1, ColSideColors=patientcolors,
+                           RowSideColors=rowcolors,labRow = labRow.value, labCol = labCol.value)
             
             (le1<-(legend(par('usr')[2], par('usr')[4], bty='n', xpd=NA,class_labels_levels, col = col_vec,pch = rep(19,length(col_vec)), pt.cex = 0.6, title = "Class",cex=0.5)))
             
@@ -961,7 +992,10 @@ function(feature_table_file,parentoutput_dir,class_labels_file,X=NA,Y=NA,heatmap
             w <- 0.1
             par(omd=c(0, 1-w, 0, 1),cex.main=0.7)
             
-            h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=as.dendrogram(hc),  col=heatmap_cols, scale="none",key=TRUE, symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,xlab="Samples",ylab="features", main=mainlab1, ColSideColors=patientcolors,labRow = FALSE, labCol = FALSE,cex.main=0.8)
+            h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=as.dendrogram(hc),  col=heatmap_cols, scale="none",
+                           key=TRUE, symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,
+                           xlab="Samples",ylab="features", main=mainlab1, ColSideColors=patientcolors,
+                           labRow = labRow.value, labCol = labCol.value,cex.main=0.8)
             
             (le1<-(legend(par('usr')[2], par('usr')[4], bty='n', xpd=NA,class_labels_levels, col = col_vec,pch = rep(19,length(col_vec)), pt.cex = 0.6, title = "Class",cex=0.5)))
             
@@ -1105,7 +1139,10 @@ function(feature_table_file,parentoutput_dir,class_labels_file,X=NA,Y=NA,heatmap
               w <- 0.1
               par(omd=c(0, 1-w, 0, 1),cex.main=0.7)
               
-              h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=NULL,  col=heatmap_cols, scale="row",key=TRUE, symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,xlab="Samples",ylab="features", main=mainlab1,RowSideColors=rowcolors,labRow = FALSE, labCol = FALSE,cex.main=0.8)
+              h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=NULL,  col=heatmap_cols, scale="row",key=TRUE, 
+                             symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,
+                             xlab="Samples",ylab="features", main=mainlab1,RowSideColors=rowcolors,
+                             labRow = labRow.value, labCol = labCol.value,cex.main=0.8)
               
               (le1<-(legend(par('usr')[2], par('usr')[4], bty='n', xpd=NA,class_labels_levels, col = col_vec,pch = rep(19,length(col_vec)), pt.cex = 0.6, title = "Class",cex=0.5)))
               
@@ -1114,7 +1151,9 @@ function(feature_table_file,parentoutput_dir,class_labels_file,X=NA,Y=NA,heatmap
               w <- 0.1
               par(omd=c(0, 1-w, 0, 1),cex.main=0.7)
               
-              h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=NULL,  col=heatmap_cols, scale="row",key=TRUE, symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,xlab="Samples",ylab="features", main=mainlab1,labRow = FALSE, labCol = FALSE,cex.main=0.8)
+              h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=NULL,  col=heatmap_cols, scale="row",key=TRUE,
+                             symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,
+                             xlab="Samples",ylab="features", main=mainlab1,labRow = labRow.value, labCol = labCol.value,cex.main=0.8)
               
               (le1<-(legend(par('usr')[2], par('usr')[4], bty='n', xpd=NA,class_labels_levels, col = col_vec,pch = rep(19,length(col_vec)), pt.cex = 0.6, title = "Class",cex=0.5)))
               
@@ -1127,7 +1166,10 @@ function(feature_table_file,parentoutput_dir,class_labels_file,X=NA,Y=NA,heatmap
               w <- 0.1
               par(omd=c(0, 1-w, 0, 1),cex.main=0.7)
               
-              h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=NULL,  col=heatmap_cols, scale="none",key=TRUE, symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,xlab="Samples",ylab="features", main=mainlab1,RowSideColors=rowcolors,labRow = FALSE, labCol = FALSE,cex.main=0.8)
+              h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=NULL,  col=heatmap_cols, scale="none",
+                             key=TRUE, symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, 
+                             cexCol=cexCol,xlab="Samples",ylab="features", main=mainlab1,RowSideColors=rowcolors,
+                             labRow = labRow.value, labCol = labCol.value,cex.main=0.8)
               
               (le1<-(legend(par('usr')[2], par('usr')[4], bty='n', xpd=NA,class_labels_levels, col = col_vec,pch = rep(19,length(col_vec)), pt.cex = 0.6, title = "Class",cex=0.5)))
               
@@ -1136,7 +1178,9 @@ function(feature_table_file,parentoutput_dir,class_labels_file,X=NA,Y=NA,heatmap
               w <- 0.1
               par(omd=c(0, 1-w, 0, 1),cex.main=0.7)
               
-              h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=NULL,  col=heatmap_cols, scale="none",key=TRUE, symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,xlab="Samples",ylab="features", main=mainlab1,labRow = FALSE, labCol = FALSE,cex.main=0.8)
+              h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=NULL,  col=heatmap_cols, scale="none",key=TRUE,
+                             symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,
+                             xlab="Samples",ylab="features", main=mainlab1,labRow = labRow.value, labCol = labCol.value,cex.main=0.8)
               
               (le1<-(legend(par('usr')[2], par('usr')[4], bty='n', xpd=NA,class_labels_levels, col = col_vec,pch = rep(19,length(col_vec)), pt.cex = 0.6, title = "Class",cex=0.5)))
               
@@ -1152,7 +1196,10 @@ function(feature_table_file,parentoutput_dir,class_labels_file,X=NA,Y=NA,heatmap
               w <- 0.1
               par(omd=c(0, 1-w, 0, 1),cex.main=0.7)
               
-              h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=NULL,  col=heatmap_cols, scale="row",key=TRUE, symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,xlab="Samples",ylab="features", main=mainlab1,dendrogram = c("row"),ColSideColors=patientcolors,RowSideColors=rowcolors,labRow = FALSE, labCol = FALSE,cex.main=0.8)
+              h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=NULL,  col=heatmap_cols, scale="row",key=TRUE,
+                             symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,
+                             xlab="Samples",ylab="features", main=mainlab1,dendrogram = c("row"),
+                             ColSideColors=patientcolors,RowSideColors=rowcolors,labRow = labRow.value, labCol = labCol.value,cex.main=0.8)
               
               (le1<-(legend(par('usr')[2], par('usr')[4], bty='n', xpd=NA,class_labels_levels, col = col_vec,pch = rep(19,length(col_vec)), pt.cex = 0.6, title = "Class",cex=0.5)))
               
@@ -1160,7 +1207,10 @@ function(feature_table_file,parentoutput_dir,class_labels_file,X=NA,Y=NA,heatmap
               w <- 0.1
               par(omd=c(0, 1-w, 0, 1),cex.main=0.7)
               
-              h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=NULL,  col=heatmap_cols, scale="row",key=TRUE, symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,xlab="Samples",ylab="features", main=mainlab1,dendrogram = c("row"),ColSideColors=patientcolors,labRow = FALSE, labCol = FALSE,cex.main=0.8)
+              h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=NULL,  col=heatmap_cols, scale="row",key=TRUE, 
+                             symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,
+                             xlab="Samples",ylab="features", main=mainlab1,dendrogram = c("row"),
+                             ColSideColors=patientcolors,labRow = labRow.value, labCol = labCol.value,cex.main=0.8)
               
               (le1<-(legend(par('usr')[2], par('usr')[4], bty='n', xpd=NA,class_labels_levels, col = col_vec,pch = rep(19,length(col_vec)), pt.cex = 0.6, title = "Class",cex=0.5)))
               
@@ -1171,7 +1221,11 @@ function(feature_table_file,parentoutput_dir,class_labels_file,X=NA,Y=NA,heatmap
               w <- 0.1
               par(omd=c(0, 1-w, 0, 1),cex.main=0.7)
               
-              h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=NULL,  col=heatmap_cols, scale="none",key=TRUE, symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,xlab="Samples",ylab="features", main=mainlab1,dendrogram = c("row"),ColSideColors=patientcolors,RowSideColors=rowcolors,labRow = FALSE, labCol = FALSE,cex.main=0.8)
+              h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=NULL,  col=heatmap_cols, scale="none",key=TRUE, 
+                             symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,
+                             xlab="Samples",ylab="features", main=mainlab1,dendrogram = c("row"),
+                             ColSideColors=patientcolors,RowSideColors=rowcolors,labRow = labRow.value, labCol = labCol.value,
+                             cex.main=0.8)
               
               (le1<-(legend(par('usr')[2], par('usr')[4], bty='n', xpd=NA,class_labels_levels, col = col_vec,pch = rep(19,length(col_vec)), pt.cex = 0.6, title = "Class",cex=0.5)))
               
@@ -1179,7 +1233,10 @@ function(feature_table_file,parentoutput_dir,class_labels_file,X=NA,Y=NA,heatmap
               w <- 0.1
               par(omd=c(0, 1-w, 0, 1),cex.main=0.7)
               
-              h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=NULL,  col=heatmap_cols, scale="none",key=TRUE, symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,xlab="Samples",ylab="features", main=mainlab1,dendrogram = c("row"),ColSideColors=patientcolors,labRow = FALSE, labCol = FALSE,cex.main=0.8)
+              h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=NULL,  col=heatmap_cols, scale="none",key=TRUE,
+                             symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,
+                             xlab="Samples",ylab="features", main=mainlab1,dendrogram = c("row"),
+                             ColSideColors=patientcolors,labRow = labRow.value, labCol = labCol.value,cex.main=0.8)
               
               (le1<-(legend(par('usr')[2], par('usr')[4], bty='n', xpd=NA,class_labels_levels, col = col_vec,pch = rep(19,length(col_vec)), pt.cex = 0.6, title = "Class",cex=0.5)))
               
@@ -1210,14 +1267,19 @@ function(feature_table_file,parentoutput_dir,class_labels_file,X=NA,Y=NA,heatmap
               
               w <- 0.1
               par(omd=c(0, 1-w, 0, 1),cex.main=0.7)
-              h73<-heatmap.2(data_m, Rowv=NULL, Colv=as.dendrogram(hc),  col=heatmap_cols, scale="row",key=TRUE, symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,xlab="Samples",ylab="features", main=mainlab1,labRow = FALSE, labCol = FALSE,cex.main=0.8)
+              h73<-heatmap.2(data_m, Rowv=NULL, Colv=as.dendrogram(hc),  col=heatmap_cols, scale="row",
+                             key=TRUE, symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, 
+                             cexCol=cexCol,xlab="Samples",ylab="features", main=mainlab1,
+                             labRow = labRow.value, labCol = labCol.value,cex.main=0.8)
               
               (le1<-(legend(par('usr')[2], par('usr')[4], bty='n', xpd=NA,class_labels_levels, col = col_vec,pch = rep(19,length(col_vec)), pt.cex = 0.6, title = "Class",cex=0.5)))
               
             }else{
               w <- 0.1
               par(omd=c(0, 1-w, 0, 1),cex.main=0.7)
-              h73<-heatmap.2(data_m, Rowv=NULL, Colv=as.dendrogram(hc),  col=heatmap_cols, scale="none",key=TRUE, symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol, xlab="Samples",ylab="features", main=mainlab1,labRow = FALSE, labCol = FALSE,cex.main=0.8)
+              h73<-heatmap.2(data_m, Rowv=NULL, Colv=as.dendrogram(hc),  col=heatmap_cols, scale="none",key=TRUE,
+                             symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol, 
+                             xlab="Samples",ylab="features", main=mainlab1,labRow = labRow.value, labCol = labCol.value,cex.main=0.8)
               
               (le1<-(legend(par('usr')[2], par('usr')[4], bty='n', xpd=NA,class_labels_levels, col = col_vec,pch = rep(19,length(col_vec)), pt.cex = 0.6, title = "Class",cex=0.5)))
               
@@ -1230,7 +1292,10 @@ function(feature_table_file,parentoutput_dir,class_labels_file,X=NA,Y=NA,heatmap
               par(omd=c(0, 1-w, 0, 1),cex.main=0.7)
               
               
-              h73<-heatmap.2(data_m, Rowv=NULL, Colv=as.dendrogram(hc),  col=heatmap_cols, scale="row",key=TRUE, symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,xlab="Samples",ylab="features", main=mainlab1,dendrogram = c("col"),ColSideColors=patientcolors,labRow = FALSE, labCol = FALSE,cex.main=0.8)
+              h73<-heatmap.2(data_m, Rowv=NULL, Colv=as.dendrogram(hc),  col=heatmap_cols, scale="row",key=TRUE,
+                             symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,xlab="Samples",
+                             ylab="features", main=mainlab1,dendrogram = c("col"),ColSideColors=patientcolors,
+                             labRow = labRow.value, labCol = labCol.value,cex.main=0.8)
               
               (le1<-(legend(par('usr')[2], par('usr')[4], bty='n', xpd=NA,class_labels_levels, col = col_vec,pch = rep(19,length(col_vec)), pt.cex = 0.6, title = "Class",cex=0.5)))
               
@@ -1239,7 +1304,10 @@ function(feature_table_file,parentoutput_dir,class_labels_file,X=NA,Y=NA,heatmap
               par(omd=c(0, 1-w, 0, 1),cex.main=0.7)
               
               
-              h73<-heatmap.2(data_m, Rowv=NULL, Colv=as.dendrogram(hc),  col=heatmap_cols, scale="none",key=TRUE, symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,xlab="Samples",ylab="features", main=mainlab1,dendrogram = c("col"),ColSideColors=patientcolors,labRow = FALSE, labCol = FALSE,cex.main=0.8)
+              h73<-heatmap.2(data_m, Rowv=NULL, Colv=as.dendrogram(hc),  col=heatmap_cols, scale="none",key=TRUE,
+                             symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,
+                             xlab="Samples",ylab="features", main=mainlab1,dendrogram = c("col"),
+                             ColSideColors=patientcolors,labRow = labRow.value, labCol = labCol.value,cex.main=0.8)
               
               (le1<-(legend(par('usr')[2], par('usr')[4], bty='n', xpd=NA,class_labels_levels, col = col_vec,pch = rep(19,length(col_vec)), pt.cex = 0.6, title = "Class",cex=0.5)))
               
@@ -1271,7 +1339,9 @@ function(feature_table_file,parentoutput_dir,class_labels_file,X=NA,Y=NA,heatmap
               w <- 0.1
               par(omd=c(0, 1-w, 0, 1),cex.main=0.7)
               
-              h73<-heatmap.2(data_m, Rowv=NULL, Colv=NULL,  col=heatmap_cols, scale="row",key=TRUE, symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,xlab="Samples",ylab="features", main=mainlab1,dendrogram = c("none"),labRow = FALSE, labCol = FALSE,cex.main=0.8)
+              h73<-heatmap.2(data_m, Rowv=NULL, Colv=NULL,  col=heatmap_cols, scale="row",key=TRUE, symkey=FALSE, 
+                             density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,xlab="Samples",
+                             ylab="features", main=mainlab1,dendrogram = c("none"),labRow = labRow.value, labCol = labCol.value,cex.main=0.8)
               
               (le1<-(legend(par('usr')[2], par('usr')[4], bty='n', xpd=NA,class_labels_levels, col = col_vec,pch = rep(19,length(col_vec)), pt.cex = 0.6, title = "Class",cex=0.5)))
               
@@ -1280,7 +1350,10 @@ function(feature_table_file,parentoutput_dir,class_labels_file,X=NA,Y=NA,heatmap
               w <- 0.1
               par(omd=c(0, 1-w, 0, 1),cex.main=0.7)
               
-              h73<-heatmap.2(data_m, Rowv=NULL, Colv=NULL,  col=heatmap_cols, scale="none",key=TRUE, symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,xlab="Samples",ylab="features", main=mainlab1,dendrogram = c("none"),labRow = FALSE, labCol = FALSE,cex.main=0.8)
+              h73<-heatmap.2(data_m, Rowv=NULL, Colv=NULL,  col=heatmap_cols, scale="none",key=TRUE, symkey=FALSE,
+                             density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,
+                             xlab="Samples",ylab="features", main=mainlab1,dendrogram = c("none"),
+                             labRow = labRow.value, labCol = labCol.value,cex.main=0.8)
               
               (le1<-(legend(par('usr')[2], par('usr')[4], bty='n', xpd=NA,class_labels_levels, col = col_vec,pch = rep(19,length(col_vec)), pt.cex = 0.6, title = "Class",cex=0.5)))
               
@@ -1292,7 +1365,10 @@ function(feature_table_file,parentoutput_dir,class_labels_file,X=NA,Y=NA,heatmap
               w <- 0.1
               par(omd=c(0, 1-w, 0, 1),cex.main=0.7)
               
-              h73<-heatmap.2(data_m, Rowv=NULL, Colv=NULL,  col=heatmap_cols, scale="row",key=TRUE, symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,xlab="Samples",ylab="features", main=mainlab1,ColSideColors=patientcolors,dendrogram = c("none"),labRow = FALSE, labCol = FALSE,cex.main=0.8)
+              h73<-heatmap.2(data_m, Rowv=NULL, Colv=NULL,  col=heatmap_cols, scale="row",key=TRUE, symkey=FALSE, 
+                             density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,xlab="Samples",ylab="features",
+                             main=mainlab1,ColSideColors=patientcolors,dendrogram = c("none"),
+                             labRow = labRow.value, labCol = labCol.value,cex.main=0.8)
               
               (le1<-(legend(par('usr')[2], par('usr')[4], bty='n', xpd=NA,class_labels_levels, col = col_vec,pch = rep(19,length(col_vec)), pt.cex = 0.6, title = "Class",cex=0.5)))
               
@@ -1302,7 +1378,10 @@ function(feature_table_file,parentoutput_dir,class_labels_file,X=NA,Y=NA,heatmap
               w <- 0.1
               par(omd=c(0, 1-w, 0, 1),cex.main=0.7)
               
-              h73<-heatmap.2(data_m, Rowv=NULL, Colv=NULL,  col=heatmap_cols, scale="none",key=TRUE, symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,xlab="Samples",ylab="features", main=mainlab1,ColSideColors=patientcolors,dendrogram = c("none"),labRow = FALSE, labCol = FALSE,cex.main=0.8)
+              h73<-heatmap.2(data_m, Rowv=NULL, Colv=NULL,  col=heatmap_cols, scale="none",key=TRUE, symkey=FALSE,
+                             density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,xlab="Samples",
+                             ylab="features", main=mainlab1,ColSideColors=patientcolors,dendrogram = c("none"),
+                             labRow = labRow.value, labCol = labCol.value,cex.main=0.8)
               
               (le1<-(legend(par('usr')[2], par('usr')[4], bty='n', xpd=NA,class_labels_levels, col = col_vec,pch = rep(19,length(col_vec)), pt.cex = 0.6, title = "Class",cex=0.5)))
               

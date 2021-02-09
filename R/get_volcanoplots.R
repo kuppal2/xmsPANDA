@@ -1,5 +1,10 @@
 get_volcanoplots <-
-function(xvec,yvec,up_or_down,maintext="",ythresh=0.05,y2thresh=NA,ylab,xlab,colorvec=c("darkblue","red3"),col_seq=c("brown","chocolate3","orange3","coral","pink","skyblue","blue","darkblue","purple","violet"),xincrement=1,yincrement=1,xthresh=1,pchvec=c(21,21),background.points.col="gray50",bad.feature.index=NA){
+function(xvec,yvec,up_or_down,maintext="",ythresh=0.05,y2thresh=NA,
+                           ylab,xlab,colorvec=c("darkblue","red3"),
+                           col_seq=c("brown","chocolate3","orange3","coral",
+                                     "pink","skyblue","blue","darkblue","purple","violet"),
+                           xincrement=1,yincrement=1,xthresh=1,pchvec=c(21,21)
+                           ,background.points.col="gray50",bad.feature.index=NA,xlim.arg=NA,ylim.arg=NA){
   
   # ###savelist=ls(),file="volcano.Rda")
   d4<-xvec
@@ -16,10 +21,19 @@ function(xvec,yvec,up_or_down,maintext="",ythresh=0.05,y2thresh=NA,ylab,xlab,col
     up_or_down<-rep(1,length(yvec))
   }
   
+  if(is.na(xlim.arg)==TRUE & is.na(ylim.arg)==TRUE){
   plot(d4,logp,xaxt="n",ylab=ylab,xlab=xlab,xaxt="n",yaxt="n",cex=0.4,cex.main=0.7,main=maintext)
-  axis(1, at=seq(min_val , max_val, by=xincrement) , las=2)
-  axis(2, at=seq(0 , (max(logp)+2), by=yincrement) , las=2)
-  
+    axis(1, at=seq(min_val , max_val, by=xincrement) , las=2)
+    axis(2, at=seq(0 , (max(logp)+2), by=yincrement) , las=2)
+    
+    
+   }else{
+    plot(d4,logp,xaxt="n",ylab=ylab,xlab=xlab,xaxt="n",yaxt="n",cex=0.4,cex.main=0.7,main=maintext,xlim=xlim.arg,ylim=ylim.arg)
+     axis(1, at=seq(xlim.arg[1] , xlim.arg[2], by=xincrement) , las=2)
+     axis(2, at=seq(ylim.arg[1],ylim.arg[2], by=yincrement) , las=2)
+     
+  }
+ 
   
   points(d4,logp,col=background.points.col,cex=0.4,bg=background.points.col,pch=21)
   points(d4,logp,col=background.points.col,cex=0.4,bg=background.points.col,pch=21)

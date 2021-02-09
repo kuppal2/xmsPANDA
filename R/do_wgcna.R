@@ -155,8 +155,8 @@ function(feature_table_file=NA,class_labels_file=NA,X=NA,Y=NA,sigfeats=NA){
   suppressWarnings(dir.create("Figures"))
   suppressWarnings(dir.create("Tables"))
   #setwd("NetworkAnalysis/")
-  ###saveMET,file="MET.Rda")
-  ###savesetLabels,file="setLabels.Rda")
+  #save(MET,file="MET.Rda")
+#  save(setLabels,file="setLabels.Rda")
   pdf("Figures/Module_preservation_analysis.pdf",width=10,height=8)
   #tiff("module_preservation.tiff",width=2000,height=2000)
   #sizeGrWindow(8,10);
@@ -171,7 +171,8 @@ function(feature_table_file=NA,class_labels_file=NA,X=NA,Y=NA,sigfeats=NA){
   #sizeGrWindow(8,10);
   #tiff("module_preservation.tiff",width=2000,height=2000)
   par(cex = 0.9)
-  plotEigengeneNetworks_custom(MET, setLabels, marDendro = c(0,2,2,1), marHeatmap = c(3,3,2,1),zlimPreservation = c(0.5, 1), plotPreservation = "standard",plotDendrograms=FALSE)
+  plotEigengeneNetworks_custom(MET, setLabels, marDendro = c(0,2,2,1), marHeatmap = c(3,3,2,1),zlimPreservation = c(0.5, 1), plotPreservation = "standard",
+                               plotDendrograms=FALSE)
   try(dev.off(),silent=TRUE)
   graphics.off()
   graphics.off()

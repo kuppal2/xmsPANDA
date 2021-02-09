@@ -24,6 +24,8 @@ function(data_matrix,newdevice=FALSE,abs.cor.thresh=0.4,pvalue.thresh=0.05,cor.f
   
   cor1<-WGCNA::cor(t(goodfeats_temp[,-c(1:2)]),method=cor.method)
   
+  save(cor1,abs.cor.thresh,pvalue.thresh,cor.fdrthresh,file="corres.Rda")
+  
   if(is.na(abs.cor.thresh)==FALSE){
     cor1[(abs(cor1)<abs.cor.thresh)]<-0
   }

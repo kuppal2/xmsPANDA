@@ -102,7 +102,7 @@ function(X=NA,Y=NA,feature_table_file=NA,class_labels_file=NA,feat.sel.methods=c
   
   
   
-  dir.create(outloc)
+  suppressWarnings(dir.create(outloc))
   setwd(outloc)
   
   outloc=getwd()
@@ -1251,7 +1251,8 @@ function(X=NA,Y=NA,feature_table_file=NA,class_labels_file=NA,feat.sel.methods=c
       
       
       try(get_hca(parentoutput_dir=outloc,X=good_feats,Y=Y1,heatmap.col.opt=heatmap.col.opt,cor.method="spearman",is.data.znorm=FALSE,analysismode="classification",
-                  sample.col.opt="rainbow",plots.width=2000,plots.height=2000,plots.res=300, alphacol=0.3, hca_type=hca_type,newdevice=FALSE),silent=TRUE)
+                  sample.col.opt="rainbow",plots.width=2000,plots.height=2000,plots.res=300, alphacol=0.3, hca_type=hca_type,
+                  newdevice=FALSE,labRow.value = labRow.value, labCol.value = labCol.value),silent=TRUE)
       
       
       
@@ -2775,16 +2776,16 @@ function(X=NA,Y=NA,feature_table_file=NA,class_labels_file=NA,feat.sel.methods=c
       #outloc<-paste(parentoutput_dir,"/Allcornetworksigfeats","log2fcthresh",log2.fold.change.thresh,"/",sep="")
       outloc<-paste(parentoutput_dir,"/MWASresults","/",sep="")
       
-      dir.create(outloc)
+      suppressWarnings(dir.create(outloc))
       setwd(outloc)
       
       #cor.method="spearman",networktype="complete",abs.cor.thresh=0.4,cor.fdrthresh=0.05,max.cor.num=100,net_node_colors=c("green","red"), net_legend=TRUE
       
       if(networktype=="complete"){
-        mwan_fdr<-do_cor(data_m_fc_withfeats,subindex=sigfeats_index,targetindex=NA,outloc,networkscope="global",cor.method,abs.cor.thresh,cor.fdrthresh,max.cor.num,net_node_colors,net_legend)
+        mwan_fdr<-do_cor(data_m_fc_withfeats,subindex=sigfeats_index,targetindex=NA,outloc,networkscope="global",cor.method,abs.cor.thresh,cor.fdrthresh,max.cor.num,net_node_colors,net_legend,cex.plots=cex.plots)
       }else{
         if(networktype=="GGM"){
-          mwan_fdr<-get_partial_cornet(data_m_fc_withfeats, sigfeats.index=sigfeats_index,targeted.index=NA,networkscope="global",cor.method,abs.cor.thresh,cor.fdrthresh,outloc=outloc,net_node_colors,net_legend)
+          mwan_fdr<-get_partial_cornet(data_m_fc_withfeats, sigfeats.index=sigfeats_index,targeted.index=NA,networkscope="global",cor.method,abs.cor.thresh,cor.fdrthresh,outloc=outloc,net_node_colors,net_legend,cex.plots=cex.plots)
         }else{
           print("Invalid option. Please use complete or GGM.")
         }

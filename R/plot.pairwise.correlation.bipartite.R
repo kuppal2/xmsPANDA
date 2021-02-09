@@ -95,7 +95,7 @@ function(data_matrix,newdevice=FALSE,abs.cor.thresh=0.4,pvalue.thresh=0.05,cor.f
   
   corpval1=apply(cor1,2,function(x){corPvalueStudent(x,n=ncol(goodfeats_temp[,-c(1:2)]))})
   
-  #  ##save(cor1,goodfeats_temp,corpval1,file="cor2.Rda")
+  #save(cor1,goodfeats_temp,corpval1,file="cor2.Rda")
   
   fdr_adjust_pvalue<-try(fdrtool(as.vector(cor1[upper.tri(cor1)]),statistic="correlation",verbose=FALSE,plot=FALSE),silent=TRUE)
   

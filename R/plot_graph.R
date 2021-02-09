@@ -1,7 +1,7 @@
 plot_graph <-
 function(df,net_node_colors=c("orange", "green","blue","pink"),graphmethod="radial",label.cex=0.3,filename="",
                      net_node_shape=c("rectangle","circle","triangle","star","square","csquare","crectangle","vrectangle"),maxnodesperclass=100,
-                     seednum=100,vertex.size=6,interactive=TRUE,Xname=NA,Yname=NA,Zname=NA,Wname=NA,classname=NA,layout.type="fr1"){
+                     seednum=100,vertex.size=6,interactive=TRUE,Xname=NA,Yname=NA,Zname=NA,Wname=NA,classname=NA,layout.type="fr1",mtext.val=NA){
   
   df<-as.data.frame(df)
   
@@ -10,7 +10,7 @@ function(df,net_node_colors=c("orange", "green","blue","pink"),graphmethod="radi
   df$to<-as.character(df$to)
   
   df$weight<-as.numeric(df$weight)
- # save(df,file="df.Rda")
+ #save(df,file="df.Rda")
   
   if(length(which(df$weight==0))>0){
     
@@ -31,30 +31,7 @@ function(df,net_node_colors=c("orange", "green","blue","pink"),graphmethod="radi
   
   
   t1<-c("X","Y","Z","W") #c(Xname,Yname,Zname,Wname) #levels(as.factor(nodes_vec_class))
-  
-  df<-{}
-  for(t1_ind in 1:length(t1)){
-    
-    node_index<-which(nodes_vec_class==t1[t1_ind])
-    
-    if(length(node_index)>0){
-      dftemp<-dfall[node_index,]
-      
-      if(is.na(maxnodesperclass)==FALSE){
-        if(nrow(dftemp)>maxnodesperclass){
-          dftemp<-dftemp[order(abs(as.numeric(dftemp$weight)),decreasing=TRUE),]
-          dftemp1<-dftemp #[-which(duplicated(dftemp$to)==TRUE),]
-          
-          if(nrow(dftemp1)>maxnodesperclass){
-            dftemp<-dftemp1[order(abs(as.numeric(dftemp1$weight)),decreasing=TRUE)[1:maxnodesperclass],]
-          }
-          rm(dftemp1)
-        }
-      }
-      df<-rbind(df,dftemp)
-      rm(dftemp)
-    }
-  }
+
   
   
   
@@ -133,7 +110,7 @@ function(df,net_node_colors=c("orange", "green","blue","pink"),graphmethod="radi
       write.graph(sg, file =cytoscape_fname, format = "gml")
     }
     
-    fname1<-paste(filename,"_linkmatrix.txt",sep="")
+    fname1<-paste("Tables/",filename,"_linkmatrix.txt",sep="")
     write.table(df,file=fname1,sep="\t",row.names=FALSE)
     
     {
@@ -163,11 +140,19 @@ function(df,net_node_colors=c("orange", "green","blue","pink"),graphmethod="radi
       if(is.na(classname)==TRUE){
         
         if(is.na(maxnodesperclass)==TRUE){
-          mtext("Showing all pairwise correlations",side=3,line=3,cex=0.6,adj=NA)
           
+          if(is.na(mtext.val)==FALSE){
+            mtext(mtext.val,side=3,line=3,cex=1,adj=NA)
+          }else{
+            mtext("Showing all pairwise correlations",side=3,line=3,cex=1,adj=NA)
+          }
         }else{
-          mtext(paste("Showing top ",maxnodesperclass," correlations",sep=""),side=3,line=3,cex=0.6,adj=NA)
           
+          if(is.na(mtext.val)==FALSE){
+            mtext(mtext.val,side=3,line=3,cex=1,adj=NA)
+          }else{
+          mtext(paste("Showing top ",maxnodesperclass," correlations",sep=""),side=3,line=3,cex=1,adj=NA)
+          }
         }
         #mtext("Using all samples",side=3,line=3,cex=0.6,adj=NA)
       }else{

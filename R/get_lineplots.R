@@ -7,7 +7,8 @@ function(X=NA,Y=NA,feature_table_file=NA,parentoutput_dir=NA,
                         cex.plots=0.8,
                         lineplot.lty.option=c("solid", "dashed", "dotted", "dotdash", "longdash", "twodash"),
                         timeseries.lineplots=FALSE,name=NA,study.design="oneway",
-                        alphabetical.order=TRUE,output.format="pdf",multiple.figures.perpanel=TRUE,sizeval=1.2)
+                        alphabetical.order=TRUE,output.format="pdf",
+                        multiple.figures.perpanel=TRUE,sizeval=1.2,plot.height=8,plot.width=8)
 {
   
   
@@ -60,7 +61,7 @@ function(X=NA,Y=NA,feature_table_file=NA,parentoutput_dir=NA,
         data_matrix<-as.data.frame(data_matrix)
         
         Name<-as.character(data_matrix[,check_ind])
-        
+        name=Name
         data_matrix<-cbind(mz,time,data_matrix[,-check_ind])
         names_with_mz_time=cbind(Name,mz,time)
         
@@ -79,6 +80,7 @@ function(X=NA,Y=NA,feature_table_file=NA,parentoutput_dir=NA,
           check_ind<-gregexpr(cnames,pattern="^name$")
           check_ind<-which(check_ind>0)
           Name<-as.character(data_matrix[,check_ind])
+          name=Name
           data_matrix<-data_matrix[,-check_ind]
           names_with_mz_time=cbind(Name,data_matrix$mz,data_matrix$time)
           colnames(names_with_mz_time)<-c("Name","mz","time")
@@ -426,7 +428,7 @@ function(X=NA,Y=NA,feature_table_file=NA,parentoutput_dir=NA,
       
       
       
-      save(classlabels_orig,classgroup,data_m,file="myData.Rda")
+  #  save(classlabels_orig,classgroup,data_m,file="myData1.Rda")
       
       
       myData<-cbind(classgroup,as.data.frame(classlabels_orig[,2]),as.data.frame(classlabels_orig[,3]),t(data_m))
@@ -437,12 +439,11 @@ function(X=NA,Y=NA,feature_table_file=NA,parentoutput_dir=NA,
       if(alphabetical.order==FALSE){
         myData[,2] <- factor(myData[,2], levels=unique(myData[,2]))
         myData[,3] <- factor(myData[,3], levels=unique(myData[,3]))
-        
+        t1=table(myData[,3])
       }
       
       
-      
-      #save(myData,file="myData.Rda")
+     # save(myData,file="myData_A.Rda")
       
       c1<-WGCNA::cor(t(myData[,-c(1:3)]),use = 'pairwise.complete.obs')
       diag(c1)<-NA
@@ -479,7 +480,7 @@ function(X=NA,Y=NA,feature_table_file=NA,parentoutput_dir=NA,
      myData_sum_cor$lower.conf.limit<-as.numeric(as.character(myData_sum_cor$lower.conf.limit))
      myData_sum_cor$upper.conf.limit<-as.numeric(as.character(myData_sum_cor$upper.conf.limit))
      
-    # save(myData_sum_cor,sizeval,cex.val,class_col_vec,shape_vec1,file="mysamp.Rda")
+   #  save(myData_sum_cor,sizeval,cex.val,class_col_vec,file="mysamp.Rda")
      group_num<-gsub(myData_sum_cor$group,pattern=":[a-z|A-Z|0-9|_|-]*",replacement="")
      myData_sum_cor<-cbind(myData_sum_cor,group_num)
      Factor2<-gsub(myData_sum_cor$group,pattern="[a-z|A-Z|0-9|-|_]*:",replacement="")
@@ -519,7 +520,7 @@ strip.text = element_text(face="bold"))+scale_y_continuous(name="mean Pearson co
       
       label_inc_list<-seq(3,dim(myData_sum)[2],4)
       
-      #save(myData_sum,file="myDatasum.Rda")
+   #   save(myData_sum,file="myDatasum.Rda")
       
       pch_vec<-c(19,17,23,22,13,0:12)
       #save(label_inc_list,file="label_inc_list.Rda")
@@ -577,7 +578,7 @@ strip.text = element_text(face="bold"))+scale_y_continuous(name="mean Pearson co
         df.summary$Class<-as.numeric(as.factor(df.summary$Class))
         
         df_time<-levels(df.summary$time)
-        df.summary$time<-as.numeric(as.factor(df.summary$time))
+        #df.summary$time<-as.numeric(as.factor(df.summary$time))
         
        
         #   max_yval<-ceiling(max(df.summary$Intensity+(2.5* df.summary$se),na.rm=TRUE)) #max(ymax,na.rm=TRUE)
@@ -590,7 +591,18 @@ strip.text = element_text(face="bold"))+scale_y_continuous(name="mean Pearson co
         min_yval<-floor(min(df.summary$Intensity-(2.5* df.summary$se),na.rm=TRUE))
         
         
-        class_levels_time<-levels(as.factor(classlabels_orig[,3]))
+        
+        
+        
+        if(alphabetical.order==FALSE){
+          classlabels_orig[,2] <- factor(classlabels_orig[,2], levels=unique(classlabels_orig[,2]))
+          classlabels_orig[,3] <- factor(classlabels_orig[,3], levels=unique(classlabels_orig[,3]))
+          class_levels_time<-levels(as.factor(classlabels_orig[,3]))
+          class_levels<-levels(as.factor(classlabels_orig[,2]))
+        }else{
+          
+          class_levels_time<-levels(as.factor(classlabels_orig[,3]))
+        }
         
         Class<-{}
         for(cnum in 1:length(class_levels)){
@@ -601,7 +613,11 @@ strip.text = element_text(face="bold"))+scale_y_continuous(name="mean Pearson co
           
         }
         
+        if(alphabetical.order==FALSE){
+        df.summary$Class<-factor(df.summary$Class,levels=unique(df.summary$Class))
+        df.summary$time<-factor(df.summary$time,levels=unique(df.summary$time))
         
+        }
         Class<-unique(Class)
         
         t1<-table(df.summary$Class)
@@ -610,8 +626,8 @@ strip.text = element_text(face="bold"))+scale_y_continuous(name="mean Pearson co
         
         #print(df.summary)
         
-        df.summary$x<-df.summary$time # time.hour
-        #savedf.summary,file="df.summary.Rda")
+        df.summary$x<-factor(df.summary$time) # time.hour
+       # save(df.summary,file="df.summary.Rda")
         #savecol_vec,file="col_vec.Rda")
         #saveclass_levels,file="class_levels.Rda")
         #savelist=ls(),file="debuglinep.Rda")
@@ -642,10 +658,10 @@ strip.text = element_text(face="bold"))+scale_y_continuous(name="mean Pearson co
         shape_vec1<-as.numeric(as.character(shape_vec1))
         
         
-        # fname1<-paste("lp",pc,".Rda",sep="")
-        #save(shape_vec1,df.summary,class_labels_levels,unique_class_col_vec,
-          #   cex.val,sizeval,class_col_vec,ymin,ymax,pairedanalysis,ylabel,
-           #  df_time,file="lp1.Rda")
+         fname1<-paste("lp",pc,".Rda",sep="")
+      #  save(shape_vec1,df.summary,class_labels_levels,unique_class_col_vec,
+       #      cex.val,sizeval,class_col_vec,ymin,ymax,pairedanalysis,ylabel,
+        #     df_time,file=fname1) #"lp1.Rda")
         
         
         if(pairedanalysis==TRUE){
@@ -691,10 +707,18 @@ strip.text = element_text(face="bold"))+scale_y_continuous(name="mean Pearson co
             #print("here this ABC")
             #ylim(0,max_yval) +
             
+            
+        #    save(shape_vec1,df.summary,class_labels_levels,sizeval,ymin, ymax,ylabel,cex.val,
+         #        unique_class_col_vec,class_col_vec,ymin,ymax,pairedanalysis,
+          #      timeseries.lineplots,df_time,file="lp2.Rda")
+            
+            
             #if(FALSE)
             {
               shape_vec1<-as.numeric(as.character(shape_vec1))
               options(repr.plot.width = 3, repr.plot.height = 2)
+              
+              if(is.na(lineplot.lty.option)==TRUE){
               plot_res<-suppressWarnings(ggplot(df.summary, aes(x = as.factor(x), y = Intensity,colour = Class,
                                                                 linetype=Class)) + 
                                            geom_point(size = 4,shape=shape_vec1) + 
@@ -709,7 +733,25 @@ strip.text = element_text(face="bold"))+scale_y_continuous(name="mean Pearson co
                                            scale_y_continuous(name=ylabel,
                                                               breaks = scales::pretty_breaks(n = 10)))
                                                                                                                                                                                                                                                                                                                
-              
+              }else{
+                #linetype=lineplot.lty.option
+                plot_res<-suppressWarnings(ggplot(df.summary, aes(x = as.factor(x), y = Intensity,colour = Class
+                                                                  )) + 
+                                             geom_point(size = 4,shape=shape_vec1) + 
+                                             geom_line(aes(group =Class),size=sizeval) + 
+                                             geom_errorbar(aes(ymin = ymin, ymax = ymax),size=0.3,width=0.1)+ ylab(ylabel) + theme_bw() +
+                                             theme(panel.border = element_blank(),
+                                                   panel.grid.major = element_blank(),
+                                                   panel.grid.minor = element_blank(), axis.line = element_line(colour = "black",size=sizeval),
+                                                   axis.text= element_text(size=14*cex.val), axis.title=element_text(size=16,face="bold"),
+                                                   strip.background=element_rect(colour="#f0f0f0",fill="#f0f0f0"),
+                                                   strip.text = element_text(face="bold")) + 
+                                             scale_y_continuous(name=ylabel,
+                                                                breaks = scales::pretty_breaks(n = 10)))
+                
+                
+                
+              }
               if(length(unique_class_col_vec)==1){
                 plot_res<-plot_res+scale_color_manual(values=rep(unique(class_col_vec),length(class_labels_levels)))
                 
@@ -724,9 +766,7 @@ strip.text = element_text(face="bold"))+scale_y_continuous(name="mean Pearson co
             }
             
             
-            #save(shape_vec1,df.summary,class_labels_levels,
-            #     unique_class_col_vec,class_col_vec,ymin,ymax,pairedanalysis,
-             #    timeseries.lineplots,df_time,file="lp2.Rda")
+        
             
             
             
@@ -770,7 +810,7 @@ strip.text = element_text(face="bold"))+scale_y_continuous(name="mean Pearson co
         return(list("df_write_temp"=df_write_temp,"plot_res"=plot_res))
       })
       
-      ##save(plot_res,file="plot_res.Rda")
+   #   save(plot_res,file="plot_res.Rda")
       
       
       
@@ -832,7 +872,7 @@ strip.text = element_text(face="bold"))+scale_y_continuous(name="mean Pearson co
         res<-lapply(seq(1,length(plot_res),1),function(i){
           p1=plot_res[[i]]$plot_res
          
-          figure<-ggarrange(p1,ncol = 1, nrow = 1,heights=c(4,4),width=c(6,6),legend=TRUE,align = c("hv"))
+          figure<-ggarrange(p1,ncol = 1, nrow = 1,heights=plot.height,width=plot.width,legend=TRUE,align = c("hv"))
           return(figure)
         })
         
@@ -1116,7 +1156,7 @@ strip.text = element_text(face="bold"))+scale_y_continuous(name="mean Pearson co
     
     try(dev.off(),silent=TRUE)
   }
-  
+  try(dev.off(),silent=TRUE)
   return(plot_res)
   
 }
