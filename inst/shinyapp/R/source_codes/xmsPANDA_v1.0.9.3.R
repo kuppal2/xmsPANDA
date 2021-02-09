@@ -1305,8 +1305,8 @@ diffRank<-function(adjMtrxSample1,adjMtrxSample2,degree.centrality.method="eigen
     
   }else{
     #eigenvector
-    eigenGraph1=eigen_centrality(graph1,directed = FALSE,weights=abs(E(graph1)$weight),normalized=TRUE)$vector #,normalized=TRUE);
-    eigenGraph2=eigen_centrality(graph2,directed = FALSE,weights=abs(E(graph2)$weight),normalized=TRUE)$vector #,normalized=TRUE);
+    eigenGraph1=eigen_centrality(graph1,directed = FALSE,weights=abs(E(graph1)$weight))$vector #,normalized=TRUE);
+    eigenGraph2=eigen_centrality(graph2,directed = FALSE,weights=abs(E(graph2)$weight))$vector #,normalized=TRUE);
     
     DBC=abs(eigenGraph1-eigenGraph2)
   }
@@ -5310,7 +5310,8 @@ diffexp.biomarkers1<-function(X=NA,Y=NA,feature_table_file=NA,class_labels_file=
         mwan_fdr<-do_cor(data_m_fc_withfeats,subindex=sigfeats_index,targetindex=NA,outloc,networkscope="global",cor.method,abs.cor.thresh,cor.fdrthresh,max.cor.num,net_node_colors,net_legend,cex.plots=cex.plots)
       }else{
         if(networktype=="GGM"){
-          mwan_fdr<-get_partial_cornet(data_m_fc_withfeats, sigfeats.index=sigfeats_index,targeted.index=NA,networkscope="global",cor.method,abs.cor.thresh,cor.fdrthresh,outloc=outloc,net_node_colors,net_legend,cex.plots=cex.plots)
+          mwan_fdr<-get_partial_cornet(data_m_fc_withfeats, sigfeats.index=sigfeats_index,targeted.index=NA,networkscope="global",cor.method,
+                                       abs.cor.thresh,cor.fdrthresh,outloc=outloc,net_node_colors,net_legend)
         }else{
           print("Invalid option. Please use complete or GGM.")
         }

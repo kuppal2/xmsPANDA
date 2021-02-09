@@ -21,8 +21,8 @@ function(adjMtrxSample1,adjMtrxSample2,degree.centrality.method="eigenvector"){
     
   }else{
     #eigenvector
-    eigenGraph1=eigen_centrality(graph1,directed = FALSE,weights=abs(E(graph1)$weight),normalized=TRUE)$vector #,normalized=TRUE);
-    eigenGraph2=eigen_centrality(graph2,directed = FALSE,weights=abs(E(graph2)$weight),normalized=TRUE)$vector #,normalized=TRUE);
+    eigenGraph1=eigen_centrality(graph1,directed = FALSE,weights=abs(E(graph1)$weight))$vector #,normalized=TRUE);
+    eigenGraph2=eigen_centrality(graph2,directed = FALSE,weights=abs(E(graph2)$weight))$vector #,normalized=TRUE);
     
     DBC=abs(eigenGraph1-eigenGraph2)
   }

@@ -2785,7 +2785,8 @@ function(X=NA,Y=NA,feature_table_file=NA,class_labels_file=NA,feat.sel.methods=c
         mwan_fdr<-do_cor(data_m_fc_withfeats,subindex=sigfeats_index,targetindex=NA,outloc,networkscope="global",cor.method,abs.cor.thresh,cor.fdrthresh,max.cor.num,net_node_colors,net_legend,cex.plots=cex.plots)
       }else{
         if(networktype=="GGM"){
-          mwan_fdr<-get_partial_cornet(data_m_fc_withfeats, sigfeats.index=sigfeats_index,targeted.index=NA,networkscope="global",cor.method,abs.cor.thresh,cor.fdrthresh,outloc=outloc,net_node_colors,net_legend,cex.plots=cex.plots)
+          mwan_fdr<-get_partial_cornet(data_m_fc_withfeats, sigfeats.index=sigfeats_index,targeted.index=NA,networkscope="global",cor.method,abs.cor.thresh,
+                                       cor.fdrthresh,outloc=outloc,net_node_colors,net_legend)
         }else{
           print("Invalid option. Please use complete or GGM.")
         }
