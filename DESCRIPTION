@@ -8,4 +8,4 @@ Maintainer: Karan Uppal <kuppal2@emory.edu>
 Description: Includes functions to perform feature selection for classification and regression, network analysis, data exploratory, normalization, and functional analysis.
 License: GPL2.0
 LazyLoad: yes
-Depends: R (>= 3.5.0), parallel, extrafont,RColorBrewer
+Depends: R (>= 3.5.0), parallel, extrafont,RColorBrewer,limma, GO.db, statmod, rgl,gplots, e1071, randomForest, party,qvalue,fdrtool, GeneNet, corpcor, earth, pROC, RColorBrewer, nlme, ROCR,flashClust,RankAggreg, parallel, mclust, pamr, Boruta, sandwich, V8, lsmeans,car,impute, KEGGREST, plotly, colourpicker, ggpubr, extrafont, shinyBS, shinyWidgets,shinycssloaders,mixOmics,plyr,WGCNA,pcaMethods,plsgenomics,pls,igraph,reshape2
