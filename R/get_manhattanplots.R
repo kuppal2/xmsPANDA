@@ -1,5 +1,7 @@
 get_manhattanplots <-
-function(xvec,yvec,up_or_down,maintext="",ythresh=0.05,y2thresh=NA,ylab,xlab,colorvec=c("darkblue","red3"),col_seq=c("brown","chocolate3","orange3","coral","pink","skyblue","blue","darkblue","purple","violet"),xincrement=100,yincrement=1,pchvec=c(21,21),background.points.col="black",bad.feature.index=NA){
+function(xvec,yvec,up_or_down,maintext="",ythresh=0.05,y2thresh=NA,ylab,xlab,colorvec=c("darkblue","red3"),
+                             col_seq=c("brown","chocolate3","orange3","coral","pink","skyblue","blue","darkblue","purple","violet"),xincrement=100,yincrement=1,
+                             pchvec=c(21,21),background.points.col="black",bad.feature.index=NA){
   
   d4<-xvec
   min_val<-min(c(0,d4),na.rm=TRUE)[1]

@@ -17,8 +17,8 @@ graphical_options<-fluidRow(
 column(width=6,numericInput(width="350px","cex.plots", "Size of text on plots:", 0.6, min = 0.001))
 ),
    column(width=12,
-column(width=6,selectInput(width="350px","boxplot.jitter", "Add jitter to boxplots:", c("TRUE","FALSE"))),
-column(width=4,selectInput(width="350px","boxplot.pvalues", "Add p-values to boxplots:", c("TRUE","FALSE")))
+column(width=6,selectInput(width="350px","boxplot.jitter", "Add jitter to boxplots:", c("FALSE","TRUE"))),
+column(width=4,selectInput(width="350px","boxplot.pvalues", "Add p-values to boxplots:", c("FALSE","TRUE")))
 #column(width=6,selectInput(width="350px","plot.color.theme","Color theme for boxplots, barplots, and line plots: ",c("journal","default","topo","heat","rainbow","terrain","black","grey57")))
 
            

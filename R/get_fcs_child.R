@@ -240,12 +240,13 @@ function(metab_data,reference_sets,itrs=1000,fcs.min.hits=2,numnodes=2){
     res<-merge(res,set_size,by="SetID")
     #  #save(res,file="reschild.Rda")
     
-    pdf("QQplot.FCS.pdf")
     
     
     
-    #if(FALSE)
+    
+    if(FALSE)
     {
+      pdf("QQplot.FCS.pdf")
       par(mfrow=c(2,2))
       my.pvalues=as.numeric(as.character(res$pval.Agg.Statistic))
       exp.pvalues<-(rank(my.pvalues, ties.method="first")+.5)/(length(my.pvalues)+1)

@@ -10,6 +10,8 @@ options(warn=-1)
   suppressMessages(library(rgl))
   suppressMessages(library(gplots))
   
+  suppressMessages(library(cowplot))
+  
   
   suppressMessages(library(WGCNA))
   suppressMessages(library(randomForest))
@@ -7792,12 +7794,13 @@ get_fcs_child<-function(metab_data,reference_sets,itrs=1000,fcs.min.hits=2,numno
     res<-merge(res,set_size,by="SetID")
     #  #save(res,file="reschild.Rda")
     
-    pdf("QQplot.FCS.pdf")
     
     
     
-    #if(FALSE)
+    
+    if(FALSE)
     {
+      pdf("QQplot.FCS.pdf")
       par(mfrow=c(2,2))
       my.pvalues=as.numeric(as.character(res$pval.Agg.Statistic))
       exp.pvalues<-(rank(my.pvalues, ties.method="first")+.5)/(length(my.pvalues)+1)
@@ -9764,7 +9767,17 @@ get_volcanoplots<-function(xvec,yvec,up_or_down,maintext="",ythresh=0.05,y2thres
   points(d4,logp,col=background.points.col,cex=0.4,bg=background.points.col,pch=21)
   
   
-  goodip<-which(yvec>ythresh & abs(xvec)>xthresh)
+ # goodip<-which(yvec>y2thresh & abs(xvec)>xthresh)
+  
+  if(is.na(y2thresh)==TRUE){
+    
+    goodip<-which(yvec>ythresh & abs(xvec)>xthresh)
+  }else{
+    
+    goodip<-which(yvec>y2thresh & abs(xvec)>xthresh)
+    
+  }
+  
   
   if(length(bad.feature.index)>0){
     
@@ -9819,7 +9832,9 @@ get_volcanoplots<-function(xvec,yvec,up_or_down,maintext="",ythresh=0.05,y2thres
 }
 
 
-get_manhattanplots<-function(xvec,yvec,up_or_down,maintext="",ythresh=0.05,y2thresh=NA,ylab,xlab,colorvec=c("darkblue","red3"),col_seq=c("brown","chocolate3","orange3","coral","pink","skyblue","blue","darkblue","purple","violet"),xincrement=100,yincrement=1,pchvec=c(21,21),background.points.col="black",bad.feature.index=NA){
+get_manhattanplots<-function(xvec,yvec,up_or_down,maintext="",ythresh=0.05,y2thresh=NA,ylab,xlab,colorvec=c("darkblue","red3"),
+                             col_seq=c("brown","chocolate3","orange3","coral","pink","skyblue","blue","darkblue","purple","violet"),xincrement=100,yincrement=1,
+                             pchvec=c(21,21),background.points.col="black",bad.feature.index=NA){
   
   d4<-xvec
   min_val<-min(c(0,d4),na.rm=TRUE)[1]
@@ -13233,19 +13248,22 @@ get_survplot_adjustedcurve <- function(fit,
     height3 <- 0.15 + (length(levels(curve$variable))-2)*0.3
     p <- cowplot::plot_grid(plotlist = plot, nrow=3, rel_heights=c(height1, height2, height3))
     #p <- grid.arrange(plot[[1]], plot[[2]], plot[[3]], nrow = 3, heights = c(height1, height2, height3))
-  }
+    
   
-  #print(p)
+  }
+  #print(plot)
+  return(p)
 }
 
 
 get_forestplot <- function(fit,data,xlab="",ylab="Hazard Ratio (95% CI)",sigcolor="red"){
   
   indata <- .get_data(fit, data)
+  #save(fit,data,file="fit.Rda")
   fit_summary <- summary(fit)
   coef_table <- fit_summary$coefficients
   plotdata <- data.frame(predictor=as.character(rownames(coef_table)),
-                         hazard_ratio=as.numeric(round(coef_table[,2]),3),
+                         hazard_ratio=as.numeric(round(coef_table[,2],3)),
                          upper=as.numeric(coef_table[,2])+1.96*as.numeric(coef_table[,3]),
                          lower=as.numeric(coef_table[,2])-1.96*as.numeric(coef_table[,3]),
                          pvalue=as.numeric(round(coef_table[,5],3)),
@@ -13280,7 +13298,7 @@ get_forestplot <- function(fit,data,xlab="",ylab="Hazard Ratio (95% CI)",sigcolo
           plot.title = element_text(size=18, hjust = 0),
           axis.text.x=element_text(colour="black", size = 12,angle=0),
           axis.text.y=element_text(colour="black", size = 12))
-  
+  return(p)
 }
 
 confusion_matrix2 <- function(
@@ -13514,17 +13532,200 @@ get_diagnosis <- function(fit,data,covariate=NULL,type="pha",maintitle=""){
   
 }
 
-get_survivalanalysis_multi<-function(data){
+get_survivalanalysis<-function(Xmat,Ymat,GroupBy.variable="sex",cox.glmnet=FALSE,newdevice=TRUE,plot.width=8,plot.height=8,KMplot=TRUE)
+{
   
   
+  Xmat1<-cbind(colnames(Xmat[,-c(1)]),t(Xmat[,-c(1)]))
+  Xmat1<-as.data.frame(Xmat1)
+  cnames<-colnames(Xmat1)
+  cnames[1]<-"SID"
+  colnames(Xmat1)<-cnames
+  
+  cnames<-colnames(Ymat)
+  cnames[1]<-"SID"
+  cnames[2]<-"time"
+  cnames[3]<-"status"
+  colnames(Ymat)<-cnames
+  
+  
+  sdata1<-merge(Ymat,Xmat1,by="SID")
+  
+  
+  if(cox.glmnet==TRUE){
+    cox.cv.glmnet<-cv.glmnet(x=data.matrix(sdata1[,-c(1:3)]),y=Surv(sdata1$time, sdata1$status),family="cox",alpha=1)
+    
+    cox.glmnet.res<-glmnet(x=data.matrix(sdata1[,-c(1:3)]),y=Surv(sdata1$time, sdata1$status),family="cox",lambda=cox.cv.glmnet$lambda.min)
+    
+    select_feats<-which(abs(cox.glmnet.res$beta)>0)
+    
+    
+    if(length(select_feats)<0){
+      stop("No features selected.")
+    }
+    #sdata<-sdata[,c(1,2,(select_feats+2))]
+    #fit<-cox.glmnet.res	
+    Xmat2<-Xmat1[,c(1,select_feats+1)]
+    sdata1<-merge(Ymat,Xmat2,by="SID")
+  }
+  
+  
+  
+  
+ 
+  plist = list()
+  
+  if(newdevice==TRUE){
+    
+    pdf("CPH_results.pdf",width=plot.width,height=plot.height)
+  }
+  if(KMplot==TRUE){
+    
+    
+    if(length(grep(colnames(sdata1),pattern=GroupBy.variable))>0){
+      
+      fit <- coxph(Surv(time, status) ~ ., data=sdata1[,-c(1)])
+      p<- get_survplot_adjustedcurve(fit,data=sdata1,variable=GroupBy.variable,L_ratio_test=FALSE,waldtest=FALSE,
+                                   logrank=TRUE,concordance = FALSE,add.risk.table=TRUE, add.cumulative.events=FALSE)
+    
+    }else{
+      
+      fit <- coxph(Surv(time, status) ~ ., data=sdata1[,-c(1)])
+      p<- get_survplot_adjustedcurve(fit,data=sdata1,method = "single",L_ratio_test=FALSE,waldtest=FALSE,
+                                     logrank=FALSE,concordance = FALSE,add.risk.table=FALSE, add.cumulative.events=FALSE)
+      
+    }
+    
+   # plist[[length(plist)+1]] <- cowplot::ggdraw(p)
+    
+    text_val <-"Kaplan-Meier survival curve"
+    
+    # Create a text grob
+    tgrob <- text_grob(text_val,size = 16)
+    # Draw the text
+    plot_0 <- as_ggplot(tgrob) + theme(plot.margin = margin(0,1,0,0, "cm"))
+    
+    print(ggarrange(plot_0,p,ncol = 1,nrow = 2,heights = c(0.75,5)))
+    
+  }
+  
+  
+  
+  #run univariate analysis
+  res<-lapply((ncol(Ymat)+1):ncol(sdata1),function(j){
+                
+                intensity<-as.numeric(as.character(sdata1[,c(j)]))
+                
+                if(length(which(is.na(intensity)==FALSE))<1){
+                  intensity<-as.factor(sdata1[,c(j)])
+                  
+                }
+                sdata_temp<-cbind(Ymat[,-c(1)],intensity)
+                
+                sdata_temp<-as.data.frame(sdata_temp)
+                
+              
+                
+                cnames_all<-colnames(sdata_temp)
+                
+                
+                cnames_other<-cnames_all[-which(cnames_all%in%c("time","status","intensity"))]
+                
+                
+                if(length(cnames_other)>0){
+                sdata_temp<-sdata_temp[,c("time","status","intensity",cnames_other)]
+                }else{
+                  sdata_temp<-sdata_temp[,c("time","status","intensity")]
+                  
+                }
+                
+                cnames_1<-colnames(sdata_temp)
+                
+                cnames_1[which(cnames_1=="intensity")]<-colnames(sdata1)[j]
+                colnames(sdata_temp)<-cnames_1
+                
+                if(length(grep(colnames(Ymat),pattern=GroupBy.variable))>0){
+                  
+                  KM.method="conditional"
+                 
+                  
+                  res<-get_survivalanalysis_univariate(sdata=sdata_temp,KMplot=TRUE,forestplot=TRUE,diagnosis=TRUE, maintitle="",
+                                                       KM.variable = GroupBy.variable,
+                                                       KM.reference = NULL,
+                                                       KM.method = KM.method,
+                                                       KM.plottitle = "",
+                                                       KM.xlab = "Time", KM.ylab = "Survival probability",
+                                                       KM.size = 1, KM.xincrement="auto", KM.yincrement=0.25,
+                                                       KM.concordance=TRUE, KM.rsquare=TRUE, KM.L_ratio_test=FALSE, KM.waldtest=FALSE, KM.logrank=TRUE,
+                                                       KM.linecolor="auto", KM.add.risk.table=TRUE, KM.add.cumulative.events=TRUE,
+                                                       forest.xlab="",forest.ylab="Hazard Ratio (95% CI)",forest.sigcolor="red",
+                                                       diagnosis.covariate=NULL,diagnosis.type="pha",cox.glmnet=FALSE,cv.glm.alpha=1)
+                  
+                  
+                  text_val <- paste("Forest plot for variable: ",colnames(sdata1)[j],sep="")
+                  
+                  # Create a text grob
+                  tgrob <- text_grob(text_val,size = 16)
+                  # Draw the text
+                  plot_0 <- as_ggplot(tgrob) + theme(plot.margin = margin(0,3,0,0, "cm"))
+                  
+                  print(ggarrange(plot_0,res$plots[[2]],
+                            ncol = 1,nrow = 2,heights = c(1,5)))
+                  
+                  
+                }else{
+                  
+                  KM.method="single"
+                  
+                 # print(head(sdata_temp))
+                  
+                  res<-get_survivalanalysis_univariate(sdata=sdata_temp,KMplot=TRUE,forestplot=TRUE,diagnosis=TRUE, maintitle="",
+                                                       KM.variable = GroupBy.variable,
+                                                       KM.reference = NULL,
+                                                       KM.method = KM.method,
+                                                       KM.plottitle = "",
+                                                       KM.xlab = "Time", KM.ylab = "Survival probability",
+                                                       KM.size = 1, KM.xincrement="auto", KM.yincrement=0.25,
+                                                       KM.concordance=TRUE, KM.rsquare=TRUE, KM.L_ratio_test=FALSE, KM.waldtest=FALSE, KM.logrank=TRUE,
+                                                       KM.linecolor="auto", KM.add.risk.table=TRUE, KM.add.cumulative.events=TRUE,
+                                                       forest.xlab="",forest.ylab="Hazard Ratio (95% CI)",forest.sigcolor="red",
+                                                       diagnosis.covariate=NULL,diagnosis.type="pha",cox.glmnet=FALSE,cv.glm.alpha=1)
+                  
+                  
+                  text_val <- paste("Forest plot for CPH model for variable: ",colnames(sdata1)[j],sep="")
+                  
+                  # Create a text grob
+                  tgrob <- text_grob(text_val,size = 16)
+                  # Draw the text
+                  plot_0 <- as_ggplot(tgrob) + theme(plot.margin = margin(0,3,0,0, "cm"))
+                  
+                  print(ggarrange(plot_0,res$plots[[2]],
+                            ncol = 1,nrow = 2,heights = c(1,5)))
+                }
+               
+                s1=summary(res$stats[[1]])
+                
+                resvec<-c(s1[[7]],s1[[7]][2]-1.96*s1[[7]][3],s1[[7]][2]+1.96*s1[[7]][3])
+                
+                return(resvec)
+    })
+  #save(res,file="res1.Rda")
+  res<-ldply(res,rbind)
+  rownames(res)<-colnames(sdata1)[c((ncol(Ymat)+1):ncol(sdata1))]
+  try(dev.off(),silent=TRUE)
+  colnames(res)<-c("coef","exp(coef)","se(coef)","z","pvalue","lower.confint.95pct","upper.confint.95pct")
+  return(res)
 }
 
 ### specify a variable for group information ##
 #data(kidney)
 #out <- get_survivalanalysis(kidney[,-1], KM.variable="sex", maintitle="analysis for kidney data")
 
-
-get_survivalanalysis <- function(data,KMplot=TRUE,forestplot=TRUE,diagnosis=TRUE, maintitle="",
+#library(stringr)
+#library(survminer)
+#Xmat: Name, S1,S2,S3
+#Ymat: SID,time,status, covariates
+get_survivalanalysis_univariate <- function(sdata,KMplot=TRUE,forestplot=TRUE,diagnosis=TRUE, maintitle="",
                                  KM.variable = NULL,
                                  KM.reference = NULL,
                                  KM.method = "conditional",
@@ -13534,50 +13735,36 @@ get_survivalanalysis <- function(data,KMplot=TRUE,forestplot=TRUE,diagnosis=TRUE
                                  KM.concordance=TRUE, KM.rsquare=TRUE, KM.L_ratio_test=TRUE, KM.waldtest=TRUE, KM.logrank=TRUE,
                                  KM.linecolor="auto", KM.add.risk.table=TRUE, KM.add.cumulative.events=TRUE,
                                  forest.xlab="",forest.ylab="Hazard Ratio (95% CI)",forest.sigcolor="red",
-                                 diagnosis.covariate=NULL,diagnosis.type="pha",cox.glmnet=TRUE,alpha=1){
+                                 diagnosis.covariate=NULL,diagnosis.type="pha",cox.glmnet=FALSE,cv.glm.alpha=1){
   
   suppressMessages(library(glmnet))
   suppressMessages(library(cowplot))
   
   
-  print("Survival analysis is running.")
-  print("Using the first three columns as follow-up time, status, intensity.")
+#  print("Survival analysis is running.")
+  #print("Using the first three columns as follow-up time, status, intensity.")
   outlist = list()
   
   #subject_id=as.vector(data[,-1])
+
   
-  
-  sdata=data
-  
-  
-  
-  if(class(sdata[,1])=="numeric" & class(sdata[,2])=="numeric" & class(sdata[,3])=="numeric"){
+  if(class(sdata[,1])=="numeric" & class(sdata[,2])=="numeric"){ # & class(sdata[,3])=="numeric"){
     
-    colnames(sdata)[1:3]=c("time","status","intensity")
+    #colnames(sdata)[1:3]=c("time","status","intensity")
     
     #fit <- coxph(Surv(time, status) ~ ., data=sdata)
     
-    if(cox.glmnet==TRUE){
-      cox.cv.glmnet<-cv.glmnet(x=data.matrix(sdata[,-c(1:2)]),y=Surv(sdata$time, sdata$status),family="cox",alpha=alpha)
-      
-      cox.glmnet.res<-glmnet(x=data.matrix(sdata[,-c(1:2)]),y=Surv(sdata$time, sdata$status),family="cox",lambda=cox.cv.glmnet$lambda.min)
-      
-      select_feats<-which(abs(cox.glmnet.res$beta)>0)
-      if(length(select_feats)<0){
-        stop("No features selected.")
-      }
-      sdata<-sdata[,c(1,2,(select_feats+2))]
-      #fit<-cox.glmnet.res	
-    }
+   
     
     #colnames(sdata)[1:3]=c("time","status","intensity")
     fit <- coxph(Surv(time, status) ~ ., data=sdata)
     
     outlist[[length(outlist)+1]] <- fit
     names(outlist)[length(outlist)] <- "fitted_model"
+  
+      
     
-    
-    print(summary(fit))
+    #print(summary(fit))
     
     plist = list()
     
@@ -13622,7 +13809,7 @@ get_survivalanalysis <- function(data,KMplot=TRUE,forestplot=TRUE,diagnosis=TRUE
     }
     
     names(outlist)
-    
+   # print(plist)
     return(list("stats"=outlist,"plots"=plist))
     
   }else{
@@ -15504,7 +15691,7 @@ get_boxplots<-function(X=NA,Y=NA,feature_table_file,parentoutput_dir,class_label
                        numnodes=2,hightlight.points=FALSE,...)
 {
   
-  get_boxplots_child(X=X,Y=Y,feature_table_file=feature_table_file,parentoutput_dir=parentoutput_dir,class_labels_file=class_labels_file,boxplot.col.opt,alphacol=alphacol,newdevice=newdevice,cex.plots=cex.plots,
+  res<-get_boxplots_child(X=X,Y=Y,feature_table_file=feature_table_file,parentoutput_dir=parentoutput_dir,class_labels_file=class_labels_file,boxplot.col.opt,alphacol=alphacol,newdevice=newdevice,cex.plots=cex.plots,
                      replace.by.NA=replace.by.NA,pairedanalysis=pairedanalysis,filename=filename,ylabel=ylabel,alphabetical.order=alphabetical.order,name=name,add.jitter=add.jitter,add.pvalues=add.pvalues,class.levels=class.levels,fill.plots=fill.plots,
                      connectpairedsamples=connectpairedsamples,boxplot.type=boxplot.type,study.design=study.design,
                      multiple.figures.perpanel=multiple.figures.perpanel,ggplot.type1=ggplot.type1,
@@ -15516,6 +15703,7 @@ get_boxplots<-function(X=NA,Y=NA,feature_table_file,parentoutput_dir,class_label
     
     try(dev.off(filename),silent=TRUE)
   }
+  return(res)
 }
 
 get_boxplots_child<-function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.opt="journal",alphacol=0.3,newdevice=TRUE,cex.plots=0.8,replace.by.NA=FALSE,pairedanalysis=FALSE,filename="",ylabel="Intensity",
@@ -15862,7 +16050,7 @@ get_boxplots_child<-function(X,Y,feature_table_file,parentoutput_dir,class_label
   
   #tiff(boxplots_fname, width=2000,height=3000,res=plots.res, compression="lzw")
   
-  if(newdevice==TRUE & boxplot.type=="simple"){
+  if(newdevice==TRUE){ # & boxplot.type=="simple"){
     pdf(boxplots_fname) #,width=plot.width,height=plot.height)
   }
   #par(mfrow=c(par_rows,max_per_row))
@@ -16500,7 +16688,7 @@ get_boxplots_child<-function(X,Y,feature_table_file,parentoutput_dir,class_label
     },mzvec,timevec,check_names,name,class_labels_levels,sampleclass,col_vec,goodfeats,pairedanalysis,connectpairedsamples,boxplot.type,ggplot.type1,group_by_mat,cex.plots,boxplot.col.opt,add.jitter,add.pvalues,
     fill.plots,multiple.figures.perpanel)
     
-      #save(plot_res,multiple.figures.perpanel,plot.height,plot.width,file="boxplot_plot.Rda")
+    #save(plot_res,multiple.figures.perpanel,plot.height,plot.width,file="boxplot_plot.Rda")
       
     if(boxplot.type=="ggplot"){
       
@@ -16543,18 +16731,24 @@ get_boxplots_child<-function(X,Y,feature_table_file,parentoutput_dir,class_label
         }
           
       
+      library(ggpubr)
+      library(cowplot)
+      
+   # save(res,plot.width,plot.height,plot_res,file="res.Rda")
         
-     #save(res,plot.width,plot.height,plot_res,file="res.Rda")
-        
-    res<-lapply(1:length(res),function(x){res[[x]][[1]]})
     
-     res<-append(res, cowplot::get_legend(plot_res[[1]]))
+    res<-lapply(1:length(res),function(x){
+      return(res[[x]][[1]])
+     # print(res[[x]][[1]])
+      })
+    
+     #res<-append(res, cowplot::get_legend(plot_res[[1]]))
        # res[[length(res)+1]][[1]] <- cowplot::get_legend(plot_res[[i]])
         
         ggpubr::ggexport(res,filename =boxplots_fname,width=unit(plot.width-0.5, "in"),
         height=unit(plot.height-0.5, "in"))
         
-       
+   # ggpubr::ggexport(res,filename =boxplots_fname)
         
       
     }
@@ -16567,6 +16761,7 @@ get_boxplots_child<-function(X,Y,feature_table_file,parentoutput_dir,class_label
   
   #par(mfrow=c(1,1))
   options(warn=0)
+  return(res)
 }
 
 
@@ -22908,9 +23103,24 @@ get_hca_child<-function(feature_table_file,parentoutput_dir,class_labels_file,X=
         
       }
       
-#   save(list=c("data_m","hr","hc","heatmap_cols","mainlab1","rowcolors","patientcolors","cexRow","cexCol","col_vec","class_labels_levels"),file="debug.Rda")
+  #save(list=c("data_m","hr","hc","heatmap_cols","mainlab1","rowcolors","patientcolors","cexRow","cexCol","col_vec","class_labels_levels"),file="debug.Rda")
       
-      
+if(labRow.value==TRUE){
+  
+  labRow.value=rownames(data_m)
+}else{
+  
+  labRow.value=NA
+
+}
+
+if(labCol.value==TRUE){
+  
+  labCol.value=colnames(data_m)
+}else{
+  
+  labCol.value=NA
+}
   
       if(col_samples==FALSE){
         if(is.data.znorm==FALSE){
@@ -22923,7 +23133,7 @@ get_hca_child<-function(feature_table_file,parentoutput_dir,class_labels_file,X=
             
             
             h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=as.dendrogram(hc),  col=heatmap_cols, scale="row",key=TRUE, 
-                           symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,xlab="Samples",ylab="features",
+                           symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,xlab="Samples",ylab="",
                            main=mainlab1,RowSideColors=rowcolors,labRow = labRow.value, labCol = labCol.value,cex.main=0.8)
             
             
@@ -22940,7 +23150,7 @@ get_hca_child<-function(feature_table_file,parentoutput_dir,class_labels_file,X=
             
             h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=as.dendrogram(hc),  col=heatmap_cols, scale="row",
                            key=TRUE, symkey=FALSE, density.info="none", trace="none", 
-                           cexRow=cexRow, cexCol=cexCol,xlab="Samples",ylab="features", main=mainlab1,
+                           cexRow=cexRow, cexCol=cexCol,xlab="Samples",ylab="", main=mainlab1,
                            labRow = labRow.value, labCol = labCol.value,cex.main=0.8)
             
             le1<-(legend(par('usr')[2], par('usr')[4], bty='n', xpd=NA,class_labels_levels, col = col_vec,pch = rep(19,length(col_vec)), pt.cex = 0.6, title = "Class",cex=0.5))
@@ -22956,7 +23166,7 @@ get_hca_child<-function(feature_table_file,parentoutput_dir,class_labels_file,X=
             
             h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=as.dendrogram(hc),  col=heatmap_cols,
                            scale="none",key=TRUE, symkey=FALSE, density.info="none", trace="none",
-                           cexRow=cexRow, cexCol=cexCol,xlab="Samples",ylab="features", main=mainlab1,
+                           cexRow=cexRow, cexCol=cexCol,xlab="Samples",ylab="", main=mainlab1,
                            RowSideColors=rowcolors,labRow = labRow.value, labCol = labCol.value,cex.main=0.8)
             
             le1<-(legend(par('usr')[2], par('usr')[4], bty='n', xpd=NA,class_labels_levels, col = col_vec,pch = rep(19,length(col_vec)), pt.cex = 0.6, title = "Class",cex=0.5))
@@ -22969,7 +23179,7 @@ get_hca_child<-function(feature_table_file,parentoutput_dir,class_labels_file,X=
             
             h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=as.dendrogram(hc),  col=heatmap_cols, scale="none",
                            key=TRUE, symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,
-                           xlab="Samples",ylab="features", main=mainlab1,labRow = labRow.value, labCol = labCol.value,cex.main=0.8)
+                           xlab="Samples",ylab="", main=mainlab1,labRow = labRow.value, labCol = labCol.value,cex.main=0.8)
             
             le1<-(legend(par('usr')[2], par('usr')[4], bty='n', xpd=NA,class_labels_levels, col = col_vec,pch = rep(19,length(col_vec)), pt.cex = 0.6, title = "Class",cex=0.5))
             
@@ -22987,7 +23197,7 @@ get_hca_child<-function(feature_table_file,parentoutput_dir,class_labels_file,X=
             par(omd=c(0, 1-w, 0, 1),cex.main=0.7)
             
             h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=as.dendrogram(hc),  col=heatmap_cols, scale="row",key=TRUE, 
-                           symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol, xlab="Samples",ylab="features",
+                           symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol, xlab="Samples",ylab="",
                            main=mainlab1, ColSideColors=patientcolors,RowSideColors=rowcolors,labRow = labRow.value, labCol = labCol.value,
                            cex.main=0.8)
             
@@ -22998,16 +23208,16 @@ get_hca_child<-function(feature_table_file,parentoutput_dir,class_labels_file,X=
             w <- 0.1
             par(omd=c(0, 1-w, 0, 1),cex.main=0.7)
             
-           print("DOING THIS")
+           #print("DOING THIS HCA")
             
-            
+            #save(data_m,hr,hc,heatmap_cols,cexRow,cexCol,mainlab1,patientcolors,labRow.value,labCol.value,file="thishca.Rda")
             
             
             h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=as.dendrogram(hc),  col=heatmap_cols, scale="row",key=TRUE, symkey=FALSE, 
-                           density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol, xlab="Samples",ylab="features",
+                           density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol, xlab="Samples",ylab="",
                            main=mainlab1, ColSideColors=patientcolors,labRow = labRow.value, labCol = labCol.value)
             
-            # h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=as.dendrogram(hc), scale="row",key=TRUE, symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol, xlab="Samples",ylab="features", main=mainlab1, ColSideColors=patientcolors) #,labRow = FALSE, labCol = FALSE)
+            # h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=as.dendrogram(hc), scale="row",key=TRUE, symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol, xlab="Samples",ylab="", main=mainlab1, ColSideColors=patientcolors) #,labRow = FALSE, labCol = FALSE)
             
             
             (le1<-(legend(par('usr')[2], par('usr')[4], bty='n', xpd=NA,class_labels_levels, col = col_vec,pch = rep(19,length(col_vec)), pt.cex = 0.6, title = "Class",cex=0.5)))
@@ -23023,7 +23233,7 @@ get_hca_child<-function(feature_table_file,parentoutput_dir,class_labels_file,X=
             
             h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=as.dendrogram(hc),  col=heatmap_cols, scale="none",
                            key=TRUE, symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,
-                           xlab="Samples",ylab="features", main=mainlab1, ColSideColors=patientcolors,
+                           xlab="Samples",ylab="", main=mainlab1, ColSideColors=patientcolors,
                            RowSideColors=rowcolors,labRow = labRow.value, labCol = labCol.value)
             
             (le1<-(legend(par('usr')[2], par('usr')[4], bty='n', xpd=NA,class_labels_levels, col = col_vec,pch = rep(19,length(col_vec)), pt.cex = 0.6, title = "Class",cex=0.5)))
@@ -23035,7 +23245,7 @@ get_hca_child<-function(feature_table_file,parentoutput_dir,class_labels_file,X=
             
             h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=as.dendrogram(hc),  col=heatmap_cols, scale="none",
                            key=TRUE, symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,
-                           xlab="Samples",ylab="features", main=mainlab1, ColSideColors=patientcolors,
+                           xlab="Samples",ylab="", main=mainlab1, ColSideColors=patientcolors,
                            labRow = labRow.value, labCol = labCol.value,cex.main=0.8)
             
             (le1<-(legend(par('usr')[2], par('usr')[4], bty='n', xpd=NA,class_labels_levels, col = col_vec,pch = rep(19,length(col_vec)), pt.cex = 0.6, title = "Class",cex=0.5)))
@@ -23182,7 +23392,7 @@ get_hca_child<-function(feature_table_file,parentoutput_dir,class_labels_file,X=
               
               h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=NULL,  col=heatmap_cols, scale="row",key=TRUE, 
                              symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,
-                             xlab="Samples",ylab="features", main=mainlab1,RowSideColors=rowcolors,
+                             xlab="Samples",ylab="", main=mainlab1,RowSideColors=rowcolors,
                              labRow = labRow.value, labCol = labCol.value,cex.main=0.8)
               
               (le1<-(legend(par('usr')[2], par('usr')[4], bty='n', xpd=NA,class_labels_levels, col = col_vec,pch = rep(19,length(col_vec)), pt.cex = 0.6, title = "Class",cex=0.5)))
@@ -23194,7 +23404,7 @@ get_hca_child<-function(feature_table_file,parentoutput_dir,class_labels_file,X=
               
               h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=NULL,  col=heatmap_cols, scale="row",key=TRUE,
                              symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,
-                             xlab="Samples",ylab="features", main=mainlab1,labRow = labRow.value, labCol = labCol.value,cex.main=0.8)
+                             xlab="Samples",ylab="", main=mainlab1,labRow = labRow.value, labCol = labCol.value,cex.main=0.8)
               
               (le1<-(legend(par('usr')[2], par('usr')[4], bty='n', xpd=NA,class_labels_levels, col = col_vec,pch = rep(19,length(col_vec)), pt.cex = 0.6, title = "Class",cex=0.5)))
               
@@ -23209,7 +23419,7 @@ get_hca_child<-function(feature_table_file,parentoutput_dir,class_labels_file,X=
               
               h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=NULL,  col=heatmap_cols, scale="none",
                              key=TRUE, symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, 
-                             cexCol=cexCol,xlab="Samples",ylab="features", main=mainlab1,RowSideColors=rowcolors,
+                             cexCol=cexCol,xlab="Samples",ylab="", main=mainlab1,RowSideColors=rowcolors,
                              labRow = labRow.value, labCol = labCol.value,cex.main=0.8)
               
               (le1<-(legend(par('usr')[2], par('usr')[4], bty='n', xpd=NA,class_labels_levels, col = col_vec,pch = rep(19,length(col_vec)), pt.cex = 0.6, title = "Class",cex=0.5)))
@@ -23221,7 +23431,7 @@ get_hca_child<-function(feature_table_file,parentoutput_dir,class_labels_file,X=
               
               h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=NULL,  col=heatmap_cols, scale="none",key=TRUE,
                              symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,
-                             xlab="Samples",ylab="features", main=mainlab1,labRow = labRow.value, labCol = labCol.value,cex.main=0.8)
+                             xlab="Samples",ylab="", main=mainlab1,labRow = labRow.value, labCol = labCol.value,cex.main=0.8)
               
               (le1<-(legend(par('usr')[2], par('usr')[4], bty='n', xpd=NA,class_labels_levels, col = col_vec,pch = rep(19,length(col_vec)), pt.cex = 0.6, title = "Class",cex=0.5)))
               
@@ -23239,7 +23449,7 @@ get_hca_child<-function(feature_table_file,parentoutput_dir,class_labels_file,X=
               
               h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=NULL,  col=heatmap_cols, scale="row",key=TRUE,
                              symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,
-                             xlab="Samples",ylab="features", main=mainlab1,dendrogram = c("row"),
+                             xlab="Samples",ylab="", main=mainlab1,dendrogram = c("row"),
                              ColSideColors=patientcolors,RowSideColors=rowcolors,labRow = labRow.value, labCol = labCol.value,cex.main=0.8)
               
               (le1<-(legend(par('usr')[2], par('usr')[4], bty='n', xpd=NA,class_labels_levels, col = col_vec,pch = rep(19,length(col_vec)), pt.cex = 0.6, title = "Class",cex=0.5)))
@@ -23250,7 +23460,7 @@ get_hca_child<-function(feature_table_file,parentoutput_dir,class_labels_file,X=
               
               h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=NULL,  col=heatmap_cols, scale="row",key=TRUE, 
                              symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,
-                             xlab="Samples",ylab="features", main=mainlab1,dendrogram = c("row"),
+                             xlab="Samples",ylab="", main=mainlab1,dendrogram = c("row"),
                              ColSideColors=patientcolors,labRow = labRow.value, labCol = labCol.value,cex.main=0.8)
               
               (le1<-(legend(par('usr')[2], par('usr')[4], bty='n', xpd=NA,class_labels_levels, col = col_vec,pch = rep(19,length(col_vec)), pt.cex = 0.6, title = "Class",cex=0.5)))
@@ -23264,7 +23474,7 @@ get_hca_child<-function(feature_table_file,parentoutput_dir,class_labels_file,X=
               
               h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=NULL,  col=heatmap_cols, scale="none",key=TRUE, 
                              symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,
-                             xlab="Samples",ylab="features", main=mainlab1,dendrogram = c("row"),
+                             xlab="Samples",ylab="", main=mainlab1,dendrogram = c("row"),
                              ColSideColors=patientcolors,RowSideColors=rowcolors,labRow = labRow.value, labCol = labCol.value,
                              cex.main=0.8)
               
@@ -23276,7 +23486,7 @@ get_hca_child<-function(feature_table_file,parentoutput_dir,class_labels_file,X=
               
               h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=NULL,  col=heatmap_cols, scale="none",key=TRUE,
                              symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,
-                             xlab="Samples",ylab="features", main=mainlab1,dendrogram = c("row"),
+                             xlab="Samples",ylab="", main=mainlab1,dendrogram = c("row"),
                              ColSideColors=patientcolors,labRow = labRow.value, labCol = labCol.value,cex.main=0.8)
               
               (le1<-(legend(par('usr')[2], par('usr')[4], bty='n', xpd=NA,class_labels_levels, col = col_vec,pch = rep(19,length(col_vec)), pt.cex = 0.6, title = "Class",cex=0.5)))
@@ -23310,7 +23520,7 @@ get_hca_child<-function(feature_table_file,parentoutput_dir,class_labels_file,X=
               par(omd=c(0, 1-w, 0, 1),cex.main=0.7)
               h73<-heatmap.2(data_m, Rowv=NULL, Colv=as.dendrogram(hc),  col=heatmap_cols, scale="row",
                              key=TRUE, symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, 
-                             cexCol=cexCol,xlab="Samples",ylab="features", main=mainlab1,
+                             cexCol=cexCol,xlab="Samples",ylab="", main=mainlab1,
                              labRow = labRow.value, labCol = labCol.value,cex.main=0.8)
               
               (le1<-(legend(par('usr')[2], par('usr')[4], bty='n', xpd=NA,class_labels_levels, col = col_vec,pch = rep(19,length(col_vec)), pt.cex = 0.6, title = "Class",cex=0.5)))
@@ -23320,7 +23530,7 @@ get_hca_child<-function(feature_table_file,parentoutput_dir,class_labels_file,X=
               par(omd=c(0, 1-w, 0, 1),cex.main=0.7)
               h73<-heatmap.2(data_m, Rowv=NULL, Colv=as.dendrogram(hc),  col=heatmap_cols, scale="none",key=TRUE,
                              symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol, 
-                             xlab="Samples",ylab="features", main=mainlab1,labRow = labRow.value, labCol = labCol.value,cex.main=0.8)
+                             xlab="Samples",ylab="", main=mainlab1,labRow = labRow.value, labCol = labCol.value,cex.main=0.8)
               
               (le1<-(legend(par('usr')[2], par('usr')[4], bty='n', xpd=NA,class_labels_levels, col = col_vec,pch = rep(19,length(col_vec)), pt.cex = 0.6, title = "Class",cex=0.5)))
               
@@ -23335,7 +23545,7 @@ get_hca_child<-function(feature_table_file,parentoutput_dir,class_labels_file,X=
               
               h73<-heatmap.2(data_m, Rowv=NULL, Colv=as.dendrogram(hc),  col=heatmap_cols, scale="row",key=TRUE,
                              symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,xlab="Samples",
-                             ylab="features", main=mainlab1,dendrogram = c("col"),ColSideColors=patientcolors,
+                             ylab="", main=mainlab1,dendrogram = c("col"),ColSideColors=patientcolors,
                              labRow = labRow.value, labCol = labCol.value,cex.main=0.8)
               
               (le1<-(legend(par('usr')[2], par('usr')[4], bty='n', xpd=NA,class_labels_levels, col = col_vec,pch = rep(19,length(col_vec)), pt.cex = 0.6, title = "Class",cex=0.5)))
@@ -23347,7 +23557,7 @@ get_hca_child<-function(feature_table_file,parentoutput_dir,class_labels_file,X=
               
               h73<-heatmap.2(data_m, Rowv=NULL, Colv=as.dendrogram(hc),  col=heatmap_cols, scale="none",key=TRUE,
                              symkey=FALSE, density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,
-                             xlab="Samples",ylab="features", main=mainlab1,dendrogram = c("col"),
+                             xlab="Samples",ylab="", main=mainlab1,dendrogram = c("col"),
                              ColSideColors=patientcolors,labRow = labRow.value, labCol = labCol.value,cex.main=0.8)
               
               (le1<-(legend(par('usr')[2], par('usr')[4], bty='n', xpd=NA,class_labels_levels, col = col_vec,pch = rep(19,length(col_vec)), pt.cex = 0.6, title = "Class",cex=0.5)))
@@ -23382,7 +23592,7 @@ get_hca_child<-function(feature_table_file,parentoutput_dir,class_labels_file,X=
               
               h73<-heatmap.2(data_m, Rowv=NULL, Colv=NULL,  col=heatmap_cols, scale="row",key=TRUE, symkey=FALSE, 
                              density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,xlab="Samples",
-                             ylab="features", main=mainlab1,dendrogram = c("none"),labRow = labRow.value, labCol = labCol.value,cex.main=0.8)
+                             ylab="", main=mainlab1,dendrogram = c("none"),labRow = labRow.value, labCol = labCol.value,cex.main=0.8)
               
               (le1<-(legend(par('usr')[2], par('usr')[4], bty='n', xpd=NA,class_labels_levels, col = col_vec,pch = rep(19,length(col_vec)), pt.cex = 0.6, title = "Class",cex=0.5)))
               
@@ -23393,7 +23603,7 @@ get_hca_child<-function(feature_table_file,parentoutput_dir,class_labels_file,X=
               
               h73<-heatmap.2(data_m, Rowv=NULL, Colv=NULL,  col=heatmap_cols, scale="none",key=TRUE, symkey=FALSE,
                              density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,
-                             xlab="Samples",ylab="features", main=mainlab1,dendrogram = c("none"),
+                             xlab="Samples",ylab="", main=mainlab1,dendrogram = c("none"),
                              labRow = labRow.value, labCol = labCol.value,cex.main=0.8)
               
               (le1<-(legend(par('usr')[2], par('usr')[4], bty='n', xpd=NA,class_labels_levels, col = col_vec,pch = rep(19,length(col_vec)), pt.cex = 0.6, title = "Class",cex=0.5)))
@@ -23407,7 +23617,7 @@ get_hca_child<-function(feature_table_file,parentoutput_dir,class_labels_file,X=
               par(omd=c(0, 1-w, 0, 1),cex.main=0.7)
               
               h73<-heatmap.2(data_m, Rowv=NULL, Colv=NULL,  col=heatmap_cols, scale="row",key=TRUE, symkey=FALSE, 
-                             density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,xlab="Samples",ylab="features",
+                             density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,xlab="Samples",ylab="",
                              main=mainlab1,ColSideColors=patientcolors,dendrogram = c("none"),
                              labRow = labRow.value, labCol = labCol.value,cex.main=0.8)
               
@@ -23421,7 +23631,7 @@ get_hca_child<-function(feature_table_file,parentoutput_dir,class_labels_file,X=
               
               h73<-heatmap.2(data_m, Rowv=NULL, Colv=NULL,  col=heatmap_cols, scale="none",key=TRUE, symkey=FALSE,
                              density.info="none", trace="none", cexRow=cexRow, cexCol=cexCol,xlab="Samples",
-                             ylab="features", main=mainlab1,ColSideColors=patientcolors,dendrogram = c("none"),
+                             ylab="", main=mainlab1,ColSideColors=patientcolors,dendrogram = c("none"),
                              labRow = labRow.value, labCol = labCol.value,cex.main=0.8)
               
               (le1<-(legend(par('usr')[2], par('usr')[4], bty='n', xpd=NA,class_labels_levels, col = col_vec,pch = rep(19,length(col_vec)), pt.cex = 0.6, title = "Class",cex=0.5)))
@@ -25068,7 +25278,7 @@ plot.pairwise.correlation.bipartite<-function(data_matrix,newdevice=FALSE,abs.co
   mainlab1<-paste("Pairwise correlation of variables between two datasets\n correlation range: ",cor_range[1]," to ",cor_range[2],sep="")
   
   # print(mainlab1)
-  #xlab="Samples",ylab="features"
+  #xlab="Samples",ylab=""
   
   #dendrogram="none",
   h1<-heatmap.2(cor1,col=brewer.pal(11,"RdBu"),Rowv=TRUE,Colv=TRUE,scale="none",key=TRUE, symkey=FALSE, density.info="none", trace="none",main=mainlab1,cexRow = 0.5,cexCol = 0.5,cex.main=0.7,xlab="Dataset B",ylab="Dataset A")
@@ -25168,7 +25378,7 @@ plot.pairwise.correlation<-function(data_matrix,newdevice=FALSE,abs.cor.thresh=0
       class_levels=levels(as.factor(Y))
       
       for(i in 1:length(class_levels)){
-        plot_sample_correlation_child(X=goodfeats_temp[,which(Y==class_levels[i])+2],abs.cor.thresh=abs.cor.thresh,pvalue.thresh=pvalue.thresh,cor.fdrthresh=cor.fdrthresh,groupname=class_levels[i],cor.method=cor.method)
+      #  plot_sample_correlation_child(X=goodfeats_temp[,which(Y==class_levels[i])+2],abs.cor.thresh=abs.cor.thresh,pvalue.thresh=pvalue.thresh,cor.fdrthresh=cor.fdrthresh,groupname=class_levels[i],cor.method=cor.method)
         
       }
     }
@@ -35261,7 +35471,7 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
               yvec_val=logp
               ylabel="(-)log10p"
               yincrement=1
-              y2thresh=(-1)*log10(0.05)
+              y2thresh=(-1)*log10(pvalue.thresh)
               
               
            # save(list=c("d4","logp","yvec_val","ythresh","zvec","x1increment","yincrement","maintext1","x2increment","maintext2","ylabel","y2thresh"),file="manhattanplot_objects.Rda")
@@ -35277,7 +35487,8 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
               # get_manhattanplots(xvec=d4$mz,yvec=logp,ythresh=ythresh,up_or_down=zvec,xlab="mass-to-charge (m/z)",ylab=ylabel,xincrement=x1increment,yincrement=yincrement,maintext=maintext1,col_seq=c("black"),y2thresh=y2thresh,colorvec=manhattanplot.col.opt)
               
               ####savelist=ls(),file="m1.Rda")
-              try(get_manhattanplots(xvec=d4$mz,yvec=logp,ythresh=ythresh,up_or_down=zvec,xlab="mass-to-charge (m/z)",ylab=ylabel,xincrement=x1increment,yincrement=yincrement,maintext=maintext1,col_seq=c("black"),y2thresh=y2thresh,colorvec=manhattanplot.col.opt),silent=TRUE)
+              try(get_manhattanplots(xvec=d4$mz,yvec=logp,ythresh=ythresh,up_or_down=zvec,xlab="mass-to-charge (m/z)",ylab=ylabel,
+                                     xincrement=x1increment,yincrement=yincrement,maintext=maintext1,col_seq=c("black"),y2thresh=y2thresh,colorvec=manhattanplot.col.opt),silent=TRUE)
               
               
               if(output.device.type!="pdf"){
@@ -35718,13 +35929,29 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
                # 
               #dev.off()
               
+              
+              if(is.na(names_with_mz_time)==FALSE){
+                goodfeats_with_names<-merge(names_with_mz_time,goodfeats,by=c("mz","time"))
+                goodfeats_with_names<-goodfeats_with_names[match(goodfeats$mz,goodfeats_with_names$mz),]
+                # ##save(names_with_mz_time,goodfeats,goodfeats_with_names,file="goodfeats_with_names.Rda")
+                
+                goodfeats_name<-goodfeats_with_names$Name
+                #}
+              }else{
+                
+                
+                goodfeats_name<-NA
+              }
+              
+              rownames(goodfeats)<-goodfeats_name
+              
               #fixhere
               if(output.device.type!="pdf"){
                 
               #  print(getwd())
                 
-               # save(data_m,heatmap.col.opt,hca_type,classlabels,classlabels_orig,outloc,output_dir,goodfeats,data_m_fc_withfeats,goodip,names_with_mz_time,
-                #     plots.height,plots.width,plots.res,alphabetical.order,analysistype,file="hcadata_mD.Rda")
+           #    save(data_m,heatmap.col.opt,hca_type,classlabels,classlabels_orig,output_dir,goodfeats,names_with_mz_time,data_m_fc_withfeats,goodip,goodfeats_name,names_with_mz_time,
+            #        plots.height,plots.width,plots.res,alphabetical.order,analysistype,labRow.value, labCol.value,file="hcadata_mD.Rda")
                 
               
                 temp_filename_1<-"Figures/HCA_All_selectedfeats.png"
@@ -35735,7 +35962,8 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
                 
                 hca_res<-get_hca(feature_table_file=NA,parentoutput_dir=output_dir,class_labels_file=NA,X=goodfeats,Y=classlabels_orig,heatmap.col.opt=heatmap.col.opt,cor.method=cor.method,is.data.znorm=FALSE,analysismode="classification",
                                  sample.col.opt=sample.col.opt,plots.width=2000,plots.height=2000,plots.res=300, alphacol=0.3, hca_type=hca_type,newdevice=FALSE,
-                                 input.type="intensity",mainlab="Factor1",alphabetical.order=alphabetical.order,study.design=analysistype,labRow.value = labRow.value, labCol.value = labCol.value)
+                                 input.type="intensity",mainlab="Factor1",alphabetical.order=alphabetical.order,study.design=analysistype,
+                                 labRow.value = labRow.value, labCol.value = labCol.value)
                 
                 dev.off()
                 
@@ -35743,7 +35971,8 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
                 
                 hca_res<-get_hca(feature_table_file=NA,parentoutput_dir=output_dir,class_labels_file=NA,X=goodfeats,Y=classlabels_orig,heatmap.col.opt=heatmap.col.opt,cor.method=cor.method,is.data.znorm=FALSE,analysismode="classification",
                                  sample.col.opt=sample.col.opt,plots.width=2000,plots.height=2000,plots.res=300, alphacol=0.3, hca_type=hca_type,newdevice=FALSE,
-                                 input.type="intensity",mainlab="Factor1",alphabetical.order=alphabetical.order,study.design=analysistype,labRow.value = labRow.value, labCol.value = labCol.value)
+                                 input.type="intensity",mainlab="Factor1",alphabetical.order=alphabetical.order,study.design=analysistype,
+                                 labRow.value = labRow.value, labCol.value = labCol.value)
                 
                   
                  # get_hca(parentoutput_dir=getwd(),X=goodfeats,Y=classlabels_orig,heatmap.col.opt=heatmap.col.opt,cor.method="spearman",is.data.znorm=FALSE,analysismode="classification",
@@ -35891,7 +36120,7 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
               
              
               try(get_manhattanplots(xvec=d4$mz,yvec=logp,ythresh=ythresh,up_or_down=zvec,xlab="mass-to-charge (m/z)",ylab="-logP",xincrement=x1increment,yincrement=1,
-                                     maintext=maintext1,col_seq=c("black"),y2thresh=1.30103,colorvec=manhattanplot.col.opt),silent=TRUE)
+                                     maintext=maintext1,col_seq=c("black"),y2thresh=(-1)*log10(pvalue.thresh),colorvec=manhattanplot.col.opt),silent=TRUE)
               
               
               
@@ -35911,7 +36140,7 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
               
               
               try(get_manhattanplots(xvec=d4$time,yvec=logp,ythresh=ythresh,up_or_down=zvec,xlab="Retention time",ylab="-logP",xincrement=x2increment,yincrement=1,
-                                     maintext=maintext2,col_seq=c("black"),y2thresh=1.30103,colorvec=manhattanplot.col.opt),silent=TRUE)
+                                     maintext=maintext2,col_seq=c("black"),y2thresh=(-1)*log10(pvalue.thresh),colorvec=manhattanplot.col.opt),silent=TRUE)
               
               
               if(output.device.type!="pdf"){
@@ -36951,6 +37180,7 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
       #  ##save(names_with_mz_time,goodfeats,file="goodfeats_1.Rda")
       #if(length(check_names)>0){
       #if(check_names==1){
+      
       if(is.na(names_with_mz_time)==FALSE){
         goodfeats_with_names<-merge(names_with_mz_time,goodfeats,by=c("mz","time"))
         goodfeats_with_names<-goodfeats_with_names[match(goodfeats$mz,goodfeats_with_names$mz),]
@@ -36973,17 +37203,14 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
         goodfeats_name<-NA
       }
       
-      print("HERE555")
-      
-      print(goodfeats[1:3,])
+     
       
       class_label_A<-class_labels_levels[1]
       class_label_B<-class_labels_levels[2]
       
       goodfeats_allfields<-{}
       
-      print("A")
-      print(length(which(sel.diffdrthresh==TRUE)))
+      
       
       if(length(which(sel.diffdrthresh==TRUE))>1){
         
@@ -37018,7 +37245,7 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
         
        
         goodfeats_temp<-cbind(goodfeats[,mz_ind],goodfeats[,time_ind],goodfeats[,-c(1:time_ind)])
-        print("B")
+       
         cnames_temp<-colnames(goodfeats_temp)
         cnames_temp[1]<-"mz"
         cnames_temp[2]<-"time"
@@ -37228,13 +37455,7 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
           
           yvec<-unlist(cv_yvec)
           
-          #if(svm_model$avg_acc>best_acc){
-          
-          #          best_acc<-svm_model$avg_acc
-          #        best_subset<-seq(1,i)
-          
-          
-          #  }
+         
           
           
           if(pred.eval.method=="CV"){
@@ -37606,7 +37827,7 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
               
               corpval1=apply(cor1,2,function(x){corPvalueStudent(x,n=ncol(goodfeats_temp[,-c(1:2)]))})
               
-              save(cor1,goodfeats_temp,corpval1,goodfeats_name,file="cor1.Rda")
+             # save(cor1,goodfeats_temp,corpval1,goodfeats_name,file="cor1.Rda")
               
               fdr_adjust_pvalue<-try(fdrtool(as.vector(cor1[upper.tri(cor1)]),statistic="correlation",verbose=FALSE,plot=FALSE),silent=TRUE)
               
@@ -37672,14 +37893,15 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
               
               temp_filename_1<-"Figures/Boxplots.selectedfeats.normalized.pdf"
               
-              pdf(temp_filename_1,height=plots.height,width=plots.width)
+              #pdf(temp_filename_1,height=plots.height,width=plots.width)
             }
             
             goodfeats_name<-as.character(goodfeats_name)
-            # #save(goodfeats_name,goodfeats_temp,classlabels_orig,output_dir,boxplot.col.opt,cex.plots,ylab_text,analysistype,boxplot.type,alphabetical.order,goodfeats_name,add.pvalues,add.jitter,file="boxplotdebug.Rda")
+          #  save(goodfeats_name,goodfeats_temp,classlabels_orig,output_dir,boxplot.col.opt,cex.plots,ylab_text,analysistype,boxplot.type,alphabetical.order,goodfeats_name,add.pvalues,add.jitter,file="boxplotdebug.Rda")
             
             par(mfrow=c(1,1),family="sans",cex=cex.plots)
             
+            print("Generating boxplots")
            # plot(0:10, type = "n", xaxt="n", yaxt="n", bty="n", xlab = "", ylab = "")
             
             
@@ -37687,10 +37909,11 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
             
             plot.ylab_text1=paste("(Normalized) ",plot.ylab_text,sep="")
             if(normalization.method!="none"){
-              get_boxplots(X=goodfeats_temp,Y=classlabels_orig,parentoutput_dir=output_dir,boxplot.col.opt=boxplot.col.opt,
-                           alphacol=0.3,newdevice=TRUE,cex.plots=cex.plots,ylabel=plot.ylab_text1,name=goodfeats_name,add.pvalues=add.pvalues,add.jitter=add.jitter,
+              res<-get_boxplots(X=goodfeats_temp,Y=classlabels_orig,parentoutput_dir=output_dir,boxplot.col.opt=boxplot.col.opt,
+                           alphacol=0.3,newdevice=FALSE,cex.plots=cex.plots,ylabel=plot.ylab_text1,name=goodfeats_name,add.pvalues=add.pvalues,add.jitter=add.jitter,
                            alphabetical.order=alphabetical.order,boxplot.type=boxplot.type,study.design=analysistype,
-                           multiple.figures.perpanel=multiple.figures.perpanel,numnodes=num_nodes,plot.height = plots.height,plot.width=plots.width,filename="Figures/Boxplots.selectedfeats.normalized")
+                           multiple.figures.perpanel=multiple.figures.perpanel,numnodes=num_nodes,plot.height = plots.height,plot.width=plots.width,
+                           filename="Figures/Boxplots.selectedfeats.normalized")
               
             }
             
@@ -37705,12 +37928,12 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
               
               temp_filename_1<-"Figures/Boxplots.selectedfeats.raw.pdf"
               
-              pdf(temp_filename_1,height=plots.height,width=plots.width)
+             # pdf(temp_filename_1,height=plots.height,width=plots.width)
             }
             
-    #        save(goodfeats_raw,goodfeats_temp,classlabels_raw_boxplots,classlabels_orig,
-     #            output_dir,boxplot.col.opt,cex.plots,ylab_text,boxplot.type,
-      #           analysistype,multiple.figures.perpanel,alphabetical.order,goodfeats_name,plots.height,plots.width,file="boxplotrawdebug.Rda")
+       #     save(goodfeats_raw,goodfeats_temp,classlabels_raw_boxplots,classlabels_orig,
+        #         output_dir,boxplot.col.opt,cex.plots,ylab_text,boxplot.type,
+         #       analysistype,multiple.figures.perpanel,alphabetical.order,goodfeats_name,plots.height,plots.width,file="boxplotrawdebug.Rda")
             
             par(mfrow=c(1,1),family="sans",cex=cex.plots)
             
@@ -37733,21 +37956,13 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
             
             
             
-            try(dev.off(),silent=TRUE)
+            #try(dev.off(),silent=TRUE)
             
             if(output.device.type!="pdf"){
               
               try(dev.off(),silent=TRUE)
             }
-            if(FALSE){
-              if(balance.classes==TRUE){
-                
-                goodfeats_nosim<-data_matrix$data_matrix_afternorm_scaling[goodip,]
-                goodfeats_nosim<-goodfeats_nosim[match(paste(goodfeats_temp$mz,"_",goodfeats_temp$time,sep=""),paste(goodfeats_nosim$mz,"_",goodfeats_nosim$time,sep="")),]
-                
-              }
-              
-            }
+            
             
             if(FALSE){
               if(output.device.type!="pdf"){
@@ -39795,7 +40010,7 @@ quant<- function(Xmat=NA,Ymat=NA,Wmat=NA,Zmat=NA,feature_table,class_file,ref_li
 
 .onAttach <- function(libname, pkgname) {
   # to show a startup message
-  #packageStartupMessage("xmsPANDA v1.1.8 successfully loaded.")
+  #packageStartupMessage("xmsPANDA v1.2 successfully loaded.")
   
   suppressMessages(library(RColorBrewer))
   #suppressMessages(library(data.table))
@@ -39809,7 +40024,7 @@ quant<- function(Xmat=NA,Ymat=NA,Wmat=NA,Zmat=NA,feature_table,class_file,ref_li
 
 .onLoad <- function(libname, pkgname) {
   # something to run
-  packageStartupMessage("xmsPANDA v1.1.8 successfully loaded.")
+  packageStartupMessage("xmsPANDA v1.2 successfully loaded.")
   suppressMessages(library(RColorBrewer))
   #suppressMessages(library(data.table))
   suppressMessages(library(plyr))

@@ -86,7 +86,7 @@ function(data_matrix,newdevice=FALSE,abs.cor.thresh=0.4,pvalue.thresh=0.05,cor.f
       class_levels=levels(as.factor(Y))
       
       for(i in 1:length(class_levels)){
-        plot_sample_correlation_child(X=goodfeats_temp[,which(Y==class_levels[i])+2],abs.cor.thresh=abs.cor.thresh,pvalue.thresh=pvalue.thresh,cor.fdrthresh=cor.fdrthresh,groupname=class_levels[i],cor.method=cor.method)
+      #  plot_sample_correlation_child(X=goodfeats_temp[,which(Y==class_levels[i])+2],abs.cor.thresh=abs.cor.thresh,pvalue.thresh=pvalue.thresh,cor.fdrthresh=cor.fdrthresh,groupname=class_levels[i],cor.method=cor.method)
         
       }
     }

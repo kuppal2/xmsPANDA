@@ -39,7 +39,17 @@ function(xvec,yvec,up_or_down,maintext="",ythresh=0.05,y2thresh=NA,
   points(d4,logp,col=background.points.col,cex=0.4,bg=background.points.col,pch=21)
   
   
-  goodip<-which(yvec>ythresh & abs(xvec)>xthresh)
+ # goodip<-which(yvec>y2thresh & abs(xvec)>xthresh)
+  
+  if(is.na(y2thresh)==TRUE){
+    
+    goodip<-which(yvec>ythresh & abs(xvec)>xthresh)
+  }else{
+    
+    goodip<-which(yvec>y2thresh & abs(xvec)>xthresh)
+    
+  }
+  
   
   if(length(bad.feature.index)>0){
     

@@ -125,7 +125,7 @@ function(data_matrix,newdevice=FALSE,abs.cor.thresh=0.4,pvalue.thresh=0.05,cor.f
   mainlab1<-paste("Pairwise correlation of variables between two datasets\n correlation range: ",cor_range[1]," to ",cor_range[2],sep="")
   
   # print(mainlab1)
-  #xlab="Samples",ylab="features"
+  #xlab="Samples",ylab=""
   
   #dendrogram="none",
   h1<-heatmap.2(cor1,col=brewer.pal(11,"RdBu"),Rowv=TRUE,Colv=TRUE,scale="none",key=TRUE, symkey=FALSE, density.info="none", trace="none",main=mainlab1,cexRow = 0.5,cexCol = 0.5,cex.main=0.7,xlab="Dataset B",ylab="Dataset A")

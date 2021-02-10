@@ -12,7 +12,7 @@ function(X=NA,Y=NA,feature_table_file,parentoutput_dir,class_labels_file,
                        numnodes=2,hightlight.points=FALSE,...)
 {
   
-  get_boxplots_child(X=X,Y=Y,feature_table_file=feature_table_file,parentoutput_dir=parentoutput_dir,class_labels_file=class_labels_file,boxplot.col.opt,alphacol=alphacol,newdevice=newdevice,cex.plots=cex.plots,
+  res<-get_boxplots_child(X=X,Y=Y,feature_table_file=feature_table_file,parentoutput_dir=parentoutput_dir,class_labels_file=class_labels_file,boxplot.col.opt,alphacol=alphacol,newdevice=newdevice,cex.plots=cex.plots,
                      replace.by.NA=replace.by.NA,pairedanalysis=pairedanalysis,filename=filename,ylabel=ylabel,alphabetical.order=alphabetical.order,name=name,add.jitter=add.jitter,add.pvalues=add.pvalues,class.levels=class.levels,fill.plots=fill.plots,
                      connectpairedsamples=connectpairedsamples,boxplot.type=boxplot.type,study.design=study.design,
                      multiple.figures.perpanel=multiple.figures.perpanel,ggplot.type1=ggplot.type1,
@@ -24,4 +24,5 @@ function(X=NA,Y=NA,feature_table_file,parentoutput_dir,class_labels_file,
     
     try(dev.off(filename),silent=TRUE)
   }
+  return(res)
 }

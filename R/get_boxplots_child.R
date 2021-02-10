@@ -343,7 +343,7 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
   
   #tiff(boxplots_fname, width=2000,height=3000,res=plots.res, compression="lzw")
   
-  if(newdevice==TRUE & boxplot.type=="simple"){
+  if(newdevice==TRUE){ # & boxplot.type=="simple"){
     pdf(boxplots_fname) #,width=plot.width,height=plot.height)
   }
   #par(mfrow=c(par_rows,max_per_row))
@@ -981,7 +981,7 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
     },mzvec,timevec,check_names,name,class_labels_levels,sampleclass,col_vec,goodfeats,pairedanalysis,connectpairedsamples,boxplot.type,ggplot.type1,group_by_mat,cex.plots,boxplot.col.opt,add.jitter,add.pvalues,
     fill.plots,multiple.figures.perpanel)
     
-      #save(plot_res,multiple.figures.perpanel,plot.height,plot.width,file="boxplot_plot.Rda")
+    #save(plot_res,multiple.figures.perpanel,plot.height,plot.width,file="boxplot_plot.Rda")
       
     if(boxplot.type=="ggplot"){
       
@@ -1024,18 +1024,24 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
         }
           
       
+      library(ggpubr)
+      library(cowplot)
+      
+   # save(res,plot.width,plot.height,plot_res,file="res.Rda")
         
-     #save(res,plot.width,plot.height,plot_res,file="res.Rda")
-        
-    res<-lapply(1:length(res),function(x){res[[x]][[1]]})
     
-     res<-append(res, cowplot::get_legend(plot_res[[1]]))
+    res<-lapply(1:length(res),function(x){
+      return(res[[x]][[1]])
+     # print(res[[x]][[1]])
+      })
+    
+     #res<-append(res, cowplot::get_legend(plot_res[[1]]))
        # res[[length(res)+1]][[1]] <- cowplot::get_legend(plot_res[[i]])
         
         ggpubr::ggexport(res,filename =boxplots_fname,width=unit(plot.width-0.5, "in"),
         height=unit(plot.height-0.5, "in"))
         
-       
+   # ggpubr::ggexport(res,filename =boxplots_fname)
         
       
     }
@@ -1048,4 +1054,5 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
   
   #par(mfrow=c(1,1))
   options(warn=0)
+  return(res)
 }

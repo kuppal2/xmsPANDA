@@ -6637,7 +6637,7 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
               yvec_val=logp
               ylabel="(-)log10p"
               yincrement=1
-              y2thresh=(-1)*log10(0.05)
+              y2thresh=(-1)*log10(pvalue.thresh)
               
               
            # save(list=c("d4","logp","yvec_val","ythresh","zvec","x1increment","yincrement","maintext1","x2increment","maintext2","ylabel","y2thresh"),file="manhattanplot_objects.Rda")
@@ -6653,7 +6653,8 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
               # get_manhattanplots(xvec=d4$mz,yvec=logp,ythresh=ythresh,up_or_down=zvec,xlab="mass-to-charge (m/z)",ylab=ylabel,xincrement=x1increment,yincrement=yincrement,maintext=maintext1,col_seq=c("black"),y2thresh=y2thresh,colorvec=manhattanplot.col.opt)
               
               ####savelist=ls(),file="m1.Rda")
-              try(get_manhattanplots(xvec=d4$mz,yvec=logp,ythresh=ythresh,up_or_down=zvec,xlab="mass-to-charge (m/z)",ylab=ylabel,xincrement=x1increment,yincrement=yincrement,maintext=maintext1,col_seq=c("black"),y2thresh=y2thresh,colorvec=manhattanplot.col.opt),silent=TRUE)
+              try(get_manhattanplots(xvec=d4$mz,yvec=logp,ythresh=ythresh,up_or_down=zvec,xlab="mass-to-charge (m/z)",ylab=ylabel,
+                                     xincrement=x1increment,yincrement=yincrement,maintext=maintext1,col_seq=c("black"),y2thresh=y2thresh,colorvec=manhattanplot.col.opt),silent=TRUE)
               
               
               if(output.device.type!="pdf"){
@@ -7094,13 +7095,29 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
                # 
               #dev.off()
               
+              
+              if(is.na(names_with_mz_time)==FALSE){
+                goodfeats_with_names<-merge(names_with_mz_time,goodfeats,by=c("mz","time"))
+                goodfeats_with_names<-goodfeats_with_names[match(goodfeats$mz,goodfeats_with_names$mz),]
+                # ##save(names_with_mz_time,goodfeats,goodfeats_with_names,file="goodfeats_with_names.Rda")
+                
+                goodfeats_name<-goodfeats_with_names$Name
+                #}
+              }else{
+                
+                
+                goodfeats_name<-NA
+              }
+              
+              rownames(goodfeats)<-goodfeats_name
+              
               #fixhere
               if(output.device.type!="pdf"){
                 
               #  print(getwd())
                 
-               # save(data_m,heatmap.col.opt,hca_type,classlabels,classlabels_orig,outloc,output_dir,goodfeats,data_m_fc_withfeats,goodip,names_with_mz_time,
-                #     plots.height,plots.width,plots.res,alphabetical.order,analysistype,file="hcadata_mD.Rda")
+           #    save(data_m,heatmap.col.opt,hca_type,classlabels,classlabels_orig,output_dir,goodfeats,names_with_mz_time,data_m_fc_withfeats,goodip,goodfeats_name,names_with_mz_time,
+            #        plots.height,plots.width,plots.res,alphabetical.order,analysistype,labRow.value, labCol.value,file="hcadata_mD.Rda")
                 
               
                 temp_filename_1<-"Figures/HCA_All_selectedfeats.png"
@@ -7111,7 +7128,8 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
                 
                 hca_res<-get_hca(feature_table_file=NA,parentoutput_dir=output_dir,class_labels_file=NA,X=goodfeats,Y=classlabels_orig,heatmap.col.opt=heatmap.col.opt,cor.method=cor.method,is.data.znorm=FALSE,analysismode="classification",
                                  sample.col.opt=sample.col.opt,plots.width=2000,plots.height=2000,plots.res=300, alphacol=0.3, hca_type=hca_type,newdevice=FALSE,
-                                 input.type="intensity",mainlab="Factor1",alphabetical.order=alphabetical.order,study.design=analysistype,labRow.value = labRow.value, labCol.value = labCol.value)
+                                 input.type="intensity",mainlab="Factor1",alphabetical.order=alphabetical.order,study.design=analysistype,
+                                 labRow.value = labRow.value, labCol.value = labCol.value)
                 
                 dev.off()
                 
@@ -7119,7 +7137,8 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
                 
                 hca_res<-get_hca(feature_table_file=NA,parentoutput_dir=output_dir,class_labels_file=NA,X=goodfeats,Y=classlabels_orig,heatmap.col.opt=heatmap.col.opt,cor.method=cor.method,is.data.znorm=FALSE,analysismode="classification",
                                  sample.col.opt=sample.col.opt,plots.width=2000,plots.height=2000,plots.res=300, alphacol=0.3, hca_type=hca_type,newdevice=FALSE,
-                                 input.type="intensity",mainlab="Factor1",alphabetical.order=alphabetical.order,study.design=analysistype,labRow.value = labRow.value, labCol.value = labCol.value)
+                                 input.type="intensity",mainlab="Factor1",alphabetical.order=alphabetical.order,study.design=analysistype,
+                                 labRow.value = labRow.value, labCol.value = labCol.value)
                 
                   
                  # get_hca(parentoutput_dir=getwd(),X=goodfeats,Y=classlabels_orig,heatmap.col.opt=heatmap.col.opt,cor.method="spearman",is.data.znorm=FALSE,analysismode="classification",
@@ -7267,7 +7286,7 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
               
              
               try(get_manhattanplots(xvec=d4$mz,yvec=logp,ythresh=ythresh,up_or_down=zvec,xlab="mass-to-charge (m/z)",ylab="-logP",xincrement=x1increment,yincrement=1,
-                                     maintext=maintext1,col_seq=c("black"),y2thresh=1.30103,colorvec=manhattanplot.col.opt),silent=TRUE)
+                                     maintext=maintext1,col_seq=c("black"),y2thresh=(-1)*log10(pvalue.thresh),colorvec=manhattanplot.col.opt),silent=TRUE)
               
               
               
@@ -7287,7 +7306,7 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
               
               
               try(get_manhattanplots(xvec=d4$time,yvec=logp,ythresh=ythresh,up_or_down=zvec,xlab="Retention time",ylab="-logP",xincrement=x2increment,yincrement=1,
-                                     maintext=maintext2,col_seq=c("black"),y2thresh=1.30103,colorvec=manhattanplot.col.opt),silent=TRUE)
+                                     maintext=maintext2,col_seq=c("black"),y2thresh=(-1)*log10(pvalue.thresh),colorvec=manhattanplot.col.opt),silent=TRUE)
               
               
               if(output.device.type!="pdf"){
@@ -8327,6 +8346,7 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
       #  ##save(names_with_mz_time,goodfeats,file="goodfeats_1.Rda")
       #if(length(check_names)>0){
       #if(check_names==1){
+      
       if(is.na(names_with_mz_time)==FALSE){
         goodfeats_with_names<-merge(names_with_mz_time,goodfeats,by=c("mz","time"))
         goodfeats_with_names<-goodfeats_with_names[match(goodfeats$mz,goodfeats_with_names$mz),]
@@ -8349,17 +8369,14 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
         goodfeats_name<-NA
       }
       
-      print("HERE555")
-      
-      print(goodfeats[1:3,])
+     
       
       class_label_A<-class_labels_levels[1]
       class_label_B<-class_labels_levels[2]
       
       goodfeats_allfields<-{}
       
-      print("A")
-      print(length(which(sel.diffdrthresh==TRUE)))
+      
       
       if(length(which(sel.diffdrthresh==TRUE))>1){
         
@@ -8394,7 +8411,7 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
         
        
         goodfeats_temp<-cbind(goodfeats[,mz_ind],goodfeats[,time_ind],goodfeats[,-c(1:time_ind)])
-        print("B")
+       
         cnames_temp<-colnames(goodfeats_temp)
         cnames_temp[1]<-"mz"
         cnames_temp[2]<-"time"
@@ -8604,13 +8621,7 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
           
           yvec<-unlist(cv_yvec)
           
-          #if(svm_model$avg_acc>best_acc){
-          
-          #          best_acc<-svm_model$avg_acc
-          #        best_subset<-seq(1,i)
-          
-          
-          #  }
+         
           
           
           if(pred.eval.method=="CV"){
@@ -8982,7 +8993,7 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
               
               corpval1=apply(cor1,2,function(x){corPvalueStudent(x,n=ncol(goodfeats_temp[,-c(1:2)]))})
               
-              save(cor1,goodfeats_temp,corpval1,goodfeats_name,file="cor1.Rda")
+             # save(cor1,goodfeats_temp,corpval1,goodfeats_name,file="cor1.Rda")
               
               fdr_adjust_pvalue<-try(fdrtool(as.vector(cor1[upper.tri(cor1)]),statistic="correlation",verbose=FALSE,plot=FALSE),silent=TRUE)
               
@@ -9048,14 +9059,15 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
               
               temp_filename_1<-"Figures/Boxplots.selectedfeats.normalized.pdf"
               
-              pdf(temp_filename_1,height=plots.height,width=plots.width)
+              #pdf(temp_filename_1,height=plots.height,width=plots.width)
             }
             
             goodfeats_name<-as.character(goodfeats_name)
-            # #save(goodfeats_name,goodfeats_temp,classlabels_orig,output_dir,boxplot.col.opt,cex.plots,ylab_text,analysistype,boxplot.type,alphabetical.order,goodfeats_name,add.pvalues,add.jitter,file="boxplotdebug.Rda")
+          #  save(goodfeats_name,goodfeats_temp,classlabels_orig,output_dir,boxplot.col.opt,cex.plots,ylab_text,analysistype,boxplot.type,alphabetical.order,goodfeats_name,add.pvalues,add.jitter,file="boxplotdebug.Rda")
             
             par(mfrow=c(1,1),family="sans",cex=cex.plots)
             
+            print("Generating boxplots")
            # plot(0:10, type = "n", xaxt="n", yaxt="n", bty="n", xlab = "", ylab = "")
             
             
@@ -9063,10 +9075,11 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
             
             plot.ylab_text1=paste("(Normalized) ",plot.ylab_text,sep="")
             if(normalization.method!="none"){
-              get_boxplots(X=goodfeats_temp,Y=classlabels_orig,parentoutput_dir=output_dir,boxplot.col.opt=boxplot.col.opt,
-                           alphacol=0.3,newdevice=TRUE,cex.plots=cex.plots,ylabel=plot.ylab_text1,name=goodfeats_name,add.pvalues=add.pvalues,add.jitter=add.jitter,
+              res<-get_boxplots(X=goodfeats_temp,Y=classlabels_orig,parentoutput_dir=output_dir,boxplot.col.opt=boxplot.col.opt,
+                           alphacol=0.3,newdevice=FALSE,cex.plots=cex.plots,ylabel=plot.ylab_text1,name=goodfeats_name,add.pvalues=add.pvalues,add.jitter=add.jitter,
                            alphabetical.order=alphabetical.order,boxplot.type=boxplot.type,study.design=analysistype,
-                           multiple.figures.perpanel=multiple.figures.perpanel,numnodes=num_nodes,plot.height = plots.height,plot.width=plots.width,filename="Figures/Boxplots.selectedfeats.normalized")
+                           multiple.figures.perpanel=multiple.figures.perpanel,numnodes=num_nodes,plot.height = plots.height,plot.width=plots.width,
+                           filename="Figures/Boxplots.selectedfeats.normalized")
               
             }
             
@@ -9081,12 +9094,12 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
               
               temp_filename_1<-"Figures/Boxplots.selectedfeats.raw.pdf"
               
-              pdf(temp_filename_1,height=plots.height,width=plots.width)
+             # pdf(temp_filename_1,height=plots.height,width=plots.width)
             }
             
-    #        save(goodfeats_raw,goodfeats_temp,classlabels_raw_boxplots,classlabels_orig,
-     #            output_dir,boxplot.col.opt,cex.plots,ylab_text,boxplot.type,
-      #           analysistype,multiple.figures.perpanel,alphabetical.order,goodfeats_name,plots.height,plots.width,file="boxplotrawdebug.Rda")
+       #     save(goodfeats_raw,goodfeats_temp,classlabels_raw_boxplots,classlabels_orig,
+        #         output_dir,boxplot.col.opt,cex.plots,ylab_text,boxplot.type,
+         #       analysistype,multiple.figures.perpanel,alphabetical.order,goodfeats_name,plots.height,plots.width,file="boxplotrawdebug.Rda")
             
             par(mfrow=c(1,1),family="sans",cex=cex.plots)
             
@@ -9109,21 +9122,13 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
             
             
             
-            try(dev.off(),silent=TRUE)
+            #try(dev.off(),silent=TRUE)
             
             if(output.device.type!="pdf"){
               
               try(dev.off(),silent=TRUE)
             }
-            if(FALSE){
-              if(balance.classes==TRUE){
-                
-                goodfeats_nosim<-data_matrix$data_matrix_afternorm_scaling[goodip,]
-                goodfeats_nosim<-goodfeats_nosim[match(paste(goodfeats_temp$mz,"_",goodfeats_temp$time,sep=""),paste(goodfeats_nosim$mz,"_",goodfeats_nosim$time,sep="")),]
-                
-              }
-              
-            }
+            
             
             if(FALSE){
               if(output.device.type!="pdf"){

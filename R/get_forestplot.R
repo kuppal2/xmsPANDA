@@ -2,10 +2,11 @@ get_forestplot <-
 function(fit,data,xlab="",ylab="Hazard Ratio (95% CI)",sigcolor="red"){
   
   indata <- .get_data(fit, data)
+  #save(fit,data,file="fit.Rda")
   fit_summary <- summary(fit)
   coef_table <- fit_summary$coefficients
   plotdata <- data.frame(predictor=as.character(rownames(coef_table)),
-                         hazard_ratio=as.numeric(round(coef_table[,2]),3),
+                         hazard_ratio=as.numeric(round(coef_table[,2],3)),
                          upper=as.numeric(coef_table[,2])+1.96*as.numeric(coef_table[,3]),
                          lower=as.numeric(coef_table[,2])-1.96*as.numeric(coef_table[,3]),
                          pvalue=as.numeric(round(coef_table[,5],3)),
@@ -40,5 +41,5 @@ function(fit,data,xlab="",ylab="Hazard Ratio (95% CI)",sigcolor="red"){
           plot.title = element_text(size=18, hjust = 0),
           axis.text.x=element_text(colour="black", size = 12,angle=0),
           axis.text.y=element_text(colour="black", size = 12))
-  
+  return(p)
 }

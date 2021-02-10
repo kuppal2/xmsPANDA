@@ -180,7 +180,9 @@ function(fit,
     height3 <- 0.15 + (length(levels(curve$variable))-2)*0.3
     p <- cowplot::plot_grid(plotlist = plot, nrow=3, rel_heights=c(height1, height2, height3))
     #p <- grid.arrange(plot[[1]], plot[[2]], plot[[3]], nrow = 3, heights = c(height1, height2, height3))
-  }
+    
   
-  #print(p)
+  }
+  #print(plot)
+  return(p)
 }
