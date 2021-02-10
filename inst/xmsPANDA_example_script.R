@@ -2,11 +2,10 @@
 #load xmsPANDA
 library(xmsPANDA)
 
-source("/Users/karanuppal/Documents/Emory/JonesLab/Projects/DifferentialExpression/xmsPaNDA/xmsPANDA_v1.0.8.63.R")
 #change the input and output locations
-feature_table_file<-"/Users/karanuppal/Desktop/H1N1/exh1n1_metabolome.txt"
-class_labels_file<-"/Users/karanuppal/Desktop/H1N1/exh1n1_classlabels.txt"
-outloc<-"/Users/karanuppal/Desktop/H1N1/testlog2knnv63C/"
+feature_table_file<-"~/exh1n1_metabolome.txt"
+class_labels_file<-"~/exh1n1_classlabels.txt"
+outloc<-"~/test/"
 
 
 #start: see manual for additional arguments and description

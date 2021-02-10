@@ -8,14 +8,14 @@
 \tabular{ll}{
 Package: \tab xmsPANDA\cr
 Type: \tab Package\cr
-Version: \tab 1.1.80\cr
-Date: \tab 2021-01-09\cr
+Version: \tab 1.2\cr
+Date: \tab 2021-01-10\cr
 License: \tab gpl2.0\cr
 LazyLoad: \tab yes\cr
 }
 }
 \author{
 Karan Uppal
-Maintainer: <kuppal2@emory.edu>
+Maintainer: <kuppal3gt@gmail.com>
 }
 \keyword{ xmsPANDA }

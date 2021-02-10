@@ -1,5 +1,7 @@
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
+
+Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS="true")
 BiocManager::install(version = "3.11")
 
 BiocManager::install(c("mixOmics","CMA","GO.db","impute","limma","qvalue","pcaMethods","KEGGREST","genefilter"),suppressUpdates=TRUE,dependencies=TRUE)
