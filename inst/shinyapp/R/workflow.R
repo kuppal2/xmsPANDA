@@ -39,6 +39,7 @@ column(12,textOutput("txt")),
                                                                      'RF (random forest using Boruta algorithm)'='RF',
                                                                      'MARS (multiple adaptive regression splines)'='MARS',
                                                                      'spls (sparse partial least squares)'='spls',
+                                                                     'spls2way (two-factor analysis using sparse partial least squares)'='spls2way',
                                                                      'o1pls (orthogonal partial least squares)'='o1pls',
                                                                      'pamr (microarrays algorithm based on the nearest shrunked centroid method)'='pamr'),
                                                    selected=c('limma','pls')
