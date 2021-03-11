@@ -1,0 +1,13 @@
+export(data_preprocess,metabnet,diffexp,getCorchild,docortest,do_rsd,do_pamr,get_hca,get_pca,do_plsda,get_boxplots,get_manhattanplots,do_wgcna,get_roc,get_pcascoredistplots,diffexp.child,diffexplmtwowayanovarepeat,svm_cv,diffexponewayanova,plsda_cv,do_plsda_rand,diffexplmreg,diffexplmtwowayanova,diffexplmonewayanovarepeat,get_plscompvar,get_volcanoplots,get_classification.accuracy,get_lineplots,get_barplots,get_scatter_plots,diffexpsvmrfe,diffexpsvmrfemulticlass,svm.getweights,get_survivalanalysis,get_survplot_adjustedcurve,ggadjustedcurves.marginal,.get_data,ggadjustedcurves.single,ggadjustedcurves.average,ggadjustedcurves.conditional,get_forestplot,get_diagnosis,find.Overlapping,generate_distribution,calculate_concentration,draw_keggmap,quant,runApp.xmsPANDA,compare.normalization,get_fcs,diffexplmregrepeat,get_bubbleplot)
+import(limma, GO.db, statmod, rgl, gplots, e1071, randomForest, party,qvalue,fdrtool, GeneNet, corpcor, earth, pROC, RColorBrewer, nlme, ROCR,flashClust,RankAggreg, parallel, mclust, pamr, Boruta, sandwich, V8, lsmeans,car,impute, KEGGREST, plotly, colourpicker, 
+ggpubr, extrafont, shinyBS, shinyWidgets, shinycssloaders)
+importFrom(mixOmics,pls,plsda,pca,spls,splsda,vip,network)
+importFrom(plyr,ldply)
+importFrom(WGCNA,cor,corPvalueStudent, consensusKME,consensusTOM,correlationPreservation,moduleEigengenes,modulePreservation,checkSets,corPvalueFisher,labeledHeatmap,labeledBarplot,pickSoftThreshold,softConnectivity)
+importFrom(pcaMethods,bpca)
+importFrom(plsgenomics, pls.lda.cv,pls.regression.cv)
+importFrom(pls,plsr)
+importFrom(igraph,write.graph)
+importFrom(reshape2,melt)
+importFrom(mvoutlier,pcout)
+importFrom(robust,covRob)
