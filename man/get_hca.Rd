@@ -10,7 +10,7 @@ in the same order as the intensity matrix or feature table.
 \usage{
 get_hca(feature_table_file, parentoutput_dir, class_labels_file, heatmap.col.opt = "RdBu", cor.method = "spearman",
 is.data.znorm = FALSE, analysismode = "classification", sample.col.opt = "rainbow", plots.width = 2000,
-plots.height = 2000, plots.res = 300, alphacol = 0.3,hca_type="two-way")
+plots.height = 2000, plots.res = 300, alphacol = 0.3,hca_type="two-way",similarity.matrix="correlation")
 }
 \arguments{
    \item{feature_table_file}{
@@ -63,6 +63,10 @@ eg:0.3
 \item{hcatype}{
 Color scaling parameter
 eg:"two-way" or "one-way"
+}
+\item{similarity.matrix}{
+Correlation or topological overlap matrix 
+eg:"correlation" or "TOM"
 }
 }
 \value{

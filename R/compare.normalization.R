@@ -6,7 +6,8 @@ function(Xmat=NA,Ymat=NA,Zmat=NA,feature_table_file=NA,parentoutput_dir,class_la
                                                        "paretoscaling","mstus","eigenms_norm","vsn_norm","sva_norm","tic_norm","cubicspline_norm","mad_norm"),input.intensity.scale="raw",
                                 abs.cor.thresh=0.4,pvalue.thresh=0.05,cor.fdrthresh=0.2,cex.plots=0.7,plots.width=8,plots.height=8,plots.res=600,
                                 plots.type="cairo",heatmap.col.opt="RdBu",cor.method="spearman",pca.ellipse=FALSE,ground_truth_file=NA,cutree.method="default",rsd.filt.thresh=1,alphabetical.order=TRUE,analysistype="classification",lme.modeltype="RI",
-                                study.design=c("multiclass","onewayanova","twowayanova","onewayanovarepeat","twowayanovarepeat"),log2.transform.constant=1,featselmethod="limma",similarity.matrix="correlation",...){
+                                study.design=c("multiclass","onewayanova","twowayanova","onewayanovarepeat","twowayanovarepeat"),log2.transform.constant=1,featselmethod="limma",
+         similarity.matrix="correlation",...){
   
   #featselmethod=NA
   
@@ -356,7 +357,7 @@ function(Xmat=NA,Ymat=NA,Zmat=NA,feature_table_file=NA,parentoutput_dir,class_la
         hca_res<-get_hca(parentoutput_dir=outloc,X=X,Y=Y,heatmap.col.opt=heatmap.col.opt,cor.method=cor.method,is.data.znorm=FALSE,analysismode="classification",
                          sample.col.opt="journal",plots.width=plots.width,plots.height=plots.height,plots.res=plots.res, plots.type=plots.type, 
                          alphacol=0.3, hca_type="two-way",newdevice=FALSE,input.type="intensity",mainlab="",cexRow=0.8, cexCol=0.8,
-                         plot.bycluster=FALSE,color.rows=FALSE,similarity.matrix="correlation",deepsplit=2,minclustsize=1,mergeCutHeight=0.1,
+                         plot.bycluster=FALSE,color.rows=FALSE,deepsplit=2,minclustsize=1,mergeCutHeight=0.1,
                          num_nodes=2,alphabetical.order=alphabetical.order,pairedanalysis=pairedanalysis,cutree.method=cutree.method,
                          study.design=analysistype,similarity.matrix=similarity.matrix)
         
