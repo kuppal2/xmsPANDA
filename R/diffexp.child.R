@@ -5488,7 +5488,7 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
             clusterExport(cl,"anova",envir = .GlobalEnv)
             clusterEvalQ(cl,library(ggpubr))
             clusterEvalQ(cl,library(ggplot2))
-            clusterEvalQ(cl,library(cowplot))
+      #      clusterEvalQ(cl,library(cowplot))
             
             
             #res1<-apply(data_m_fc,1,function(x){

@@ -1090,7 +1090,7 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
           
       
       library(ggpubr)
-      library(cowplot)
+    #  library(cowplot)
       
     #save(res,plot.width,plot.height,plot_res,file="res.Rda")
         

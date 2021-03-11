@@ -30466,7 +30466,11 @@ diffexp<-function(Xmat=NA,Ymat=NA,feature_table_file,parentoutput_dir=NA,class_l
   
   #print(paste("g is ",group.missing.thresh,sep=""))
   
- 
+  if (Sys.getenv("RSTUDIO") == "1" && !nzchar(Sys.getenv("RSTUDIO_TERM")) && 
+      Sys.info()["sysname"] == "Darwin" && getRversion() >= "4.0.0") {
+    parallel:::setDefaultClusterOptions(setup_strategy = "sequential")
+  }
+  
   if(lme.modeltype=="RI"){
     
     lme.modeltype="lme.RI"

@@ -122,6 +122,6 @@ function(tukey.res,
   })
   
   #save(res1,file="res1.Rda")
-  g1=ggarrange(res1[[1]],res1[[2]],res1[[3]],cowplot::get_legend(res2[[1]]),nrow=2,ncol=2)
+  g1=ggarrange(res1[[1]],res1[[2]],res1[[3]],ggpubr::get_legend(res2[[1]]),nrow=2,ncol=2)
   return(g1)
 }
