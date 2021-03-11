@@ -7731,8 +7731,8 @@ get_fcs<-function(target.data,target.data.annot=NA,kegg_species_code="hsa",datab
                         rm(reactome_atlas)
                       }else{
                         if(database=="kegg_atlas"){
-                          load("/Users/karanuppal/Documents/Emory/JonesLab/Projects/DifferentialExpression/xmsPaNDA/xmsPANDA_v1.1.65/data/kegg_atlas.rda")
-                          # data(kegg_atlas)
+                          #load("/Users/karanuppal/Documents/Emory/JonesLab/Projects/DifferentialExpression/xmsPaNDA/xmsPANDA_v1.1.65/data/kegg_atlas.rda")
+                           data(kegg_atlas)
                           g1<-kegg_atlas
                           rm(kegg_atlas)
                         }
@@ -27795,7 +27795,7 @@ compare.normalization<-function(Xmat=NA,Ymat=NA,Zmat=NA,feature_table_file=NA,pa
         hca_res<-get_hca(parentoutput_dir=outloc,X=X,Y=Y,heatmap.col.opt=heatmap.col.opt,cor.method=cor.method,is.data.znorm=FALSE,analysismode="classification",
                          sample.col.opt="journal",plots.width=plots.width,plots.height=plots.height,plots.res=plots.res, plots.type=plots.type, 
                          alphacol=0.3, hca_type="two-way",newdevice=FALSE,input.type="intensity",mainlab="",cexRow=0.8, cexCol=0.8,
-                         plot.bycluster=FALSE,color.rows=FALSE,similarity.matrix="correlation",deepsplit=2,minclustsize=1,mergeCutHeight=0.1,
+                         plot.bycluster=FALSE,color.rows=FALSE,deepsplit=2,minclustsize=1,mergeCutHeight=0.1,
                          num_nodes=2,alphabetical.order=alphabetical.order,pairedanalysis=pairedanalysis,cutree.method=cutree.method,
                          study.design=analysistype,similarity.matrix=similarity.matrix)
         
