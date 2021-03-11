@@ -17729,6 +17729,7 @@ get_boxplots_child<-function(X,Y,feature_table_file,parentoutput_dir,class_label
                 }else{
                   if(pairedanalysis==FALSE){
                     #label = "p.format",
+                    if(is.na(ggplot.type1)==FALSE){
                     if(ggplot.type1==TRUE){
                       
                       if(is.na(ref.group.val)==TRUE){
@@ -17743,6 +17744,9 @@ get_boxplots_child<-function(X,Y,feature_table_file,parentoutput_dir,class_label
                                                 size = 5*cex.plots,ref.group = ref.group.val)
                         }
                       }
+                    }
+                  
+                    
                     }else{
                       if(is.na(ref.group.val)==TRUE){
                         ref.group.val<-unique(temp_dm2$Factor2)[1] 
@@ -17760,10 +17764,12 @@ get_boxplots_child<-function(X,Y,feature_table_file,parentoutput_dir,class_label
                                               size = 5*cex.plots,ref.group = ref.group.val)
                     }
                   }else{
-                    
+                    if(is.na(ggplot.type1)==FALSE){
                     if(ggplot.type1==TRUE){
                     p<-p + stat_compare_means(data=temp_dm2,aes(group = Factor1),label = "p.format",
                                               size = 5*cex.plots)
+                    }
+                    
                     }else{
                     p<-p + stat_compare_means(data=temp_dm2,aes(group = Factor2),paired=TRUE,label = "p.format",
                                               size = 5*cex.plots)
@@ -18508,9 +18514,12 @@ get_spaghettiplots<-function(X,Y,feature_table_file,parentoutput_dir,class_label
                 #save(temp_dm2,mzname,class_labels_levels,col_vec,file=fname1)
                 
                  #p <- ggplot(temp_dm2, aes(y=as.numeric(Feature),x=Factor1,fill=Factor2)) + labs(title=mzname) + facet_wrap(~Factor2, scale="free")  
-                if(ggplot.type1==TRUE){
+                if(is.na(ggplot.type1)==FALSE){
+                  if(ggplot.type1==TRUE){
+                  
                   p <- ggplot(temp_dm2, aes(y=as.numeric(Feature),x=Factor1,group=SubjectID,color=SubjectID)) + geom_point()+geom_line(size=1.25)+labs(title=mzname) + facet_wrap(~Factor2, scale="free_x")  
-                }else{
+                  } 
+               }else{
                   p <- ggplot(temp_dm2, aes(y=as.numeric(Feature),x=Factor2,group=SubjectID,color=SubjectID))+ geom_point()+geom_line(size=1.25)+labs(title=mzname) + facet_wrap(~Factor1, scale="free_x")  
                   
                   
@@ -30453,7 +30462,7 @@ diffexp<-function(Xmat=NA,Ymat=NA,feature_table_file,parentoutput_dir=NA,class_l
                   hca.labRow.value = FALSE, hca.labCol.value = FALSE,
                   alpha.col=1,similarity.matrix="correlation",outlier.method=c("pcout","sumtukey","pcatukey","pcachisq"),removeRda=TRUE,
                   color.palette=c("journal"),plot_DiNa_graph=FALSE,limma.contrasts.type=c("contr.sum","contr.treatment"),
-                  hca.cex.legend=0.7,plot.boxplots.raw=FALSE,vcovHC.type="HC3",ggplot.type1=NA,facet.nrow=1,...)
+                  hca.cex.legend=0.7,plot.boxplots.raw=FALSE,vcovHC.type="HC3",ggplot.type1=TRUE,facet.nrow=1,...)
 {
   
   options(warn=-1)

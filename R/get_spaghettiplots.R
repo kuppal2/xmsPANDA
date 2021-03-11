@@ -516,9 +516,12 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
                 #save(temp_dm2,mzname,class_labels_levels,col_vec,file=fname1)
                 
                  #p <- ggplot(temp_dm2, aes(y=as.numeric(Feature),x=Factor1,fill=Factor2)) + labs(title=mzname) + facet_wrap(~Factor2, scale="free")  
-                if(ggplot.type1==TRUE){
+                if(is.na(ggplot.type1)==FALSE){
+                  if(ggplot.type1==TRUE){
+                  
                   p <- ggplot(temp_dm2, aes(y=as.numeric(Feature),x=Factor1,group=SubjectID,color=SubjectID)) + geom_point()+geom_line(size=1.25)+labs(title=mzname) + facet_wrap(~Factor2, scale="free_x")  
-                }else{
+                  } 
+               }else{
                   p <- ggplot(temp_dm2, aes(y=as.numeric(Feature),x=Factor2,group=SubjectID,color=SubjectID))+ geom_point()+geom_line(size=1.25)+labs(title=mzname) + facet_wrap(~Factor1, scale="free_x")  
                   
                   
