@@ -10,7 +10,7 @@ library(shinyjs)
 library(shinyBS)
 library(DT)
 
-#source("R/source_codes/xmsPANDA_v1.0.9.30.R")
+source("R/source_codes/xmsPANDA_v1.0.9.30.R")
 
 # Server logic
 

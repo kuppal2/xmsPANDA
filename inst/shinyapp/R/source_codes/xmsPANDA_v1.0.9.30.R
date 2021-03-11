@@ -13457,7 +13457,7 @@ plotTukeyHSD1 <- function(tukey.res,
   })
   
   #save(res1,file="res1.Rda")
-  g1=ggarrange(res1[[1]],res1[[2]],res1[[3]],cowplot::get_legend(res2[[1]]),nrow=2,ncol=2)
+  g1=ggarrange(res1[[1]],res1[[2]],res1[[3]],ggpubr::get_legend(res2[[1]]),nrow=2,ncol=2)
   return(g1)
 }
 
@@ -17958,7 +17958,7 @@ get_boxplots_child<-function(X,Y,feature_table_file,parentoutput_dir,class_label
           
       
       library(ggpubr)
-      library(cowplot)
+     # library(cowplot)
       
     #save(res,plot.width,plot.height,plot_res,file="res.Rda")
         
@@ -17968,8 +17968,8 @@ get_boxplots_child<-function(X,Y,feature_table_file,parentoutput_dir,class_label
      # print(res[[x]][[1]])
       })
     
-     #res<-append(res, cowplot::get_legend(plot_res[[1]]))
-       # res[[length(res)+1]][[1]] <- cowplot::get_legend(plot_res[[i]])
+     #res<-append(res, ggpubr::get_legend(plot_res[[1]]))
+       # res[[length(res)+1]][[1]] <- ggpubr::get_legend(plot_res[[i]])
         
         ggpubr::ggexport(res,filename =boxplots_fname,width=unit(plot.width-0.5, "in"),
         height=unit(plot.height-0.5, "in"))
@@ -18621,7 +18621,7 @@ get_spaghettiplots<-function(X,Y,feature_table_file,parentoutput_dir,class_label
       }
       
       
-      legend <- cowplot::get_legend(plot_res[[i]])
+      legend <- ggpubr::get_legend(plot_res[[i]])
       
       suppressMessages(library(grid))
       
@@ -22638,7 +22638,7 @@ strip.text = element_text(face="bold"))+scale_y_continuous(name="mean Pearson co
         print(res[[i]][[1]])
       }
       
-      legend <- cowplot::get_legend(plot_res[[i]]$plot_res)
+      legend <- ggpubr::get_legend(plot_res[[i]]$plot_res)
       
       suppressMessages(library(grid))
       
@@ -22658,7 +22658,7 @@ strip.text = element_text(face="bold"))+scale_y_continuous(name="mean Pearson co
           print(res[[i]][[1]])
         }
       
-        legend <- cowplot::get_legend(plot_res[[i]]$plot_res)
+        legend <- ggpubr::get_legend(plot_res[[i]]$plot_res)
         
         suppressMessages(library(grid))
         
@@ -22881,7 +22881,7 @@ strip.text = element_text(face="bold"))+scale_y_continuous(name="mean Pearson co
         print(res[[i]][[1]])
       }
       
-      legend <- cowplot::get_legend(plot_res[[i]]$plot_res)
+      legend <- ggpubr::get_legend(plot_res[[i]]$plot_res)
       
       suppressMessages(library(grid))
       
@@ -22912,7 +22912,7 @@ strip.text = element_text(face="bold"))+scale_y_continuous(name="mean Pearson co
           print(res[[i]][[1]])
         }
         
-        legend <- cowplot::get_legend(plot_res[[i]]$plot_res)
+        legend <- ggpubr::get_legend(plot_res[[i]]$plot_res)
         
         suppressMessages(library(grid))
         
@@ -37357,7 +37357,7 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
             clusterExport(cl,"anova",envir = .GlobalEnv)
             clusterEvalQ(cl,library(ggpubr))
             clusterEvalQ(cl,library(ggplot2))
-            clusterEvalQ(cl,library(cowplot))
+           # clusterEvalQ(cl,library(cowplot))
             
             
             #res1<-apply(data_m_fc,1,function(x){
