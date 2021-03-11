@@ -14,6 +14,8 @@ install.packages(c('rgl', 'snow', 'doSNOW', 'foreach', 'e1071', 'WGCNA','reshape
                    'plotly','shinycssloaders', 'colourpicker',"raster","ROSE","devtools"),dependencies=TRUE,
                  repos="https://cran.r-project.org")
 
+
+Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS="true")
 library(devtools); install_github("kuppal2/xmsPANDA")
 #launch xmsPANDA
 library(xmsPANDA)
