@@ -8,7 +8,12 @@ graphical_options<-fluidRow(
                                                                                                               "yellowwhiteblue","redwhiteblue","topo","heat"),selected="redblue")),
            #column(width=6,selectInput(width="350px","output_format","Output format (PDF or PNG for high-res):",c("png","pdf"))),
            #column(width=6,numericInput(width="350px","pca_cex_val", "Size of points on PCA plots (1-20 limit):", 4, min = 1, max = 20))
-           column(width=6,selectInput(width="350px","color.palette","Color theme for boxplots and line plots: ",c("journal","default","topo","heat","rainbow","terrain","black","grey57"),
+           column(width=6,selectInput(width="350px","color.palette","Color theme for boxplots and line plots (: ",
+                                      c("journal","wong","npg","nejm","jco","lancet","custom1","brewer.RdYlBu","brewer.RdBu","brewer.PuOr","brewer.PRGn","brewer.PiYG","brewer.BrBG",
+                                        "brewer.Set2","brewer.Paired","brewer.Dark2","brewer.YlGnBu","brewer.YlGn","brewer.YlOrRd","brewer.YlOrBr","brewer.PuBuGn",
+                                        "brewer.PuRd","brewer.PuBu",
+                                        "brewer.OrRd","brewer.GnBu","brewer.BuPu","brewer.BuGn","brewer.blues","black","grey65",
+                                        "topo"),
                                       selected="journal"))
            
     ),
@@ -41,8 +46,8 @@ column(width=12,
 #column(width=6,
  #                 id="inputarea",
            #textInput(width="350px","ggplot.type1", "Color theme or options for boxplots (e.g. heat, rainbow, red, grey57):","journal",placeholder="Default: journal")
-column(width=6,selectInput(width="350px","ggplot.type1", "Select how to group samples by factor1 or factor2 on boxplots:", 
-                           c("Group/facet by factor 1"="TRUE","Group/facet by factor 2"="FALSE","No facet or sub-grouping"="None"))),
+column(width=6,selectInput(width="350px","ggplot.type1", "Select how to group samples by factor1 or factor2 in boxplots:", 
+                           c("Group/facet by factor 2"="TRUE","Group/facet by factor 1"="FALSE","No facet or sub-grouping"="None"))),
 column(width=6,numericInput(width="350px","facet.nrow", "Number of rows in the boxplots (only applicable to factorial designs):", 1, min = 1, max = 10))
 ),
 
