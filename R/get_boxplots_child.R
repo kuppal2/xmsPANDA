@@ -310,8 +310,25 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
                   
                   
                 }else{
-                  col_vec <-boxplot.col.opt
-                  col_vec <- rep(col_vec,length(class_labels_levels))
+                  #col_vec <-boxplot.col.opt
+                  #col_vec <- rep(col_vec,length(class_labels_levels))
+                  
+                  if(length(boxplot.col.opt)==1){
+                    col_vec <-rep(boxplot.col.opt,length(class_labels_levels))
+                  }else{
+                    
+                    if(length(boxplot.col.opt)<=length(class_labels_levels)){
+                      
+                      col_vec <-boxplot.col.opt
+                      col_vec <- rep(col_vec,length(class_labels_levels))
+                      
+                      
+                    }else{
+                      colfunc <-colorRampPalette(boxplot.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                    }
+                    
+                  }
+                  
                 }
                 
               }

@@ -31,11 +31,13 @@ function(dataA,logistic_reg=FALSE,poisson_reg=FALSE,robust.estimate=FALSE,vcovHC
       a1 <- glm(dataA$Class ~ .,family=poisson(log),data=dataA)
       
     }else{
+      
       cnames1<-colnames(dataA)
       cnames1[2]<-"Class"
       colnames(dataA)<-cnames1
       dataA$Class<-as.numeric(dataA$Class)
       a1 <- lm(dataA$Response ~ .,data=dataA) # aov(dataA$Response ~ .,data=dataA) # + chocolate$Factor1*chocolate$Factor2)
+      
     }
   }
   s1<-summary(a1)

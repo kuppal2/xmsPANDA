@@ -81,6 +81,12 @@ function(data_matrix,ncomp=2,pthresh=0.005,outlier.method="sumtukey",column.rm.i
     
     print("No outliers detected.")
   }
-  write.table(cnames,file="Potential.Outliers.txt",sep="\t",row.names=FALSE)
+  
+  if(dir.exists("Tables")){
+  write.table(cnames,file="Tables/Potential.Outliers.txt",sep="\t",row.names=FALSE)
+  }else{
+    
+    write.table(cnames,file="Potential.Outliers.txt",sep="\t",row.names=FALSE)
+  }
   return(cnames)
 }

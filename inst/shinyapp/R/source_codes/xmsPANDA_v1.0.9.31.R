@@ -6720,13 +6720,31 @@ get_scatter_plots<-function (X = NA, Y = NA, feature_table_file, parentoutput_di
                   }
                 }
                 else {
-                  if (length(sample.col.opt) == 1) {
-                    col_vec <- rep(sample.col.opt, length(class_labels_levels))
+                #  if (length(sample.col.opt) == 1) {
+                 #   col_vec <- rep(sample.col.opt, length(class_labels_levels))
+                  #}
+                  #else {
+                   # colfunc <- colorRampPalette(sample.col.opt)
+                  #  col_vec <- colfunc(length(class_labels_levels))
+                  #}
+                  
+                  if(length(sample.col.opt)==1){
+                    col_vec <-rep(sample.col.opt,length(class_labels_levels))
+                  }else{
+                    
+                    if(length(sample.col.opt)<=length(class_labels_levels)){
+                      
+                      col_vec <-sample.col.opt
+                      col_vec <- rep(col_vec,length(class_labels_levels))
+                      
+                      
+                    }else{
+                      colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                    }
+                    
                   }
-                  else {
-                    colfunc <- colorRampPalette(sample.col.opt)
-                    col_vec <- colfunc(length(class_labels_levels))
-                  }
+                  
+                  
                 }
               }
             }
@@ -6735,8 +6753,7 @@ get_scatter_plots<-function (X = NA, Y = NA, feature_table_file, parentoutput_di
       }
     }
   }
-  rm(X)
-  rm(Y)
+
   cnames <- colnames(data_matrix)
   cnames <- tolower(cnames)
   cnames <- tolower(cnames)
@@ -6789,12 +6806,17 @@ get_scatter_plots<-function (X = NA, Y = NA, feature_table_file, parentoutput_di
   dir.create(parentoutput_dir,showWarnings = FALSE)
   setwd(parentoutput_dir)
   data_matrix <- X
+  
+  
   data_m <- data_matrix[, -c(1:2)]
   data_m <- as.matrix(data_m)
   mzvec <- data_matrix[, 1]
   timevec <- data_matrix[, 2]
   goodfeats <- data_m
   rm(data_m)
+  rm(X)
+  rm(Y)
+  
   file_ind <- 0
   boxplots_fname <- paste("scatterplots", filename, ".pdf", 
                           sep = "")
@@ -6809,13 +6831,12 @@ get_scatter_plots<-function (X = NA, Y = NA, feature_table_file, parentoutput_di
       boxplots_fname <- paste("scatterplots_file", 
                               file_ind, ".tiff", sep = "")
     }
-    round_mzval <- sprintf("%.4f", mzvec[m])
-    round_timeval <- sprintf("%.1f", timevec[m])
+   # round_mzval <- sprintf("%.4f", mzvec[m])
+    #round_timeval <- sprintf("%.1f", timevec[m])
     if (is.na(name) == TRUE) {
       if (length(check_names) > 0) {
         if (check_names == 1) {
-          mzname <- as.character(names_with_mz_time[m, 
-                                                    1])
+          mzname <- as.character(names_with_mz_time[m, 1])
         }
         else {
           mzname <- paste("mz_time: ", round_mzval, 
@@ -13894,11 +13915,13 @@ diffexplmreg<-function(dataA,logistic_reg=FALSE,poisson_reg=FALSE,robust.estimat
       a1 <- glm(dataA$Class ~ .,family=poisson(log),data=dataA)
       
     }else{
+      
       cnames1<-colnames(dataA)
       cnames1[2]<-"Class"
       colnames(dataA)<-cnames1
       dataA$Class<-as.numeric(dataA$Class)
       a1 <- lm(dataA$Response ~ .,data=dataA) # aov(dataA$Response ~ .,data=dataA) # + chocolate$Factor1*chocolate$Factor2)
+      
     }
   }
   s1<-summary(a1)
@@ -17178,8 +17201,25 @@ get_boxplots_child<-function(X,Y,feature_table_file,parentoutput_dir,class_label
                   
                   
                 }else{
-                  col_vec <-boxplot.col.opt
-                  col_vec <- rep(col_vec,length(class_labels_levels))
+                  #col_vec <-boxplot.col.opt
+                  #col_vec <- rep(col_vec,length(class_labels_levels))
+                  
+                  if(length(boxplot.col.opt)==1){
+                    col_vec <-rep(boxplot.col.opt,length(class_labels_levels))
+                  }else{
+                    
+                    if(length(boxplot.col.opt)<=length(class_labels_levels)){
+                      
+                      col_vec <-boxplot.col.opt
+                      col_vec <- rep(col_vec,length(class_labels_levels))
+                      
+                      
+                    }else{
+                      colfunc <-colorRampPalette(boxplot.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                    }
+                    
+                  }
+                  
                 }
                 
               }
@@ -18949,13 +18989,31 @@ get_pcascoredistplots_child<-function(X,Y,feature_table_file,parentoutput_dir,cl
                     }
                   }else{
                     #colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                 #   if(length(sample.col.opt)==1){
+                  #    col_vec <-rep(sample.col.opt,length(class_labels_levels))
+                   # }else{
+                      
+                    #  colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                      
+                    #}
+                    
                     if(length(sample.col.opt)==1){
                       col_vec <-rep(sample.col.opt,length(class_labels_levels))
                     }else{
                       
-                      colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                      if(length(sample.col.opt)<=length(class_labels_levels)){
+                        
+                        col_vec <-sample.col.opt
+                        col_vec <- rep(col_vec,length(class_labels_levels))
+                        
+                        
+                      }else{
+                        colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                      }
                       
                     }
+                    
+                    
                   }
                 }
                 
@@ -22077,15 +22135,30 @@ get_lineplots<-function(X=NA,Y=NA,feature_table_file=NA,parentoutput_dir=NA,
                     }else{
                       #colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
                       
+                    #  if(length(sample.col.opt)==1){
+                       # col_vec <-rep(sample.col.opt,length(col_class_levels))
+                      #}else{
+                        
+                       # colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(col_class_levels))
+                        
+                      #}
+                      
                       if(length(sample.col.opt)==1){
-                        col_vec <-rep(sample.col.opt,length(col_class_levels))
+                        col_vec <-rep(sample.col.opt,length(class_labels_levels))
                       }else{
                         
-                        colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(col_class_levels))
-                        
-                        ##savecolfunc,file="colfunc.Rda")
+                        if(length(sample.col.opt)<=length(class_labels_levels)){
+                          
+                          col_vec <-sample.col.opt
+                          col_vec <- rep(col_vec,length(class_labels_levels))
+                          
+                          
+                        }else{
+                          colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                        }
                         
                       }
+                      
                     }
                     
                   }
@@ -23194,7 +23267,15 @@ if(FALSE){
                     col_vec <-rep(sample.col.opt,length(class_labels_levels))
                   }else{
                     
-                    colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                    if(length(sample.col.opt)<=length(class_labels_levels)){
+                      
+                      col_vec <-sample.col.opt
+                      col_vec <- rep(col_vec,length(class_labels_levels))
+                    
+                      
+                    }else{
+                          colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                    }
                     
                   }
                 }
@@ -25300,7 +25381,10 @@ get_hca_child<-function(feature_table_file,parentoutput_dir,class_labels_file,X=
                     col_vec <-rep(sample.col.opt,length(class_labels_levels))
                   }else{
                     
-                    colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                   # colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                    
+                    col_vec <-sample.col.opt
+                    col_vec <- rep(col_vec,length(class_labels_levels))
                     
                   }
                 }
@@ -25400,10 +25484,32 @@ get_hca_child<-function(feature_table_file,parentoutput_dir,class_labels_file,X=
                 if(length(grep(heatmap.col.opt,pattern = "brewer."))>0){
                  
                   heatmap.col.opt<-gsub(heatmap.col.opt,pattern="brewer.",replacement="")
-                }
+                
                 heatmap_cols <- colorRampPalette(brewer.pal(10, heatmap.col.opt))(256)
                 heatmap_cols<-rev(heatmap_cols)
-                
+                }else{
+                  
+                  if(heatmap.col.opt=="bluered"){
+                    
+                    heatmap_cols <- colorRampPalette(brewer.pal(10, "RdBu"))(256)
+                   # heatmap_cols<-rev(heatmap_cols)
+                  }else{
+                    
+                    if(heatmap.col.opt=="blueorange"){
+                      
+                      heatmap_cols <- colorRampPalette(c("orange","blue"))(256)
+                      # heatmap_cols<-rev(heatmap_cols)
+                    }else{
+                      
+                      if(heatmap.col.opt=="orangeblue"){
+                        
+                        heatmap_cols <- colorRampPalette(c("orange","blue"))(256)
+                        heatmap_cols<-rev(heatmap_cols)
+                      }
+                    }
+                  }
+                  
+                }
               }
               
             }
@@ -27434,7 +27540,13 @@ outlier_detect<-function(data_matrix,ncomp=2,pthresh=0.005,outlier.method="sumtu
     
     print("No outliers detected.")
   }
-  write.table(cnames,file="Potential.Outliers.txt",sep="\t",row.names=FALSE)
+  
+  if(dir.exists("Tables")){
+  write.table(cnames,file="Tables/Potential.Outliers.txt",sep="\t",row.names=FALSE)
+  }else{
+    
+    write.table(cnames,file="Potential.Outliers.txt",sep="\t",row.names=FALSE)
+  }
   return(cnames)
 }
 
@@ -30520,8 +30632,9 @@ pal_nejm_custom<-function (palette = c("default"), alpha = 1)
 }
 
 
-get_hexcolors_for_palettes<-function(color.palette=c("custom1","wong","npg","jama","jco","lancet","nejm"),alpha=1){
+get_hexcolors_for_palettes<-function(color.palette=c("custom1","wong","npg","jama","jco","lancet","nejm"),alpha.col=1){
   
+  library(scales)
   if(color.palette[1]=="custom1"){
     color.palette=c("#474A49","#92C147","#F79646","#8064A2","#11BCFF","#0F7BA0")
   }else{
@@ -30530,7 +30643,8 @@ get_hexcolors_for_palettes<-function(color.palette=c("custom1","wong","npg","jam
       
       #https://www.nature.com/articles/nmeth.1618
       #rgb(204,121,167,maxColorValue = 255) Output: #CC79A7
-      color.palette=c("#000000","#E69F00","#56B4E9","#009E73","#F0E442","#0072B2","#D55E00","#CC79A7")
+      #remove black
+      color.palette=c("#E69F00","#56B4E9","#009E73","#F0E442","#0072B2","#D55E00","#CC79A7")
       
     }else{
       color.palette=color.palette[1]
@@ -30582,7 +30696,7 @@ get_hexcolors_for_palettes<-function(color.palette=c("custom1","wong","npg","jam
 
 view_color_img<-function(color.palette=c("custom1","npg","jama","jco","lancet","nejm"),alpha.col=1){
   
-  color.palette=get_hexcolors_for_palettes(color.palette[1],alpha=alpha.col)
+  color.palette=get_hexcolors_for_palettes(color.palette[1],alpha.col=alpha.col)
   
   show_col(color.palette,ncol=1)
   
@@ -30664,7 +30778,7 @@ diffexp<-function(Xmat=NA,Ymat=NA,feature_table_file,parentoutput_dir=NA,class_l
 
  
   color.palette=tolower(color.palette)
-  color.palette=get_hexcolors_for_palettes(color.palette=color.palette[1],alpha=alpha.col[1])
+  color.palette=get_hexcolors_for_palettes(color.palette=color.palette[1],alpha.col=alpha.col[1])
   
   
   
@@ -30750,8 +30864,8 @@ diffexp<-function(Xmat=NA,Ymat=NA,feature_table_file,parentoutput_dir=NA,class_l
     stop("Input intensities should either be at raw or log2 scale")
   }
   
-  
-  suppressWarnings(suppressWarnings(sink(file=NULL)))
+  suppressMessages(suppressWarnings(try(sink(file=NULL),silent=TRUE)))
+  #suppressMessages(suppressWarnings(sink(file=NULL)))
   x<-date()
   x<-strsplit(x,split=" ")
   
@@ -31818,7 +31932,8 @@ diffexp<-function(Xmat=NA,Ymat=NA,feature_table_file,parentoutput_dir=NA,class_l
       print("#")
       print("#######################")
       
-      suppressWarnings(sink(file=NULL))
+     # suppressWarnings(sink(file=NULL))
+      suppressMessages(suppressWarnings(try(sink(file=NULL),silent=TRUE)))
       
       #print("###############################")
       #print("###############################")
@@ -31863,7 +31978,8 @@ diffexp<-function(Xmat=NA,Ymat=NA,feature_table_file,parentoutput_dir=NA,class_l
       print("#")
       print("#######################")
       
-      suppressWarnings(sink(file=NULL))
+     # suppressWarnings(sink(file=NULL))
+      suppressMessages(suppressWarnings(try(sink(file=NULL),silent=TRUE)))
       
       # print("###############################")
       #print("###############################")
@@ -31950,7 +32066,8 @@ diffexp<-function(Xmat=NA,Ymat=NA,feature_table_file,parentoutput_dir=NA,class_l
     print("#")
     print("#")
     print("#######################")
-    suppressWarnings(sink(file=NULL))
+    #suppressWarnings(sink(file=NULL))
+    suppressMessages(suppressWarnings(try(sink(file=NULL),silent=TRUE)))
     
     print(paste("**Program ended successfully in ",time_taken_panda," ",units(time_taken_panda),". Please see the ReadMe.txt file for description of output files and folders.**", sep=""))
     
@@ -40596,7 +40713,7 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
            # allmetabs_res_withnames<-allmetabs_res_withnames[order(allmetabs_res_withnames$mz,allmetabs_res_withnames$time),]
             
             #write.table(allmetabs_res_withnames[,-c("mz","time")], file=fname4,sep="\t",row.names=FALSE)
-            save(allmetabs_res_withnames,file="allmetabs_res_withnames.Rda")
+           # save(allmetabs_res_withnames,file="allmetabs_res_withnames.Rda")
             #rem_col_ind<-grep(colnames(allmetabs_res_withnames),pattern=c("mz","time"))
             
             if(length(check_names)>0){
@@ -40627,7 +40744,7 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
             write.table(allmetabs_res,file=fname4,sep="\t",row.names=FALSE)
           }
           goodfeats<-allmetabs_res_withnames[goodip,] #data_limma_fdrall_withfeats_2[goodip,] #[sel.diffdrthresh==TRUE,]
-          save(allmetabs_res_withnames,goodip,file="allmetabs_res_withnames.Rda")
+         # save(allmetabs_res_withnames,goodip,file="allmetabs_res_withnames.Rda")
           goodfeats<-as.data.frame(allmetabs_res_withnames[goodip,]) #data_limma_fdrall_withfeats_2)
           
           if(logistic_reg==TRUE){
@@ -40708,7 +40825,7 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
         }else{
           if(analysismode=="regression"){
             
-            save(goodfeats,file="goodfeats455.Rda")
+           # save(goodfeats,file="goodfeats455.Rda")
             
             try(dev.off(),silent=TRUE)
             
@@ -40738,7 +40855,7 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
             
             goodfeats_temp<-cbind(goodfeats[,mz_ind],goodfeats[,time_ind],goodfeats[,which(colnames(goodfeats)%in%sample_names_vec)]) #goodfeats[,-c(1:time_ind)])
             
-            save(goodfeats_temp,goodfeats,goodfeats_name,file="goodfeats_temp.Rda")
+            #save(goodfeats_temp,goodfeats,goodfeats_name,file="goodfeats_temp.Rda")
             cnames_temp<-colnames(goodfeats_temp)
             cnames_temp<-c("mz","time",cnames_temp[-c(1:2)])
             colnames(goodfeats_temp)<-cnames_temp
@@ -42038,7 +42155,10 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
         
         xlab_text=""
       }
-      get_scatter_plots(X=goodfeats_temp,Y=classlabels_orig,parentoutput_dir=output_dir,newdevice=FALSE,ylabel=ylab_text,xlabel=xlab_text,name=goodfeats_name,cex.plots=cex.plots,scatterplot.col.opt=scatterplot.col.opt)
+      
+    #  save(goodfeats_temp,classlabels_orig,output_dir,ylab_text,xlab_text,goodfeats_name,cex.plots,scatterplot.col.opt,file="scdebug.Rda")
+      get_scatter_plots(X=goodfeats_temp,Y=classlabels_orig,parentoutput_dir=output_dir,newdevice=FALSE,ylabel=ylab_text,xlabel=xlab_text,
+                        name=goodfeats_name,cex.plots=cex.plots,scatterplot.col.opt=scatterplot.col.opt)
       dev.off()
     }
     setwd(parentoutput_dir)

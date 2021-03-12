@@ -8545,7 +8545,7 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
            # allmetabs_res_withnames<-allmetabs_res_withnames[order(allmetabs_res_withnames$mz,allmetabs_res_withnames$time),]
             
             #write.table(allmetabs_res_withnames[,-c("mz","time")], file=fname4,sep="\t",row.names=FALSE)
-            save(allmetabs_res_withnames,file="allmetabs_res_withnames.Rda")
+           # save(allmetabs_res_withnames,file="allmetabs_res_withnames.Rda")
             #rem_col_ind<-grep(colnames(allmetabs_res_withnames),pattern=c("mz","time"))
             
             if(length(check_names)>0){
@@ -8576,7 +8576,7 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
             write.table(allmetabs_res,file=fname4,sep="\t",row.names=FALSE)
           }
           goodfeats<-allmetabs_res_withnames[goodip,] #data_limma_fdrall_withfeats_2[goodip,] #[sel.diffdrthresh==TRUE,]
-          save(allmetabs_res_withnames,goodip,file="allmetabs_res_withnames.Rda")
+         # save(allmetabs_res_withnames,goodip,file="allmetabs_res_withnames.Rda")
           goodfeats<-as.data.frame(allmetabs_res_withnames[goodip,]) #data_limma_fdrall_withfeats_2)
           
           if(logistic_reg==TRUE){
@@ -8657,7 +8657,7 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
         }else{
           if(analysismode=="regression"){
             
-            save(goodfeats,file="goodfeats455.Rda")
+           # save(goodfeats,file="goodfeats455.Rda")
             
             try(dev.off(),silent=TRUE)
             
@@ -8687,7 +8687,7 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
             
             goodfeats_temp<-cbind(goodfeats[,mz_ind],goodfeats[,time_ind],goodfeats[,which(colnames(goodfeats)%in%sample_names_vec)]) #goodfeats[,-c(1:time_ind)])
             
-            save(goodfeats_temp,goodfeats,goodfeats_name,file="goodfeats_temp.Rda")
+            #save(goodfeats_temp,goodfeats,goodfeats_name,file="goodfeats_temp.Rda")
             cnames_temp<-colnames(goodfeats_temp)
             cnames_temp<-c("mz","time",cnames_temp[-c(1:2)])
             colnames(goodfeats_temp)<-cnames_temp
@@ -9987,7 +9987,10 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
         
         xlab_text=""
       }
-      get_scatter_plots(X=goodfeats_temp,Y=classlabels_orig,parentoutput_dir=output_dir,newdevice=FALSE,ylabel=ylab_text,xlabel=xlab_text,name=goodfeats_name,cex.plots=cex.plots,scatterplot.col.opt=scatterplot.col.opt)
+      
+    #  save(goodfeats_temp,classlabels_orig,output_dir,ylab_text,xlab_text,goodfeats_name,cex.plots,scatterplot.col.opt,file="scdebug.Rda")
+      get_scatter_plots(X=goodfeats_temp,Y=classlabels_orig,parentoutput_dir=output_dir,newdevice=FALSE,ylabel=ylab_text,xlabel=xlab_text,
+                        name=goodfeats_name,cex.plots=cex.plots,scatterplot.col.opt=scatterplot.col.opt)
       dev.off()
     }
     setwd(parentoutput_dir)

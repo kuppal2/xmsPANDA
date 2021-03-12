@@ -146,13 +146,31 @@ function (X = NA, Y = NA, feature_table_file, parentoutput_dir,
                   }
                 }
                 else {
-                  if (length(sample.col.opt) == 1) {
-                    col_vec <- rep(sample.col.opt, length(class_labels_levels))
+                #  if (length(sample.col.opt) == 1) {
+                 #   col_vec <- rep(sample.col.opt, length(class_labels_levels))
+                  #}
+                  #else {
+                   # colfunc <- colorRampPalette(sample.col.opt)
+                  #  col_vec <- colfunc(length(class_labels_levels))
+                  #}
+                  
+                  if(length(sample.col.opt)==1){
+                    col_vec <-rep(sample.col.opt,length(class_labels_levels))
+                  }else{
+                    
+                    if(length(sample.col.opt)<=length(class_labels_levels)){
+                      
+                      col_vec <-sample.col.opt
+                      col_vec <- rep(col_vec,length(class_labels_levels))
+                      
+                      
+                    }else{
+                      colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                    }
+                    
                   }
-                  else {
-                    colfunc <- colorRampPalette(sample.col.opt)
-                    col_vec <- colfunc(length(class_labels_levels))
-                  }
+                  
+                  
                 }
               }
             }
@@ -214,6 +232,8 @@ function (X = NA, Y = NA, feature_table_file, parentoutput_dir,
   dir.create(parentoutput_dir,showWarnings = FALSE)
   setwd(parentoutput_dir)
   data_matrix <- X
+  
+  
   data_m <- data_matrix[, -c(1:2)]
   data_m <- as.matrix(data_m)
   mzvec <- data_matrix[, 1]
@@ -222,6 +242,7 @@ function (X = NA, Y = NA, feature_table_file, parentoutput_dir,
   rm(data_m)
   rm(X)
   rm(Y)
+  
   file_ind <- 0
   boxplots_fname <- paste("scatterplots", filename, ".pdf", 
                           sep = "")
@@ -236,13 +257,12 @@ function (X = NA, Y = NA, feature_table_file, parentoutput_dir,
       boxplots_fname <- paste("scatterplots_file", 
                               file_ind, ".tiff", sep = "")
     }
-    round_mzval <- sprintf("%.4f", mzvec[m])
-    round_timeval <- sprintf("%.1f", timevec[m])
+   # round_mzval <- sprintf("%.4f", mzvec[m])
+    #round_timeval <- sprintf("%.1f", timevec[m])
     if (is.na(name) == TRUE) {
       if (length(check_names) > 0) {
         if (check_names == 1) {
-          mzname <- as.character(names_with_mz_time[m, 
-                                                    1])
+          mzname <- as.character(names_with_mz_time[m, 1])
         }
         else {
           mzname <- paste("mz_time: ", round_mzval, 

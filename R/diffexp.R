@@ -74,7 +74,7 @@ function(Xmat=NA,Ymat=NA,feature_table_file,parentoutput_dir=NA,class_labels_fil
 
  
   color.palette=tolower(color.palette)
-  color.palette=get_hexcolors_for_palettes(color.palette=color.palette[1],alpha=alpha.col[1])
+  color.palette=get_hexcolors_for_palettes(color.palette=color.palette[1],alpha.col=alpha.col[1])
   
   
   
@@ -160,8 +160,8 @@ function(Xmat=NA,Ymat=NA,feature_table_file,parentoutput_dir=NA,class_labels_fil
     stop("Input intensities should either be at raw or log2 scale")
   }
   
-  
-  suppressWarnings(suppressWarnings(sink(file=NULL)))
+  suppressMessages(suppressWarnings(try(sink(file=NULL),silent=TRUE)))
+  #suppressMessages(suppressWarnings(sink(file=NULL)))
   x<-date()
   x<-strsplit(x,split=" ")
   
@@ -1228,7 +1228,8 @@ function(Xmat=NA,Ymat=NA,feature_table_file,parentoutput_dir=NA,class_labels_fil
       print("#")
       print("#######################")
       
-      suppressWarnings(sink(file=NULL))
+     # suppressWarnings(sink(file=NULL))
+      suppressMessages(suppressWarnings(try(sink(file=NULL),silent=TRUE)))
       
       #print("###############################")
       #print("###############################")
@@ -1273,7 +1274,8 @@ function(Xmat=NA,Ymat=NA,feature_table_file,parentoutput_dir=NA,class_labels_fil
       print("#")
       print("#######################")
       
-      suppressWarnings(sink(file=NULL))
+     # suppressWarnings(sink(file=NULL))
+      suppressMessages(suppressWarnings(try(sink(file=NULL),silent=TRUE)))
       
       # print("###############################")
       #print("###############################")
@@ -1360,7 +1362,8 @@ function(Xmat=NA,Ymat=NA,feature_table_file,parentoutput_dir=NA,class_labels_fil
     print("#")
     print("#")
     print("#######################")
-    suppressWarnings(sink(file=NULL))
+    #suppressWarnings(sink(file=NULL))
+    suppressMessages(suppressWarnings(try(sink(file=NULL),silent=TRUE)))
     
     print(paste("**Program ended successfully in ",time_taken_panda," ",units(time_taken_panda),". Please see the ReadMe.txt file for description of output files and folders.**", sep=""))
     

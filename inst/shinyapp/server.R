@@ -10,7 +10,7 @@ library(shinyjs)
 library(shinyBS)
 library(DT)
 
-#source("R/source_codes/xmsPANDA_v1.0.9.30.R")
+source("R/source_codes/xmsPANDA_v1.0.9.31.R")
 
 # Server logic
 
@@ -694,6 +694,30 @@ server <- function(input, output, session) {
         ggplot.type1.val=input$ggplot.type1
       }
       
+      #"redblue","orangeblue","bluered","blueorange"
+      if(input$heatmap_color_scheme=="redblue"){
+        manhattanplot.col.opt=c("red3","darkblue")
+        
+      }else{
+        if(input$heatmap_color_scheme=="bluered"){
+          manhattanplot.col.opt=c("darkblue","red3")
+          
+        }else{
+          
+          if(input$heatmap_color_scheme=="blueorange"){
+            manhattanplot.col.opt=c("darkblue","orange")
+            
+          }else{
+            
+            if(input$heatmap_color_scheme=="orangeblue"){
+              manhattanplot.col.opt=c("orange","darkblue")
+              
+            }
+          }
+        }
+        
+      }
+      
       # if(input$timeseries.lineplots==FALSE){
       
       #   timeseries.lineplots=FALSE
@@ -760,7 +784,7 @@ server <- function(input, output, session) {
           #6) arguments for graphical options: see manual for additional arguments
           output.device.type="png",pca.cex.val=6,legendlocation="bottomleft",
           net_node_colors=c("green","red"),net_legend=FALSE,
-          manhattanplot.col.opt=c("darkblue","red3"),
+          manhattanplot.col.opt=manhattanplot.col.opt, #c("darkblue","red3"),
           heatmap.col.opt=input$heatmap_color_scheme,
           
           aggregation.max.iter=100,
@@ -796,8 +820,8 @@ server <- function(input, output, session) {
           #file.copy(paste(getwd(),'matrix_centrality.txt',sep='/'),session_outloc())
           #  print("Error processing the data. Error message:")
           #print(demetabs_res)
-          setwd(session_outloc())
-          zip(zipfile=paste(basename(session_outloc()),'zip',sep='.'), files='.')
+          #setwd(session_outloc())
+          #zip(zipfile=paste(basename(session_outloc()),'zip',sep='.'), files='.')
           msg=paste("Error processing the data. Click on download button to save the partial results and review the Log.txt file. Error message:", demetabs_res)
           
           observeEvent(req(done$count==1),{

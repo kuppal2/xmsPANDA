@@ -291,7 +291,10 @@ function(feature_table_file,parentoutput_dir,class_labels_file,X=NA,Y=NA,heatmap
                     col_vec <-rep(sample.col.opt,length(class_labels_levels))
                   }else{
                     
-                    colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                   # colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                    
+                    col_vec <-sample.col.opt
+                    col_vec <- rep(col_vec,length(class_labels_levels))
                     
                   }
                 }
@@ -391,10 +394,32 @@ function(feature_table_file,parentoutput_dir,class_labels_file,X=NA,Y=NA,heatmap
                 if(length(grep(heatmap.col.opt,pattern = "brewer."))>0){
                  
                   heatmap.col.opt<-gsub(heatmap.col.opt,pattern="brewer.",replacement="")
-                }
+                
                 heatmap_cols <- colorRampPalette(brewer.pal(10, heatmap.col.opt))(256)
                 heatmap_cols<-rev(heatmap_cols)
-                
+                }else{
+                  
+                  if(heatmap.col.opt=="bluered"){
+                    
+                    heatmap_cols <- colorRampPalette(brewer.pal(10, "RdBu"))(256)
+                   # heatmap_cols<-rev(heatmap_cols)
+                  }else{
+                    
+                    if(heatmap.col.opt=="blueorange"){
+                      
+                      heatmap_cols <- colorRampPalette(c("orange","blue"))(256)
+                      # heatmap_cols<-rev(heatmap_cols)
+                    }else{
+                      
+                      if(heatmap.col.opt=="orangeblue"){
+                        
+                        heatmap_cols <- colorRampPalette(c("orange","blue"))(256)
+                        heatmap_cols<-rev(heatmap_cols)
+                      }
+                    }
+                  }
+                  
+                }
               }
               
             }

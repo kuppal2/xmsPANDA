@@ -1,6 +1,7 @@
 get_hexcolors_for_palettes <-
-function(color.palette=c("custom1","wong","npg","jama","jco","lancet","nejm"),alpha=1){
+function(color.palette=c("custom1","wong","npg","jama","jco","lancet","nejm"),alpha.col=1){
   
+  library(scales)
   if(color.palette[1]=="custom1"){
     color.palette=c("#474A49","#92C147","#F79646","#8064A2","#11BCFF","#0F7BA0")
   }else{
@@ -9,7 +10,8 @@ function(color.palette=c("custom1","wong","npg","jama","jco","lancet","nejm"),al
       
       #https://www.nature.com/articles/nmeth.1618
       #rgb(204,121,167,maxColorValue = 255) Output: #CC79A7
-      color.palette=c("#000000","#E69F00","#56B4E9","#009E73","#F0E442","#0072B2","#D55E00","#CC79A7")
+      #remove black
+      color.palette=c("#E69F00","#56B4E9","#009E73","#F0E442","#0072B2","#D55E00","#CC79A7")
       
     }else{
       color.palette=color.palette[1]
