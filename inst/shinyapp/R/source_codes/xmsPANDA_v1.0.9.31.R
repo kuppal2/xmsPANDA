@@ -30419,6 +30419,175 @@ replace_outliers<-function(cdata,replace.by.NA=FALSE,iqr.multiplier=1.5){
   return(cdata)
 }
 
+pal_jco_custom<-function (palette = c("default"), alpha = 1) 
+{
+  palette = match.arg(palette)
+  if (alpha > 1L | alpha <= 0L) 
+    stop("alpha must be in (0, 1]")
+  raw_cols = c(
+    "Lochmara" = "#0073C2", "Corn" = "#EFC000",
+    "Gray" = "#868686", "ChestnutRose" = "#CD534C",
+    "Danube" = "#7AA6DC", "RegalBlue" = "#003C67",
+    "Olive" = "#8F7700", "MineShaft" = "#3B3B3B",
+    "WellRead" = "#A73030", "KashmirBlue" = "#4A6990"
+  )
+  
+  raw_cols_rgb = col2rgb(raw_cols)
+  alpha_cols = rgb(raw_cols_rgb[1L, ], raw_cols_rgb[2L, ], 
+                   raw_cols_rgb[3L, ], alpha = alpha * 255L, names = names(raw_cols), 
+                   maxColorValue = 255L)
+  manual_pal(unname(alpha_cols))
+}
+
+pal_jama_custom<-function (palette = c("default"), alpha = 1) 
+{
+  palette = match.arg(palette)
+  if (alpha > 1L | alpha <= 0L) 
+    stop("alpha must be in (0, 1]")
+  raw_cols = c(
+    "Limed Spruce" = "#374E55", "Anzac" = "#DF8F44",
+    "Cerulean" = "#00A1D5", "Apple Blossom" = "#B24745",
+    "Acapulco" = "#79AF97", "Kimberly" = "#6A6599",
+    "Makara" = "#80796B"
+  )
+  
+  raw_cols_rgb = col2rgb(raw_cols)
+  alpha_cols = rgb(raw_cols_rgb[1L, ], raw_cols_rgb[2L, ], 
+                   raw_cols_rgb[3L, ], alpha = alpha * 255L, names = names(raw_cols), 
+                   maxColorValue = 255L)
+  manual_pal(unname(alpha_cols))
+}
+
+
+
+pal_lancet_custom<-function (palette = c("lanonc"), alpha = 1) 
+{
+  palette = match.arg(palette)
+  if (alpha > 1L | alpha <= 0L) 
+    stop("alpha must be in (0, 1]")
+  raw_cols = c(
+    "CongressBlue" = "#00468B", "Red" = "#ED0000",
+    "Apple" = "#42B540", "BondiBlue" = "#0099B4",
+    "TrendyPink" = "#925E9F", "MonaLisa" = "#FDAF91",
+    "Carmine" = "#AD002A", "Edward" = "#ADB6B6",
+    "CodGray" = "#1B1919"
+  )
+  
+  raw_cols_rgb = col2rgb(raw_cols)
+  alpha_cols = rgb(raw_cols_rgb[1L, ], raw_cols_rgb[2L, ], 
+                   raw_cols_rgb[3L, ], alpha = alpha * 255L, names = names(raw_cols), 
+                   maxColorValue = 255L)
+  manual_pal(unname(alpha_cols))
+}
+
+pal_npg_custom<-function (palette = c("nrc"), alpha = 1) 
+{
+  
+  
+  palette = match.arg(palette)
+  if (alpha > 1L | alpha <= 0L) 
+    stop("alpha must be in (0, 1]")
+  raw_cols = c(
+    "Cinnabar" = "#E64B35", "Shakespeare" = "#4DBBD5",
+    "PersianGreen" = "#00A087", "Chambray" = "#3C5488",
+    "Apricot" = "#F39B7F", "WildBlueYonder" = "#8491B4",
+    "MonteCarlo" = "#91D1C2", "Monza" = "#DC0000",
+    "RomanCoffee" = "#7E6148", "Sandrift" = "#B09C85"
+  )
+  raw_cols_rgb = col2rgb(raw_cols)
+  alpha_cols = rgb(raw_cols_rgb[1L, ], raw_cols_rgb[2L, ], 
+                   raw_cols_rgb[3L, ], alpha = alpha * 255L, names = names(raw_cols), 
+                   maxColorValue = 255L)
+  manual_pal(unname(alpha_cols))
+}
+
+pal_nejm_custom<-function (palette = c("default"), alpha = 1) 
+{
+  palette = match.arg(palette)
+  if (alpha > 1L | alpha <= 0L) 
+    stop("alpha must be in (0, 1]")
+  raw_cols = c(
+    "TallPoppy" = "#BC3C29", "DeepCerulean" = "#0072B5",
+    "Zest" = "#E18727", "Eucalyptus" = "#20854E",
+    "WildBlueYonder" = "#7876B1", "Gothic" = "#6F99AD",
+    "Salomie" = "#FFDC91", "FrenchRose" = "#EE4C97"
+  )
+  raw_cols_rgb = col2rgb(raw_cols)
+  alpha_cols = rgb(raw_cols_rgb[1L, ], raw_cols_rgb[2L, ], 
+                   raw_cols_rgb[3L, ], alpha = alpha * 255L, names = names(raw_cols), 
+                   maxColorValue = 255L)
+  manual_pal(unname(alpha_cols))
+}
+
+
+get_hexcolors_for_palettes<-function(color.palette=c("custom1","wong","npg","jama","jco","lancet","nejm"),alpha=1){
+  
+  if(color.palette[1]=="custom1"){
+    color.palette=c("#474A49","#92C147","#F79646","#8064A2","#11BCFF","#0F7BA0")
+  }else{
+    
+    if(color.palette[1]=="wong"){
+      
+      #https://www.nature.com/articles/nmeth.1618
+      #rgb(204,121,167,maxColorValue = 255) Output: #CC79A7
+      color.palette=c("#000000","#E69F00","#56B4E9","#009E73","#F0E442","#0072B2","#D55E00","#CC79A7")
+      
+    }else{
+      color.palette=color.palette[1]
+      
+      if(color.palette=="npg"){
+        
+        # color.palette=c("#E64B35FF","#4DBBD5FF","#00A087FF","#3C5488FF","#F39B7FFF","#8491B4FF",
+        #                "#91D1C2FF","#DC0000FF","#7E6148FF","#B09C85FF")
+        
+        colfunc=pal_npg_custom(alpha=alpha.col)
+        color.palette=colfunc(10)
+      }else{
+        
+        if(color.palette=="nejm"){
+          
+          colfunc=pal_nejm_custom(alpha=alpha.col)
+          color.palette=colfunc(8)
+          
+        }else{
+          if(color.palette=="jco"){
+            
+            colfunc=pal_jco_custom(alpha=alpha.col)
+            color.palette=colfunc(10)
+            
+          }else{
+            
+            if(color.palette=="jama"){
+              
+              colfunc=pal_jama_custom(alpha=alpha.col)
+              color.palette=colfunc(7)
+              
+            }else{
+              if(color.palette=="lancet"){
+                
+                colfunc=pal_lancet_custom(alpha=alpha.col)
+                color.palette=colfunc(9)
+                
+              }
+              
+            }
+          }
+          
+        }
+      }
+    }
+  }
+  return(color.palette)
+}
+
+view_color_img<-function(color.palette=c("custom1","npg","jama","jco","lancet","nejm"),alpha.col=1){
+  
+  color.palette=get_hexcolors_for_palettes(color.palette[1],alpha=alpha.col)
+  
+  show_col(color.palette,ncol=1)
+  
+}
+
 #main function for data preprocessing, differential expression, clustering, boxplots, and network analysis
 diffexp<-function(Xmat=NA,Ymat=NA,feature_table_file,parentoutput_dir=NA,class_labels_file,num_replicates=1,summarize.replicates=TRUE,summary.method="mean",
                   summary.na.replacement="zeros",missing.val=0,rep.max.missing.thresh=0.3,
@@ -30454,10 +30623,10 @@ diffexp<-function(Xmat=NA,Ymat=NA,feature_table_file,parentoutput_dir=NA,class_l
                   balance.classes.seed=1,cv.perm.count=100,multiple.figures.perpanel=FALSE,
                   hca.labRow.value = FALSE, hca.labCol.value = FALSE,
                   alpha.col=1,similarity.matrix="correlation",outlier.method=c("pcout","sumtukey","pcatukey","pcachisq"),removeRda=TRUE,
-                  color.palette=c("journal","custom1","custom2","terrain","rainbow","heat","topo","brewer.RdYlBu","brewer.RdBu","brewer.PuOr","brewer.PRGn","brewer.PiYG","brewer.BrBG",
+                  color.palette=c("journal","npg","nejm","jco","lancet","custom1","brewer.RdYlBu","brewer.RdBu","brewer.PuOr","brewer.PRGn","brewer.PiYG","brewer.BrBG",
                                   "brewer.Set2","brewer.Paired","brewer.Dark2","brewer.YlGnBu","brewer.YlGn","brewer.YlOrRd","brewer.YlOrBr","brewer.PuBuGn",
                                   "brewer.PuRd","brewer.PuBu",
-                                  "brewer.OrRd","brewer.GnBu","brewer.BuPu","brewer.BuGn","brewer.blues","black","grey65"),
+                                  "brewer.OrRd","brewer.GnBu","brewer.BuPu","brewer.BuGn","brewer.blues","black","grey65","terrain","rainbow","heat","topo"),
                   plot_DiNa_graph=FALSE,limma.contrasts.type=c("contr.sum","contr.treatment"),
                   hca.cex.legend=0.7,plot.boxplots.raw=FALSE,vcovHC.type="HC3",ggplot.type1=TRUE,facet.nrow=1,...)
 {
@@ -30493,18 +30662,9 @@ diffexp<-function(Xmat=NA,Ymat=NA,feature_table_file,parentoutput_dir=NA,class_l
   modeltype=lme.modeltype[1]
   balance.classes.method="ROSE"
 
-  if(color.palette=="custom1"){
-    color.palette=c("#474A49","#92C147","#F79646","#8064A2","#11BCFF","#0F7BA0")
-  }else{
-    
-    if(color.palette=="custom2"){
-      
-      color.palette="default"
-      
-    }else{
-        color.palette=color.palette[1]
-    }
-  }
+ 
+  color.palette=tolower(color.palette)
+  color.palette=get_hexcolors_for_palettes(color.palette=color.palette[1],alpha=alpha.col[1])
   
   
   

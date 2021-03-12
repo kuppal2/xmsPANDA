@@ -161,8 +161,7 @@ function (X = NA, Y = NA, feature_table_file, parentoutput_dir,
       }
     }
   }
-  rm(X)
-  rm(Y)
+
   cnames <- colnames(data_matrix)
   cnames <- tolower(cnames)
   cnames <- tolower(cnames)
@@ -221,6 +220,8 @@ function (X = NA, Y = NA, feature_table_file, parentoutput_dir,
   timevec <- data_matrix[, 2]
   goodfeats <- data_m
   rm(data_m)
+  rm(X)
+  rm(Y)
   file_ind <- 0
   boxplots_fname <- paste("scatterplots", filename, ".pdf", 
                           sep = "")
