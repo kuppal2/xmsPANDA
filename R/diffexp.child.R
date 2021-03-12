@@ -379,6 +379,14 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
   
     cnames<-colnames(X)
     
+    cnames<- gsub(cnames,pattern="[\\s]*",replacement="",perl=TRUE)
+    cnames<- gsub(cnames,pattern="[(|)|\\[|\\]]",replacement="",perl=TRUE)
+    
+    cnames<-gsub(cnames,pattern="\\||-|;|,|\\.",replacement="_",perl=TRUE)
+    
+    
+    colnames(X)<-cnames
+    
     cnames<-tolower(cnames)
     
     check_names<-grep(cnames,pattern="^name$")
@@ -470,7 +478,16 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
     
     cnames<-colnames(X)
     
-    cnames<-tolower(cnames) 
+   
+    cnames<- gsub(cnames,pattern="[\\s]*",replacement="",perl=TRUE)
+    cnames<- gsub(cnames,pattern="[(|)|\\[|\\]]",replacement="",perl=TRUE)
+    
+    cnames<-gsub(cnames,pattern="\\||-|;|,|\\.",replacement="_",perl=TRUE)
+    
+    colnames(X)<-cnames
+    
+    
+    cnames<-tolower(cnames)
     
     check_names<-grep(cnames,pattern="^name$")
     
@@ -580,9 +597,16 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
     }
     
     
-    classlabels[,1]<-gsub(classlabels[,1],pattern=" |-",replacement=".")
-    Ymat[,1]<-gsub(Ymat[,1],pattern=" |-",replacement=".")
     
+    classlabels[,1]<- gsub(classlabels[,1],pattern="[\\s]*",replacement="",perl=TRUE)
+    classlabels[,1]<- gsub(classlabels[,1],pattern="[(|)|\\[|\\]]",replacement="",perl=TRUE)
+    
+    classlabels[,1]<-gsub(classlabels[,1],pattern="\\||-|;|,|\\.",replacement="_",perl=TRUE)
+    
+    #classlabels[,1]<-gsub(classlabels[,1],pattern=" |-",replacement=".")
+   # Ymat[,1]<-gsub(Ymat[,1],pattern=" |-",replacement=".")
+    
+    Ymat<-classlabels
     
     classlabels_orig<-classlabels
     classlabels_sub<-classlabels
@@ -734,7 +758,17 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
         
       }
       
-      classlabels[,1]<-gsub(classlabels[,1],pattern=" |-",replacement=".")
+      classlabels[,1]<- gsub(classlabels[,1],pattern="[\\s]*",replacement="",perl=TRUE)
+      classlabels[,1]<- gsub(classlabels[,1],pattern="[(|)|\\[|\\]]",replacement="",perl=TRUE)
+      
+      classlabels[,1]<-gsub(classlabels[,1],pattern="\\||-|;|,|\\.",replacement="_",perl=TRUE)
+      
+      #classlabels[,1]<-gsub(classlabels[,1],pattern=" |-",replacement=".")
+      # Ymat[,1]<-gsub(Ymat[,1],pattern=" |-",replacement=".")
+      
+      Ymat<-classlabels
+      
+     # classlabels[,1]<-gsub(classlabels[,1],pattern=" |-",replacement=".")
       Ymat[,1]<-gsub(Ymat[,1],pattern=" |-",replacement=".")
       
       print(paste("Number of samples in class labels file:",dim(Ymat)[1],sep=""))
@@ -5488,7 +5522,7 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
             clusterExport(cl,"anova",envir = .GlobalEnv)
             clusterEvalQ(cl,library(ggpubr))
             clusterEvalQ(cl,library(ggplot2))
-      #      clusterEvalQ(cl,library(cowplot))
+           # clusterEvalQ(cl,library(cowplot))
             
             
             #res1<-apply(data_m_fc,1,function(x){

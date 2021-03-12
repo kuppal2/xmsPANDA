@@ -903,7 +903,7 @@ strip.text = element_text(face="bold"))+scale_y_continuous(name="mean Pearson co
           print(res[[i]][[1]])
         }
       
-        legend <- cowplot::get_legend(plot_res[[i]]$plot_res)
+        legend <- ggpubr::get_legend(plot_res[[i]]$plot_res)
         
         suppressMessages(library(grid))
         
@@ -1126,7 +1126,7 @@ strip.text = element_text(face="bold"))+scale_y_continuous(name="mean Pearson co
         print(res[[i]][[1]])
       }
       
-      legend <- cowplot::get_legend(plot_res[[i]]$plot_res)
+      legend <- ggpubr::get_legend(plot_res[[i]]$plot_res)
       
       suppressMessages(library(grid))
       
@@ -1157,7 +1157,7 @@ strip.text = element_text(face="bold"))+scale_y_continuous(name="mean Pearson co
           print(res[[i]][[1]])
         }
         
-        legend <- cowplot::get_legend(plot_res[[i]]$plot_res)
+        legend <- ggpubr::get_legend(plot_res[[i]]$plot_res)
         
         suppressMessages(library(grid))
         

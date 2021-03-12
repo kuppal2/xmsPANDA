@@ -6,8 +6,7 @@ function(Xmat=NA,Ymat=NA,Zmat=NA,feature_table_file=NA,parentoutput_dir,class_la
                                                        "paretoscaling","mstus","eigenms_norm","vsn_norm","sva_norm","tic_norm","cubicspline_norm","mad_norm"),input.intensity.scale="raw",
                                 abs.cor.thresh=0.4,pvalue.thresh=0.05,cor.fdrthresh=0.2,cex.plots=0.7,plots.width=8,plots.height=8,plots.res=600,
                                 plots.type="cairo",heatmap.col.opt="RdBu",cor.method="spearman",pca.ellipse=FALSE,ground_truth_file=NA,cutree.method="default",rsd.filt.thresh=1,alphabetical.order=TRUE,analysistype="classification",lme.modeltype="RI",
-                                study.design=c("multiclass","onewayanova","twowayanova","onewayanovarepeat","twowayanovarepeat"),log2.transform.constant=1,featselmethod="limma",
-         similarity.matrix="correlation",...){
+                                study.design=c("multiclass","onewayanova","twowayanova","onewayanovarepeat","twowayanovarepeat"),log2.transform.constant=1,featselmethod="limma",similarity.matrix="correlation",...){
   
   #featselmethod=NA
   
@@ -343,7 +342,7 @@ function(Xmat=NA,Ymat=NA,Zmat=NA,feature_table_file=NA,parentoutput_dir,class_la
         
         #print(X[1:3,1:5])
         #print(head(Y))
-        ##save(X,Y,pairedanalysis,pca.ellipse,normalization.method,i,alphabetical.order,analysistype,lme.modeltype,file="pcad1.Rda")
+       # save(X,Y,pairedanalysis,pca.ellipse,normalization.method,i,alphabetical.order,analysistype,lme.modeltype,file="pcad1.Rda")
         pcares<-get_pcascoredistplots(X=X,Y=Y,feature_table_file=NA,parentoutput_dir=outloc,class_labels_file=NA,sample.col.opt="journal",
                                       plots.width=2000,plots.height=2000,plots.res=300, alphacol=0.3,col_vec=NA,pairedanalysis=pairedanalysis,pca.cex.val=2,legendlocation="topright",
                                       pca.ellipse=pca.ellipse,ellipse.conf.level=0.95,filename=paste(normalization.method[i], "data ",sep=""),paireddesign=NA,

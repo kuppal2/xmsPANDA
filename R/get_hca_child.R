@@ -313,7 +313,7 @@ function(feature_table_file,parentoutput_dir,class_labels_file,X=NA,Y=NA,heatmap
   
   if(analysismode=="classification")
   {
-    
+    #save(classlabels,class_labels_levels,class_label_alphabets,ordered_labels,file="hca2.Rda")
     
     sampleclass<-{}
     patientcolors<-rep("green",nrow(classlabels))
@@ -649,7 +649,9 @@ function(feature_table_file,parentoutput_dir,class_labels_file,X=NA,Y=NA,heatmap
   
   dt3 <- merge(classgroup, class_df, by = "factor_levels", all.x = TRUE)
   
-  ari_val<-round(adjustedRandIndex(x=classgroup[,1], y=mycl_samples),2)
+  #save(classgroup,mycl_samples,file="hcad.Rda")
+  ari_val<-try(round(adjustedRandIndex(x=classgroup[,1], y=mycl_samples),2),silent=TRUE)
+  
   
   if(show.silhouette==FALSE){
   
@@ -1022,7 +1024,7 @@ if(is.na(cexLegend)==TRUE){
             
            #print("DOING THIS HCA")
             
-            #save(data_m,hr,hc,heatmap_cols,cexRow,cexCol,mainlab1,patientcolors,labRow.value,labCol.value,file="thishca.Rda")
+          #  save(data_m,hr,hc,heatmap_cols,cexRow,cexCol,mainlab1,patientcolors,labRow.value,labCol.value,file="thishca.Rda")
             
             
             h73<-heatmap.2(data_m, Rowv=as.dendrogram(hr), Colv=as.dendrogram(hc),  col=heatmap_cols, scale="row",key=TRUE, symkey=FALSE, 

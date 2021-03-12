@@ -33,8 +33,12 @@ function(Xmat=NA,Ymat=NA,feature_table_file,parentoutput_dir=NA,class_labels_fil
                   balance.classes.seed=1,cv.perm.count=100,multiple.figures.perpanel=FALSE,
                   hca.labRow.value = FALSE, hca.labCol.value = FALSE,
                   alpha.col=1,similarity.matrix="correlation",outlier.method=c("pcout","sumtukey","pcatukey","pcachisq"),removeRda=TRUE,
-                  color.palette=c("journal"),plot_DiNa_graph=FALSE,limma.contrasts.type=c("contr.sum","contr.treatment"),
-                  hca.cex.legend=0.7,plot.boxplots.raw=FALSE,vcovHC.type="HC3",ggplot.type1=NA,facet.nrow=1,...)
+                  color.palette=c("journal","custom1","custom2","terrain","rainbow","heat","topo","brewer.RdYlBu","brewer.RdBu","brewer.PuOr","brewer.PRGn","brewer.PiYG","brewer.BrBG",
+                                  "brewer.Set2","brewer.Paired","brewer.Dark2","brewer.YlGnBu","brewer.YlGn","brewer.YlOrRd","brewer.YlOrBr","brewer.PuBuGn",
+                                  "brewer.PuRd","brewer.PuBu",
+                                  "brewer.OrRd","brewer.GnBu","brewer.BuPu","brewer.BuGn","brewer.blues","black","grey65"),
+                  plot_DiNa_graph=FALSE,limma.contrasts.type=c("contr.sum","contr.treatment"),
+                  hca.cex.legend=0.7,plot.boxplots.raw=FALSE,vcovHC.type="HC3",ggplot.type1=TRUE,facet.nrow=1,...)
 {
   
   options(warn=-1)
@@ -45,11 +49,15 @@ function(Xmat=NA,Ymat=NA,feature_table_file,parentoutput_dir=NA,class_labels_fil
   print("**")
   print("**")
   
+  #print(paste("g is ",group.missing.thresh,sep=""))
+  
   if (Sys.getenv("RSTUDIO") == "1" && !nzchar(Sys.getenv("RSTUDIO_TERM")) && 
       Sys.info()["sysname"] == "Darwin" && getRversion() >= "4.0.0") {
     parallel:::setDefaultClusterOptions(setup_strategy = "sequential")
   }
- 
+  
+  lme.modeltype=lme.modeltype[1]
+  
   if(lme.modeltype=="RI"){
     
     lme.modeltype="lme.RI"
@@ -61,9 +69,23 @@ function(Xmat=NA,Ymat=NA,feature_table_file,parentoutput_dir=NA,class_labels_fil
     
   }
   
-  modeltype=lme.modeltype
+  modeltype=lme.modeltype[1]
   balance.classes.method="ROSE"
 
+  if(color.palette=="custom1"){
+    color.palette=c("#474A49","#92C147","#F79646","#8064A2","#11BCFF","#0F7BA0")
+  }else{
+    
+    if(color.palette=="custom2"){
+      
+      color.palette="default"
+      
+    }else{
+        color.palette=color.palette[1]
+    }
+  }
+  
+  
   
   limma.contrasts.type=limma.contrasts.type[1]
   outlier.method=outlier.method[1]

@@ -163,8 +163,8 @@ function(target.data,target.data.annot=NA,kegg_species_code="hsa",database="path
                         rm(reactome_atlas)
                       }else{
                         if(database=="kegg_atlas"){
-                          load("/Users/karanuppal/Documents/Emory/JonesLab/Projects/DifferentialExpression/xmsPaNDA/xmsPANDA_v1.1.65/data/kegg_atlas.rda")
-                          # data(kegg_atlas)
+                          #load("/Users/karanuppal/Documents/Emory/JonesLab/Projects/DifferentialExpression/xmsPaNDA/xmsPANDA_v1.1.65/data/kegg_atlas.rda")
+                           data(kegg_atlas)
                           g1<-kegg_atlas
                           rm(kegg_atlas)
                         }

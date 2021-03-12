@@ -861,7 +861,6 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
                 }else{
                   if(pairedanalysis==FALSE){
                     #label = "p.format",
-                    if(is.na(ggplot.type1)==FALSE){
                     if(ggplot.type1==TRUE){
                       
                       if(is.na(ref.group.val)==TRUE){
@@ -876,9 +875,6 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
                                                 size = 5*cex.plots,ref.group = ref.group.val)
                         }
                       }
-                    }
-                  
-                    
                     }else{
                       if(is.na(ref.group.val)==TRUE){
                         ref.group.val<-unique(temp_dm2$Factor2)[1] 
@@ -896,12 +892,10 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
                                               size = 5*cex.plots,ref.group = ref.group.val)
                     }
                   }else{
-                    if(is.na(ggplot.type1)==FALSE){
+                    
                     if(ggplot.type1==TRUE){
                     p<-p + stat_compare_means(data=temp_dm2,aes(group = Factor1),label = "p.format",
                                               size = 5*cex.plots)
-                    }
-                    
                     }else{
                     p<-p + stat_compare_means(data=temp_dm2,aes(group = Factor2),paired=TRUE,label = "p.format",
                                               size = 5*cex.plots)
