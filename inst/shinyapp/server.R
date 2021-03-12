@@ -1930,27 +1930,31 @@ server <- function(input, output, session) {
   
   ##################################  Help Page #################################################
   
-  example_feat <- read.delim("https://raw.githubusercontent.com/kuppal2/xmsPANDA/master/inst/shinyapp/example_data/feature_table_one_or_two_factor_analysis.txt",sep="\t",header=TRUE,stringsAsFactors=FALSE,check.names=FALSE)
+ # example_feat <- read.delim("https://raw.githubusercontent.com/kuppal2/xmsPANDA/master/inst/shinyapp/example_data/feature_table_one_or_two_factor_analysis.txt",sep="\t",header=TRUE,stringsAsFactors=FALSE,check.names=FALSE)
+  example_feat <- read.delim("example_data/feature_table_one_or_two_factor_analysis.txt",sep="\t",header=TRUE,stringsAsFactors=FALSE,check.names=FALSE)
+  
   example_feat <- example_feat[1:5,1:7]
   colnames(example_feat) <- c(colnames(example_feat)[1:6],"...")
   output$example_feat <- renderTable({ example_feat }, striped = TRUE)
   
-  example_feat2 <- read.delim("https://raw.githubusercontent.com/kuppal2/xmsPANDA/master/inst/shinyapp/example_data/feature_table_one_or_two_factor_analysis_withNamesorIDs.txt",sep="\t",header=TRUE,stringsAsFactors=FALSE,check.names=FALSE)
-  example_feat2 <- example_feat2[1:5,1:7]
+  #example_feat2 <- read.delim("https://raw.githubusercontent.com/kuppal2/xmsPANDA/master/inst/shinyapp/example_data/feature_table_one_or_two_factor_analysis_withNamesorIDs.txt",sep="\t",header=TRUE,stringsAsFactors=FALSE,check.names=FALSE)
+  example_feat2 <- read.delim("example_data/feature_table_one_or_two_factor_analysis_withNamesorIDs.txt",sep="\t",header=TRUE,stringsAsFactors=FALSE,check.names=FALSE)
+  
+   example_feat2 <- example_feat2[1:5,1:7]
   colnames(example_feat2) <- c(colnames(example_feat2)[1:6],"...")
   output$example_feat2 <- renderTable({ example_feat2 }, striped = TRUE)
   
-  example_multiclass_comparison <- read.delim("https://raw.githubusercontent.com/kuppal2/xmsPANDA/master/inst/shinyapp/example_data/classlabels_multiclass_comparison.txt",sep="\t",header=TRUE,stringsAsFactors=FALSE,check.names=FALSE)
+  example_multiclass_comparison <- read.delim("example_data/classlabels_multiclass_comparison.txt",sep="\t",header=TRUE,stringsAsFactors=FALSE,check.names=FALSE)
   example_multiclass_comparison <- rbind(head(example_multiclass_comparison[example_multiclass_comparison$Factor1=="Group1",],8),head(example_multiclass_comparison[example_multiclass_comparison$Factor1=="Group2",],8))
-  example_multiclass_comparison_covariates <- read.delim("https://raw.githubusercontent.com/kuppal2/xmsPANDA/master/inst/shinyapp/example_data/classlabels_with_covariates.txt",sep="\t",header=TRUE,stringsAsFactors=FALSE,check.names=FALSE)
+  example_multiclass_comparison_covariates <- read.delim("example_data/classlabels_with_covariates.txt",sep="\t",header=TRUE,stringsAsFactors=FALSE,check.names=FALSE)
   example_multiclass_comparison_covariates <- rbind(head(example_multiclass_comparison_covariates[example_multiclass_comparison_covariates$Class=="NonSmoker",],8),head(example_multiclass_comparison_covariates[example_multiclass_comparison_covariates$Class=="Smoker",],8))
-  example_regression <- read.delim("https://raw.githubusercontent.com/kuppal2/xmsPANDA/master/inst/shinyapp/example_data/classlabels_regression.txt",sep="\t",header=TRUE,stringsAsFactors=FALSE,check.names=FALSE)
+  example_regression <- read.delim("example_data/classlabels_regression.txt",sep="\t",header=TRUE,stringsAsFactors=FALSE,check.names=FALSE)
   example_regression <- example_regression[1:16,]
-  example_two_way_anova <- read.delim("https://raw.githubusercontent.com/kuppal2/xmsPANDA/master/inst/shinyapp/example_data/classlabels_two_way_anova.txt",sep="\t",header=TRUE,stringsAsFactors=FALSE,check.names=FALSE)
+  example_two_way_anova <- read.delim("example_data/classlabels_two_way_anova.txt",sep="\t",header=TRUE,stringsAsFactors=FALSE,check.names=FALSE)
   example_two_way_anova <- rbind(head(example_two_way_anova[example_two_way_anova$Factor1=="Group1",],8),head(example_two_way_anova[example_two_way_anova$Factor1=="Group2",],8))
-  example_one_factor_repeatedmeasures <- read.delim("https://raw.githubusercontent.com/kuppal2/xmsPANDA/master/inst/shinyapp/example_data/classlabels_one_factor_repeatedmeasures.txt",sep="\t",header=TRUE,stringsAsFactors=FALSE,check.names=FALSE)
+  example_one_factor_repeatedmeasures <- read.delim("example_data/classlabels_one_factor_repeatedmeasures.txt",sep="\t",header=TRUE,stringsAsFactors=FALSE,check.names=FALSE)
   example_one_factor_repeatedmeasures <- example_one_factor_repeatedmeasures[1:16,]
-  example_two_factor_repeatedmeasures <- read.delim("https://raw.githubusercontent.com/kuppal2/xmsPANDA/master/inst/shinyapp/example_data/classlabels_two_factor_repeatedmeasures.txt",sep="\t",header=TRUE,stringsAsFactors=FALSE,check.names=FALSE)
+  example_two_factor_repeatedmeasures <- read.delim("example_data/classlabels_two_factor_repeatedmeasures.txt",sep="\t",header=TRUE,stringsAsFactors=FALSE,check.names=FALSE)
   example_two_factor_repeatedmeasures <- example_two_factor_repeatedmeasures[1:16,]
   
   
