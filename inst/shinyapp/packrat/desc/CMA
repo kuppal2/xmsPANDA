@@ -1,0 +1,31 @@
+Package: CMA
+Type: Package
+Title: Synthesis of microarray-based classification
+Version: 1.40.0
+Date: 2009-09-14
+Author: Martin Slawski <ms@cs.uni-sb.de>, Anne-Laure Boulesteix <boulesteix@ibe.med.uni-muenchen.de>, Christoph Bernau <bernau@ibe.med.uni-muenchen.de>.
+Maintainer: Christoph Bernau <bernau@ibe.med.uni-muenchen.de>
+Depends: R (>= 2.10), methods, stats, Biobase
+Suggests: MASS, class, nnet, glmnet, e1071, randomForest, plsgenomics,
+        gbm, mgcv, corpcor, limma, st, mvtnorm
+Description: This package provides a comprehensive collection of various microarray-based classification algorithms
+             both from Machine Learning and Statistics.
+             Variable Selection, Hyperparameter tuning, Evaluation and Comparison can be performed
+             combined or stepwise in a user-friendly environment.
+Collate: classes.r GenerateLearningsets.r GeneSelection.r tune.r
+        classification.r evaluation.r join.r compare.r Planarplot.r
+        compBoostCMA.r dldaCMA.r ElasticNetCMA.r fdaCMA.r flexdaCMA.r
+        gbmCMA.r knnCMA.r LassoCMA.r ldaCMA.r nnetCMA.r pknnCMA.r
+        plrCMA.r pls_ldaCMA.r pls_lrCMA.r pls_rfCMA.r pnnCMA.r qdaCMA.r
+        rfCMA.r scdaCMA.r weighted_mcr.r wmc.r shrinkldaCMA.r svmCMA.r
+        filter.r internals.r
+License: GPL (>= 2)
+biocViews: Classification, DecisionTree
+git_url: https://git.bioconductor.org/packages/CMA
+git_branch: RELEASE_3_8
+git_last_commit: 70adf88
+git_last_commit_date: 2018-10-30
+Date/Publication: 2018-10-30
+NeedsCompilation: no
+Packaged: 2018-10-30 23:01:44 UTC; biocbuild
+Built: R 3.5.1; ; 2018-12-06 21:56:17 UTC; unix
