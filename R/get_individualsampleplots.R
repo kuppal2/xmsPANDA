@@ -173,13 +173,30 @@ function(feature_table_file,class_labels_file,X=NA,Y=NA,parentoutput_dir,newdevi
                   
                 }else{
                   #col_vec <-rep(sample.col.opt,length(class_labels_levels))
+                #  if(length(sample.col.opt)==1){
+                 #   col_vec <-rep(sample.col.opt,length(class_labels_levels))
+                  #}else{
+                    
+                   # colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                    
+                  #}
+                  
                   if(length(sample.col.opt)==1){
                     col_vec <-rep(sample.col.opt,length(class_labels_levels))
                   }else{
                     
-                    colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                    if(length(sample.col.opt)<=length(class_labels_levels)){
+                      
+                      col_vec <-sample.col.opt
+                      col_vec <- rep(col_vec,length(class_labels_levels))
+                      
+                      
+                    }else{
+                      colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                    }
                     
                   }
+                  
                 }
                 
               }

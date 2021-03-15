@@ -51,7 +51,8 @@ function(X,Y,oscmode="pls",numcomp=3,kfold=10,evalmethod="CV",keepX=15,sparsesel
       
     }
   }
-  
+
+  if(FALSE){  
   if(pairedanalysis==FALSE){
     Yclass<-Y[,1]
     Y<-as.numeric(Y[,1])
@@ -73,6 +74,64 @@ function(X,Y,oscmode="pls",numcomp=3,kfold=10,evalmethod="CV",keepX=15,sparsesel
     
     
   }
+  }
+  
+  
+  if(pairedanalysis==FALSE){
+    Yclass<-Y[,1]
+    
+    if(analysismode=="regression"){
+      Y<-as.numeric(Y[,1])
+    }else{
+      
+      if(alphabetical.order==FALSE){
+        
+        Y[,1]<-factor(Y[,1],levels=unique(Y[,1]))
+        Yclass<-Y[,1]
+      }
+      Y<-as.numeric(as.factor(Y[,1]))
+    }
+    #Y<-as.factor(Y[,1])
+    #Yclass<-as.factor(Y[,1])
+  }else{
+    
+    #repeat measures
+    if(dim(Y)[2]>2){
+      if(analysismode=="classification"){
+        
+        if(alphabetical.order==FALSE){
+          
+          Y[,2]<-factor(Y[,2],levels=unique(Y[,2]))
+          Y[,3]<-factor(Y[,3],levels=unique(Y[,3])) 
+        }
+        
+        Yclass<-as.factor(Y[,2]):as.factor(Y[,3])
+        
+        Y<-as.numeric(as.factor(Yclass))
+      }else{
+        Yclass<-Y[,3] #:Y[,3]
+        
+        Y<-as.numeric(Yclass)
+      }
+      
+      
+    }else{
+      if(analysismode=="classification"){
+        
+        if(alphabetical.order==FALSE){
+          
+          Y[,2]<-factor(Y[,2],levels=unique(Y[,2]))
+          
+        }
+      }
+      
+      Yclass<-Y[,2]
+      Y<-as.numeric(Y[,2])
+      # Y<-as.factor(Y[,2])
+    }
+    
+  }
+  
   
   
   #Y<-as.numeric(as.factor(Y[,1]))

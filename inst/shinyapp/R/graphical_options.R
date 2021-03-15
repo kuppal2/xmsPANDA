@@ -8,8 +8,8 @@ graphical_options<-fluidRow(
            #column(width=6,selectInput(width="350px","output_format","Output format (PDF or PNG for high-res):",c("png","pdf"))),
            #column(width=6,numericInput(width="350px","pca_cex_val", "Size of points on PCA plots (1-20 limit):", 4, min = 1, max = 20))
            column(width=6,selectInput(width="350px","color.palette",
-                                                                    h5("Color theme for samples in PCA, HCA, boxplots, and line plots ",
-                                                                       tags$a(href='https://github.com/kuppal2/xmsPANDA/blob/master/inst/color_palettes_xmsPANDA.pdf',target="_blank","see here")),
+                                      tags$p(style="font-size: 14px;","Color theme for samples in PCA, HCA, boxplots, and line plots. See the palettes ",
+                                                                       tags$a(href='https://github.com/kuppal2/xmsPANDA/blob/master/inst/color_palettes_xmsPANDA.pdf',target="_blank","here")),
                                       c("journal","wong","npg","nejm","jco","lancet","custom1","brewer.RdYlBu","brewer.RdBu","brewer.PuOr","brewer.PRGn","brewer.PiYG","brewer.BrBG",
                                         "brewer.Set2","brewer.Paired","brewer.Dark2","brewer.YlGnBu","brewer.YlGn","brewer.YlOrRd","brewer.YlOrBr","brewer.PuBuGn",
                                         "brewer.PuRd","brewer.PuBu",

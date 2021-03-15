@@ -76,7 +76,7 @@ function(data_matrix,ncomp=2,pthresh=0.005,outlier.method="sumtukey",column.rm.i
   
   }
   if(length(cnames)>0){
-  print(paste("Outliers: ",cnames,sep=""))
+    print(paste("Potential outliers: ",paste(cnames,sep="",collapse=";"),sep=""))
   }else{
     
     print("No outliers detected.")

@@ -619,16 +619,32 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,
                         
                       }else{
                         #colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
-                        if(length(sample.col.opt)==1){
+                      #  if(length(sample.col.opt)==1){
                           
                           ###save(sample.col.opt,file="sample.col.opt.Rda")
                           ###save(class_labels_levels,file="class_labels_levels.Rda")
-                          col_vec <-rep(sample.col.opt,length(class_labels_levels))
-                        }else{
+                       #   col_vec <-rep(sample.col.opt,length(class_labels_levels))
+                      #  }else{
                           #fixthis2
                           #colfunc <-colorRampPalette(sample.col.opt)
                           
-                          col_vec<-sample.col.opt #colfunc(length(class_labels_levels))
+                       #   col_vec<-sample.col.opt #colfunc(length(class_labels_levels))
+                          
+                        #}
+                        
+                        if(length(sample.col.opt)==1){
+                          col_vec <-rep(sample.col.opt,length(class_labels_levels))
+                        }else{
+                          
+                          if(length(sample.col.opt)<=length(class_labels_levels)){
+                            
+                            col_vec <-sample.col.opt
+                            col_vec <- rep(col_vec,length(class_labels_levels))
+                            
+                            
+                          }else{
+                            colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                          }
                           
                         }
                       }
@@ -688,7 +704,7 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,
         
       }
       
-      pcnum_limit<-min(2,dim(scores_res)[2])
+      pcnum_limit<-min(5,dim(scores_res)[2])
       
       get_pooled_sp<-function(n1,n2,S1,S2){a<-(n1-1)*S1;b<-(n2-1)*S2;c<-(n1+n2-2);return((a+b)/c)}
       #S2<-cov(scores_res[16:46,1:2])

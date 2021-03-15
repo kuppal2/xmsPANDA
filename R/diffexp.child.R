@@ -796,7 +796,7 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
       {
         #analysismode="classification"
         
-        save(classlabels,file="thisclasslabels.Rda")
+        #save(classlabels,file="thisclasslabels.Rda")
         #if(is.na(Ymat)==TRUE)
         {
           #classlabels<-read.table(class_labels_file,sep="\t",header=TRUE)
@@ -2303,15 +2303,34 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
                   
                 }else{
                   #colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                #  if(length(sample.col.opt)==1){
+                 #   col_vec <-rep(sample.col.opt,length(class_labels_levels))
+                #  }else{
+                    
+                 #   colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                    
+                  #  col_vec<-col_vec[sample(col_vec)]
+                    
+                  #}
+                  
                   if(length(sample.col.opt)==1){
                     col_vec <-rep(sample.col.opt,length(class_labels_levels))
                   }else{
                     
-                    colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
-                    
-                    col_vec<-col_vec[sample(col_vec)]
+                    if(length(sample.col.opt)<=length(class_labels_levels)){
+                      
+                      col_vec <-sample.col.opt
+                      col_vec <- rep(col_vec,length(class_labels_levels))
+                      
+                      
+                    }else{
+                      colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                    }
                     
                   }
+                  
+                  
+                  
                 }
                 
               }
@@ -3167,12 +3186,12 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
               
             }
             
-            print("Paired samples order")
+            #print("Paired samples order")
             
             f1<-subject_inf
-            print(subject_inf)
-            print("Design matrix")
-            print(design)
+          #  print(subject_inf)
+         #   print("Design matrix")
+           # print(design)
             
             ####savelist=ls(),file="limma.Rda")
             
@@ -3554,8 +3573,8 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
           options(digit=3)
           parameterNames<-colnames(design)
           
-          print("Design matrix")
-          print(design)
+       #   print("Design matrix")
+        #  print(design)
           
           
           
@@ -4165,7 +4184,7 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
               plsres1<-do_plsda(X=data_m_fc,Y=classlabels_sub,oscmode=featselmethod,numcomp=pls_ncomp,kfold=kfold,evalmethod=pred.eval.method,keepX=max_varsel,sparseselect=TRUE,
                                 analysismode,sample.col.opt=sample.col.opt,sample.col.vec=col_vec,scoreplot_legend=scoreplot_legend,pairedanalysis=pairedanalysis,
                                 optselect=optselect,class_labels_levels_main=class_labels_levels_main,legendlocation=legendlocation,output.device.type=output.device.type,
-                                plots.res=plots.res,plots.width=plots.width,plots.height=plots.height,plots.type=plots.type,pls.ellipse=pca.ellipse)
+                                plots.res=plots.res,plots.width=plots.width,plots.height=plots.height,plots.type=plots.type,pls.ellipse=pca.ellipse,alphabetical.order=alphabetical.order)
               
               if (is(plsres1, "try-error")){
                 print(paste("sPLS could not be performed at RSD threshold: ",log2.fold.change.thresh,sep=""))
@@ -4174,7 +4193,7 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
               
               opt_comp<-plsres1$opt_comp
               #for(randindex in 1:100)
-              save(plsres1,file="plsres1.Rda")
+              #save(plsres1,file="plsres1.Rda")
               
               if(is.na(pls.permut.count)==FALSE){
                 set.seed(999)
@@ -4203,7 +4222,11 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
                     set.seed(seedvec[x])
                     
                     
-                    plsresrand<-do_plsda_rand(X=data_m_fc,Y=classlabels_sub[sample(x=seq(1,dim(classlabels_sub)[1]),size=dim(classlabels_sub)[1]),],oscmode=featselmethod,numcomp=opt_comp,kfold=kfold,evalmethod=pred.eval.method,keepX=max_varsel,sparseselect=TRUE,analysismode,sample.col.vec=col_vec,scoreplot_legend=scoreplot_legend,pairedanalysis=pairedanalysis,optselect=FALSE,class_labels_levels_main=class_labels_levels_main,legendlocation=legendlocation,plotindiv=FALSE) #,silent=TRUE)
+                    plsresrand<-do_plsda_rand(X=data_m_fc,Y=classlabels_sub[sample(x=seq(1,dim(classlabels_sub)[1]),
+                                                                                   size=dim(classlabels_sub)[1]),],oscmode=featselmethod,
+                                              numcomp=opt_comp,kfold=kfold,evalmethod=pred.eval.method,keepX=max_varsel,sparseselect=TRUE,
+                                              analysismode,sample.col.vec=col_vec,scoreplot_legend=scoreplot_legend,pairedanalysis=pairedanalysis,
+                                              optselect=FALSE,class_labels_levels_main=class_labels_levels_main,legendlocation=legendlocation,plotindiv=FALSE,alphabetical.order=alphabetical.order) #,silent=TRUE)
                     
                     #rand_pls_sel<-cbind(rand_pls_sel,plsresrand$vip_res[,1])
                     if (is(plsresrand, "try-error")){
@@ -4230,7 +4253,7 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
                                 scoreplot_legend=scoreplot_legend,pairedanalysis=pairedanalysis,optselect=optselect,
                                 class_labels_levels_main=class_labels_levels_main,legendlocation=legendlocation,
                                 pls.vip.selection=pls.vip.selection,output.device.type=output.device.type,
-                                plots.res=plots.res,plots.width=plots.width,plots.height=plots.height,plots.type=plots.type,pls.ellipse=pca.ellipse)
+                                plots.res=plots.res,plots.width=plots.width,plots.height=plots.height,plots.type=plots.type,pls.ellipse=pca.ellipse,alphabetical.order=alphabetical.order)
               
               opt_comp<-plsres1$opt_comp
               
@@ -4267,7 +4290,10 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
                     set.seed(seedvec[x])
                     
                     
-                    plsresrand<-do_plsda_rand(X=data_m_fc,Y=classlabels[sample(x=seq(1,dim(classlabels)[1]),size=dim(classlabels)[1]),],oscmode=featselmethod,numcomp=opt_comp,kfold=kfold,evalmethod=pred.eval.method,keepX=max_varsel,sparseselect=TRUE,analysismode,sample.col.vec=col_vec,scoreplot_legend=scoreplot_legend,pairedanalysis=pairedanalysis,optselect=FALSE,class_labels_levels_main=class_labels_levels_main,legendlocation=legendlocation,plotindiv=FALSE)
+                    plsresrand<-do_plsda_rand(X=data_m_fc,Y=classlabels[sample(x=seq(1,dim(classlabels)[1]),size=dim(classlabels)[1]),],oscmode=featselmethod,numcomp=opt_comp,kfold=kfold,
+                                              evalmethod=pred.eval.method,keepX=max_varsel,sparseselect=TRUE,analysismode,sample.col.vec=col_vec,scoreplot_legend=scoreplot_legend,
+                                              pairedanalysis=pairedanalysis,optselect=FALSE,class_labels_levels_main=class_labels_levels_main,
+                                              legendlocation=legendlocation,plotindiv=FALSE,alphabetical.order=alphabetical.order)
                     
                     #rand_pls_sel<-cbind(rand_pls_sel,plsresrand$vip_res[,1])
                     #return(plsresrand$vip_res[,1])		
@@ -4302,7 +4328,8 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
                                 keepX=max_varsel,sparseselect=FALSE,analysismode=analysismode,vip.thresh=pls_vip_thresh,sample.col.opt=sample.col.opt,
                                 sample.col.vec=col_vec,scoreplot_legend=scoreplot_legend,pairedanalysis=pairedanalysis,optselect=optselect,
                                 class_labels_levels_main=class_labels_levels_main,legendlocation=legendlocation,pls.vip.selection=pls.vip.selection,
-                                output.device.type=output.device.type,plots.res=plots.res,plots.width=plots.width,plots.height=plots.height,plots.type=plots.type,pls.ellipse=pca.ellipse)
+                                output.device.type=output.device.type,plots.res=plots.res,plots.width=plots.width,
+                                plots.height=plots.height,plots.type=plots.type,pls.ellipse=pca.ellipse,alphabetical.order=alphabetical.order)
               
               if (is(plsres1, "try-error")){
                 print(paste("PLS could not be performed at RSD threshold: ",log2.fold.change.thresh,sep=""))
@@ -4318,7 +4345,7 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
                                 sample.col.vec=col_vec,scoreplot_legend=scoreplot_legend,pairedanalysis=pairedanalysis,optselect=optselect,
                                 class_labels_levels_main=class_labels_levels_main,legendlocation=legendlocation,pls.vip.selection=pls.vip.selection,
                                 output.device.type=output.device.type,plots.res=plots.res,plots.width=plots.width,plots.height=plots.height,
-                                plots.type=plots.type,pls.ellipse=pca.ellipse)
+                                plots.type=plots.type,pls.ellipse=pca.ellipse,alphabetical.order=alphabetical.order)
               
               if (is(plsres1, "try-error")){
                 print(paste("PLS could not be performed at RSD threshold: ",log2.fold.change.thresh,sep=""))
@@ -4358,7 +4385,11 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
                     ####savelist=ls(),file=t1fname)
                     print(paste("PLSDA permutation number: ",x,sep=""))
                     
-                    plsresrand<-do_plsda_rand(X=data_m_fc,Y=classlabels[sample(x=seq(1,dim(classlabels)[1]),size=dim(classlabels)[1]),],oscmode=featselmethod,numcomp=opt_comp,kfold=kfold,evalmethod=pred.eval.method,keepX=max_varsel,sparseselect=FALSE,analysismode,sample.col.vec=col_vec,scoreplot_legend=scoreplot_legend,pairedanalysis=pairedanalysis,optselect=FALSE,class_labels_levels_main=class_labels_levels_main,legendlocation=legendlocation,plotindiv=FALSE) #,silent=TRUE)
+                    plsresrand<-do_plsda_rand(X=data_m_fc,Y=classlabels[sample(x=seq(1,dim(classlabels)[1]),size=dim(classlabels)[1]),],
+                                              oscmode=featselmethod,numcomp=opt_comp,kfold=kfold,evalmethod=pred.eval.method,
+                                              keepX=max_varsel,sparseselect=FALSE,analysismode,sample.col.vec=col_vec,
+                                              scoreplot_legend=scoreplot_legend,pairedanalysis=pairedanalysis,optselect=FALSE,
+                                              class_labels_levels_main=class_labels_levels_main,legendlocation=legendlocation,plotindiv=FALSE,alphabetical.order=alphabetical.order) #,silent=TRUE)
                     
                     if (is(plsresrand, "try-error")){
                       
@@ -4528,7 +4559,7 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
             
             goodip<-which(sel.diffdrthresh==TRUE)
             
-            save(goodip,pls_vip,rand_pls_sel_fdr,rand_pls_sel_prob,sel.diffdrthresh,file="splsdebug1.Rda")
+           # save(goodip,pls_vip,rand_pls_sel_fdr,rand_pls_sel_prob,sel.diffdrthresh,file="splsdebug1.Rda")
             
             
             

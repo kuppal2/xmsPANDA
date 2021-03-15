@@ -312,13 +312,29 @@ function(X=NA,Y=NA,feature_table_file=NA,parentoutput_dir=NA,
                     }else{
                       #colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
                       
-                      if(length(sample.col.opt)==1){
-                        col_vec <-rep(sample.col.opt,length(col_class_levels))
-                      }else{
+                     # if(length(sample.col.opt)==1){
+                      #  col_vec <-rep(sample.col.opt,length(col_class_levels))
+                      #}else{
                         
-                        colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(col_class_levels))
+                       # colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(col_class_levels))
                         
                         ##savecolfunc,file="colfunc.Rda")
+                        
+                    #  }
+                      
+                      if(length(sample.col.opt)==1){
+                        col_vec <-rep(sample.col.opt,length(class_labels_levels))
+                      }else{
+                        
+                        if(length(sample.col.opt)<=length(class_labels_levels)){
+                          
+                          col_vec <-sample.col.opt
+                          col_vec <- rep(col_vec,length(class_labels_levels))
+                          
+                          
+                        }else{
+                          colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                        }
                         
                       }
                     }

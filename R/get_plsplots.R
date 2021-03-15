@@ -1,7 +1,7 @@
 get_plsplots <-
 function(X,plsres,plsvar,samplelabels,filename=NA,ncomp=5,center=TRUE,scale=TRUE,legendcex=0.5,
                        outloc=getwd(),col_vec=NA,sample.col.opt="default",alphacol=0.3,legendlocation="topright",
-                       class_levels=NA,pca.cex.val=0.8,pls.ellipse=TRUE,ellipse.conf.level=0.95,main_text="PLS-DA score plots"){
+                       class_levels=NA,pca.cex.val=0.8,pls.ellipse=TRUE,ellipse.conf.level=0.95,main_text="PLS-DA score plots",alphabetical.order=FALSE){
   
   result<-plsres
   r1<-plsvar
@@ -11,10 +11,16 @@ function(X,plsres,plsvar,samplelabels,filename=NA,ncomp=5,center=TRUE,scale=TRUE
   
   samplelabels<-as.data.frame(samplelabels)
   samplelabels<-as.factor(samplelabels[,1])
+  if(alphabetical.order==FALSE){
+    
+    samplelabels=factor(samplelabels,levels=unique(samplelabels))
+  }
   l2<-levels(as.factor(samplelabels))
   col_all=topo.colors(256)
   
   t1<-table(samplelabels)
+  t1=t1[which(t1>0)]
+  
   if(is.na(class_levels)==TRUE){
     
     l1<-levels(as.factor(samplelabels))
@@ -137,11 +143,28 @@ function(X,plsres,plsvar,samplelabels,filename=NA,ncomp=5,center=TRUE,scale=TRUE
                   
                 }else{
                   
+                 # if(length(sample.col.opt)==1){
+                  #  col_vec <-rep(sample.col.opt,length(class_labels_levels))
+                  #}else{
+                    
+                   # colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                    
+                  #}
+                  
+                  
                   if(length(sample.col.opt)==1){
                     col_vec <-rep(sample.col.opt,length(class_labels_levels))
                   }else{
                     
-                    colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                    if(length(sample.col.opt)<=length(class_labels_levels)){
+                      
+                      col_vec <-sample.col.opt
+                      col_vec <- rep(col_vec,length(class_labels_levels))
+                      
+                      
+                    }else{
+                      colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                    }
                     
                   }
                 }
@@ -207,14 +230,18 @@ function(X,plsres,plsvar,samplelabels,filename=NA,ncomp=5,center=TRUE,scale=TRUE
   
   #print(plotIndiv(result, comp = c(1,2),ind.names = FALSE, group=samplelabels, cex = cex[1], pch = pch, ellipse=FALSE, ellipse.level = 0.95, X.label=paste("PLS1 (",r1[1],"% variation)",sep=""),Y.label=paste("PLS2 (",r1[2],"% variation)",sep=""),add.legend=TRUE))
   
-  save(result,samplelabels,col_per_group,col_vec,main_text,col,cex,pch,pls.ellipse,r1,file="plsdebug.Rda")
+  #save(result,samplelabels,col_per_group,col_vec,main_text,col,cex,pch,pls.ellipse,r1,file="plsdebug.Rda")
   if(result$ncomp>1){
     
    # w <- 0.1
     #par(omd=c(0, 1-w, 0, 1),cex.main=0.7)
     
-    print(plotIndiv(result, comp = c(1,2),ind.names = FALSE, group=samplelabels, cex = cex[1], pch = pch, ellipse=pls.ellipse, style="lattice",col.per.group=col_per_group,
-                    ellipse.level = 0.95, X.label=paste("PLS1 (",r1[1],"% variation)",sep=""),Y.label=paste("PLS2 (",r1[2],"% variation)",sep=""),legend=TRUE,title=main_text))
+   # print(plotIndiv(result, comp = c(1,2),ind.names = FALSE, group=samplelabels, cex = cex[1], pch = pch, ellipse=pls.ellipse, style="lattice",col.per.group=col_per_group,
+    #                ellipse.level = 0.95, X.label=paste("PLS1 (",r1[1],"% variation)",sep=""),Y.label=paste("PLS2 (",r1[2],"% variation)",sep=""),legend=TRUE,title=main_text))
+    plotIndiv(result,comp=c(1,2),group=as.factor(samplelabels),legend = TRUE,
+              ellipse=pls.ellipse,style="lattice",
+              title = main_text,col.per.group=col_per_group,
+              X.label=paste("PLS1 (",r1[1],"% variation)",sep=""),Y.label=paste("PLS2 (",r1[2],"% variation)",sep=""))
     
    
   }
@@ -222,16 +249,24 @@ function(X,plsres,plsvar,samplelabels,filename=NA,ncomp=5,center=TRUE,scale=TRUE
     
    # w <- 0.1
     #par(omd=c(0, 1-w, 0, 1),cex.main=0.7)
-    print(plotIndiv(result, comp = c(1,3),ind.names = FALSE, group=samplelabels, cex = cex[1], pch = pch, ellipse=pls.ellipse, style="lattice",col.per.group=col_per_group,
-                    ellipse.level = 0.95, X.label=paste("PLS1 (",r1[1],"% variation)",sep=""),Y.label=paste("PLS3 (",r1[3],"% variation)",sep=""),legend=TRUE,title=main_text))
-    
+   # print(plotIndiv(result, comp = c(1,3),ind.names = FALSE, group=samplelabels, cex = cex[1], pch = pch, ellipse=pls.ellipse, style="lattice",col.per.group=col_per_group,
+    #                ellipse.level = 0.95, X.label=paste("PLS1 (",r1[1],"% variation)",sep=""),Y.label=paste("PLS3 (",r1[3],"% variation)",sep=""),legend=TRUE,title=main_text))
+    plotIndiv(result,comp=c(1,3),group=as.factor(samplelabels),legend = TRUE,
+              ellipse=pls.ellipse,style="lattice",
+              title = main_text,col.per.group=col_per_group,
+              X.label=paste("PLS1 (",r1[1],"% variation)",sep=""),Y.label=paste("PLS3 (",r1[3],"% variation)",sep=""))
     
    
    # w <- 0.1
     #par(omd=c(0, 1-w, 0, 1),cex.main=0.7)
    
-    print(plotIndiv(result, comp = c(2,3),ind.names = FALSE, group=samplelabels, cex = cex[1], pch = pch, ellipse=pls.ellipse, style="lattice",col.per.group=col_per_group,
-                    ellipse.level = 0.95, X.label=paste("PLS2 (",r1[2],"% variation)",sep=""),Y.label=paste("PLS3 (",r1[3],"% variation)",sep=""),legend=TRUE,title=main_text))
+   # print(plotIndiv(result, comp = c(2,3),ind.names = FALSE, group=samplelabels, cex = cex[1], pch = pch, ellipse=pls.ellipse, style="lattice",col.per.group=col_per_group,
+    #                ellipse.level = 0.95, X.label=paste("PLS2 (",r1[2],"% variation)",sep=""),Y.label=paste("PLS3 (",r1[3],"% variation)",sep=""),legend=TRUE,title=main_text))
+    
+    plotIndiv(result,comp=c(2,3),group=as.factor(samplelabels),legend = TRUE,
+              ellipse=pls.ellipse,style="lattice",
+              title = main_text,col.per.group=col_per_group,
+              X.label=paste("PLS2 (",r1[2],"% variation)",sep=""),Y.label=paste("PLS3 (",r1[3],"% variation)",sep=""))
     
   }
   

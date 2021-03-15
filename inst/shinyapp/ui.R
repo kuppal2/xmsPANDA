@@ -18,7 +18,7 @@ ui<-fluidPage(
     tags$head(
       tags$meta(charset="utf-8"),
       tags$meta(name="description",content="Free Web tutorials"),
-      tags$title("xmsPANDA - v1.3.1"),
+      tags$title("xmsPANDA - 1.3.1"),
       tags$link(rel = "stylesheet", type = "text/css", href = "mystyle.css")
     ),
     column(12,
@@ -38,5 +38,6 @@ ui<-fluidPage(
     ),
     column(style="padding-top:0px;padding-bottom:0px;",12,tags$hr(style="margin-top:0px;margin-bottom:15px;border-top: 0.5px solid #ccccb3;")),
  column(12,  tags$div(style="margin-center",tags$footer(align="center",color="white",style="font-weight:normal;font-size:95%;color:black","Please ask questions or report any issues on the ",
-                                                        tags$a(href='https://github.com/kuppal2/xmsPANDA/issues',target="_blank","GitHub"), " page")))
+                                                        tags$a(href='https://github.com/kuppal2/xmsPANDA/issues',target="_blank","GitHub"), " page"))),
+column(12,  tags$div(style="margin-center",tags$footer(align="center",color="white",style="font-weight:normal;font-size:95%;color:black","Release date: 03/15/2021"))),
 )

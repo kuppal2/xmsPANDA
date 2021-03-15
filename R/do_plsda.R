@@ -3,7 +3,7 @@ function(X,Y,oscmode="pls",numcomp=3,kfold=10,evalmethod="CV",keepX=15,sparsesel
                    vip.thresh=1,sample.col.opt="default",sample.col.vec=c("red","green","blue","purple"),
                    scoreplot_legend=TRUE,feat_names=NA,pairedanalysis=FALSE,optselect=FALSE,class_labels_levels_main=NA,
                    legendlocation="bottomleft",plotindiv=TRUE,pls.vip.selection="max",output.device.type="pdf",
-                   plots.res=600,plots.width=8,plots.height=8,plots.type="cairo",pls.ellipse=TRUE)
+                   plots.res=600,plots.width=8,plots.height=8,plots.type="cairo",pls.ellipse=TRUE,alphabetical.order=FALSE)
 {
   repeatmeasures=pairedanalysis
   
@@ -13,7 +13,7 @@ function(X,Y,oscmode="pls",numcomp=3,kfold=10,evalmethod="CV",keepX=15,sparsesel
     temp_filename_1<-"Figures/PLS_performance_plots.pdf"
     #pdf(temp_filename_1)
     
-    pdf(temp_filename_1,width=plots.width,height=plots.height)
+   # pdf(temp_filename_1,width=plots.width,height=plots.height)
   }
   
   
@@ -34,23 +34,36 @@ function(X,Y,oscmode="pls",numcomp=3,kfold=10,evalmethod="CV",keepX=15,sparsesel
   classlabels<-Y    
   
   
-  save(X,Y,pairedanalysis,classlabels,file="plspaireddebug.Rda")
+# save(X,Y,pairedanalysis,classlabels,file="plspaireddebug.Rda")
   
-  
+  #only one column for classlabels if mode=classificaion unpaired
   if(pairedanalysis==FALSE){
     Yclass<-Y[,1]
     
     if(analysismode=="regression"){
       Y<-as.numeric(Y[,1])
     }else{
+      
+      if(alphabetical.order==FALSE){
+        
+        Y[,1]<-factor(Y[,1],levels=unique(Y[,1]))
+        Yclass<-Y[,1]
+      }
       Y<-as.numeric(as.factor(Y[,1]))
     }
     #Y<-as.factor(Y[,1])
     #Yclass<-as.factor(Y[,1])
   }else{
-    
+     
+    #repeat measures
     if(dim(Y)[2]>2){
       if(analysismode=="classification"){
+        
+        if(alphabetical.order==FALSE){
+          
+          Y[,2]<-factor(Y[,2],levels=unique(Y[,2]))
+          Y[,3]<-factor(Y[,3],levels=unique(Y[,3])) 
+        }
         
         Yclass<-as.factor(Y[,2]):as.factor(Y[,3])
         
@@ -63,6 +76,15 @@ function(X,Y,oscmode="pls",numcomp=3,kfold=10,evalmethod="CV",keepX=15,sparsesel
       
       
     }else{
+      if(analysismode=="classification"){
+        
+        if(alphabetical.order==FALSE){
+          
+          Y[,2]<-factor(Y[,2],levels=unique(Y[,2]))
+          
+        }
+      }
+      
       Yclass<-Y[,2]
       Y<-as.numeric(Y[,2])
       # Y<-as.factor(Y[,2])
@@ -169,11 +191,27 @@ function(X,Y,oscmode="pls",numcomp=3,kfold=10,evalmethod="CV",keepX=15,sparsesel
                   }
                 }else{
                   #colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                #  if(length(sample.col.opt)==1){
+                 #   col_vec <-rep(sample.col.opt,length(class_labels_levels))
+                #  }else{
+                    
+                 #   colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                    
+                #  }
+                  
                   if(length(sample.col.opt)==1){
                     col_vec <-rep(sample.col.opt,length(class_labels_levels))
                   }else{
                     
-                    colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                    if(length(sample.col.opt)<=length(class_labels_levels)){
+                      
+                      col_vec <-sample.col.opt
+                      col_vec <- rep(col_vec,length(class_labels_levels))
+                      
+                      
+                    }else{
+                      colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                    }
                     
                   }
                 }
@@ -774,11 +812,13 @@ function(X,Y,oscmode="pls",numcomp=3,kfold=10,evalmethod="CV",keepX=15,sparsesel
         #png(temp_filename_1,width=plots.width,height=plots.height,res=plots.res,type=plots.type,units="in")
       }
       
-    #  save(X,linn.pls,pls_var,Yclass,opt_comp,col.stimu,sample.col.opt,class_labels_levels,file="plsplots.Rda")
+   #  save(X,linn.pls,pls_var,Yclass,opt_comp,col.stimu,sample.col.opt,class_labels_levels,pls.ellipse,file="plsplots.Rda")
+     
+    # print(Sys.time())
       get_plsplots(X,plsres=linn.pls,plsvar=pls_var,samplelabels=Yclass,filename=NA,ncomp=opt_comp,center=TRUE,scale=TRUE,legendcex=0.5,outloc=getwd(),col_vec=col.stimu,
-                   sample.col.opt=sample.col.opt,alphacol=0.3,legendlocation="topright",class_levels=class_labels_levels,pls.ellipse=pls.ellipse)
+                   sample.col.opt=sample.col.opt,alphacol=0.3,legendlocation="topright",class_levels=class_labels_levels,pls.ellipse=pls.ellipse,alphabetical.order=alphabetical.order)
       #,silent=TRUE)
-      
+     # print(Sys.time())
       if(output.device.type!="pdf"){
         
         try(dev.off(),silent=TRUE)
@@ -790,6 +830,7 @@ function(X,Y,oscmode="pls",numcomp=3,kfold=10,evalmethod="CV",keepX=15,sparsesel
     #legend = c(class_labels_levels), cex = 0.55)
   }
   
+  print("Done with PLSDA")
   write.table(linn.pls$variates$X,file="Tables/pls_scores.txt",sep="\t")
   write.table(linn.pls$loadings$X,file="Tables/pls_loadings.txt",sep="\t")
   ####savelinn.pls,file="pls_res.Rda")

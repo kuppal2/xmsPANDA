@@ -433,15 +433,33 @@ get_data_summary<-function(X=NA,Y=NA,feature_table_file=NA,parentoutput_dir=NA,
                     }else{
                       #colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
                       
-                      if(length(sample.col.opt)==1){
-                        col_vec <-rep(sample.col.opt,length(col_class_levels))
-                      }else{
+                     # if(length(sample.col.opt)==1){
+                      #  col_vec <-rep(sample.col.opt,length(col_class_levels))
+                      #}else{
                         
-                        colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(col_class_levels))
+                       # colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(col_class_levels))
                         
                         ##savecolfunc,file="colfunc.Rda")
                         
+                      #}
+                      
+                      if(length(sample.col.opt)==1){
+                        col_vec <-rep(sample.col.opt,length(class_labels_levels))
+                      }else{
+                        
+                        if(length(sample.col.opt)<=length(class_labels_levels)){
+                          
+                          col_vec <-sample.col.opt
+                          col_vec <- rep(col_vec,length(class_labels_levels))
+                          
+                          
+                        }else{
+                          colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                        }
+                        
                       }
+                      
+                      
                     }
                     
                   }
@@ -7056,13 +7074,31 @@ get_scatter_plots_vold1<-function (X = NA, Y = NA, feature_table_file, parentout
                   }
                 }
                 else {
-                  if (length(sample.col.opt) == 1) {
-                    col_vec <- rep(sample.col.opt, length(class_labels_levels))
+                  #if (length(sample.col.opt) == 1) {
+                   # col_vec <- rep(sample.col.opt, length(class_labels_levels))
+                  #}
+                  #else {
+                   # colfunc <- colorRampPalette(sample.col.opt)
+                    #col_vec <- colfunc(length(class_labels_levels))
+                  #}
+                  
+                  if(length(sample.col.opt)==1){
+                    col_vec <-rep(sample.col.opt,length(class_labels_levels))
+                  }else{
+                    
+                    if(length(sample.col.opt)<=length(class_labels_levels)){
+                      
+                      col_vec <-sample.col.opt
+                      col_vec <- rep(col_vec,length(class_labels_levels))
+                      
+                      
+                    }else{
+                      colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                    }
+                    
                   }
-                  else {
-                    colfunc <- colorRampPalette(sample.col.opt)
-                    col_vec <- colfunc(length(class_labels_levels))
-                  }
+                  
+                  
                 }
               }
             }
@@ -7347,13 +7383,31 @@ get_scatter_plots_vold<-function(X=NA,Y=NA,feature_table_file,parentoutput_dir,c
                   }
                 }else{
                   #colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                #  if(length(sample.col.opt)==1){
+                 #   col_vec <-rep(sample.col.opt,length(class_labels_levels))
+                #  }else{
+                    
+                 #   colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                    
+                #  }
+                  
+                  
                   if(length(sample.col.opt)==1){
                     col_vec <-rep(sample.col.opt,length(class_labels_levels))
                   }else{
                     
-                    colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                    if(length(sample.col.opt)<=length(class_labels_levels)){
+                      
+                      col_vec <-sample.col.opt
+                      col_vec <- rep(col_vec,length(class_labels_levels))
+                      
+                      
+                    }else{
+                      colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                    }
                     
                   }
+                  
                 }
                 
               }
@@ -11630,7 +11684,7 @@ do_plsda<-function(X,Y,oscmode="pls",numcomp=3,kfold=10,evalmethod="CV",keepX=15
                    vip.thresh=1,sample.col.opt="default",sample.col.vec=c("red","green","blue","purple"),
                    scoreplot_legend=TRUE,feat_names=NA,pairedanalysis=FALSE,optselect=FALSE,class_labels_levels_main=NA,
                    legendlocation="bottomleft",plotindiv=TRUE,pls.vip.selection="max",output.device.type="pdf",
-                   plots.res=600,plots.width=8,plots.height=8,plots.type="cairo",pls.ellipse=TRUE)
+                   plots.res=600,plots.width=8,plots.height=8,plots.type="cairo",pls.ellipse=TRUE,alphabetical.order=FALSE)
 {
   repeatmeasures=pairedanalysis
   
@@ -11640,7 +11694,7 @@ do_plsda<-function(X,Y,oscmode="pls",numcomp=3,kfold=10,evalmethod="CV",keepX=15
     temp_filename_1<-"Figures/PLS_performance_plots.pdf"
     #pdf(temp_filename_1)
     
-    pdf(temp_filename_1,width=plots.width,height=plots.height)
+   # pdf(temp_filename_1,width=plots.width,height=plots.height)
   }
   
   
@@ -11661,23 +11715,36 @@ do_plsda<-function(X,Y,oscmode="pls",numcomp=3,kfold=10,evalmethod="CV",keepX=15
   classlabels<-Y    
   
   
-  save(X,Y,pairedanalysis,classlabels,file="plspaireddebug.Rda")
+# save(X,Y,pairedanalysis,classlabels,file="plspaireddebug.Rda")
   
-  
+  #only one column for classlabels if mode=classificaion unpaired
   if(pairedanalysis==FALSE){
     Yclass<-Y[,1]
     
     if(analysismode=="regression"){
       Y<-as.numeric(Y[,1])
     }else{
+      
+      if(alphabetical.order==FALSE){
+        
+        Y[,1]<-factor(Y[,1],levels=unique(Y[,1]))
+        Yclass<-Y[,1]
+      }
       Y<-as.numeric(as.factor(Y[,1]))
     }
     #Y<-as.factor(Y[,1])
     #Yclass<-as.factor(Y[,1])
   }else{
-    
+     
+    #repeat measures
     if(dim(Y)[2]>2){
       if(analysismode=="classification"){
+        
+        if(alphabetical.order==FALSE){
+          
+          Y[,2]<-factor(Y[,2],levels=unique(Y[,2]))
+          Y[,3]<-factor(Y[,3],levels=unique(Y[,3])) 
+        }
         
         Yclass<-as.factor(Y[,2]):as.factor(Y[,3])
         
@@ -11690,6 +11757,15 @@ do_plsda<-function(X,Y,oscmode="pls",numcomp=3,kfold=10,evalmethod="CV",keepX=15
       
       
     }else{
+      if(analysismode=="classification"){
+        
+        if(alphabetical.order==FALSE){
+          
+          Y[,2]<-factor(Y[,2],levels=unique(Y[,2]))
+          
+        }
+      }
+      
       Yclass<-Y[,2]
       Y<-as.numeric(Y[,2])
       # Y<-as.factor(Y[,2])
@@ -11796,11 +11872,27 @@ do_plsda<-function(X,Y,oscmode="pls",numcomp=3,kfold=10,evalmethod="CV",keepX=15
                   }
                 }else{
                   #colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                #  if(length(sample.col.opt)==1){
+                 #   col_vec <-rep(sample.col.opt,length(class_labels_levels))
+                #  }else{
+                    
+                 #   colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                    
+                #  }
+                  
                   if(length(sample.col.opt)==1){
                     col_vec <-rep(sample.col.opt,length(class_labels_levels))
                   }else{
                     
-                    colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                    if(length(sample.col.opt)<=length(class_labels_levels)){
+                      
+                      col_vec <-sample.col.opt
+                      col_vec <- rep(col_vec,length(class_labels_levels))
+                      
+                      
+                    }else{
+                      colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                    }
                     
                   }
                 }
@@ -12401,11 +12493,13 @@ do_plsda<-function(X,Y,oscmode="pls",numcomp=3,kfold=10,evalmethod="CV",keepX=15
         #png(temp_filename_1,width=plots.width,height=plots.height,res=plots.res,type=plots.type,units="in")
       }
       
-    #  save(X,linn.pls,pls_var,Yclass,opt_comp,col.stimu,sample.col.opt,class_labels_levels,file="plsplots.Rda")
+   #  save(X,linn.pls,pls_var,Yclass,opt_comp,col.stimu,sample.col.opt,class_labels_levels,pls.ellipse,file="plsplots.Rda")
+     
+    # print(Sys.time())
       get_plsplots(X,plsres=linn.pls,plsvar=pls_var,samplelabels=Yclass,filename=NA,ncomp=opt_comp,center=TRUE,scale=TRUE,legendcex=0.5,outloc=getwd(),col_vec=col.stimu,
-                   sample.col.opt=sample.col.opt,alphacol=0.3,legendlocation="topright",class_levels=class_labels_levels,pls.ellipse=pls.ellipse)
+                   sample.col.opt=sample.col.opt,alphacol=0.3,legendlocation="topright",class_levels=class_labels_levels,pls.ellipse=pls.ellipse,alphabetical.order=alphabetical.order)
       #,silent=TRUE)
-      
+     # print(Sys.time())
       if(output.device.type!="pdf"){
         
         try(dev.off(),silent=TRUE)
@@ -12417,6 +12511,7 @@ do_plsda<-function(X,Y,oscmode="pls",numcomp=3,kfold=10,evalmethod="CV",keepX=15
     #legend = c(class_labels_levels), cex = 0.55)
   }
   
+  print("Done with PLSDA")
   write.table(linn.pls$variates$X,file="Tables/pls_scores.txt",sep="\t")
   write.table(linn.pls$loadings$X,file="Tables/pls_loadings.txt",sep="\t")
   ####savelinn.pls,file="pls_res.Rda")
@@ -12477,7 +12572,8 @@ do_plsda_rand<-function(X,Y,oscmode="pls",numcomp=3,kfold=10,evalmethod="CV",kee
       
     }
   }
-  
+
+  if(FALSE){  
   if(pairedanalysis==FALSE){
     Yclass<-Y[,1]
     Y<-as.numeric(Y[,1])
@@ -12499,6 +12595,64 @@ do_plsda_rand<-function(X,Y,oscmode="pls",numcomp=3,kfold=10,evalmethod="CV",kee
     
     
   }
+  }
+  
+  
+  if(pairedanalysis==FALSE){
+    Yclass<-Y[,1]
+    
+    if(analysismode=="regression"){
+      Y<-as.numeric(Y[,1])
+    }else{
+      
+      if(alphabetical.order==FALSE){
+        
+        Y[,1]<-factor(Y[,1],levels=unique(Y[,1]))
+        Yclass<-Y[,1]
+      }
+      Y<-as.numeric(as.factor(Y[,1]))
+    }
+    #Y<-as.factor(Y[,1])
+    #Yclass<-as.factor(Y[,1])
+  }else{
+    
+    #repeat measures
+    if(dim(Y)[2]>2){
+      if(analysismode=="classification"){
+        
+        if(alphabetical.order==FALSE){
+          
+          Y[,2]<-factor(Y[,2],levels=unique(Y[,2]))
+          Y[,3]<-factor(Y[,3],levels=unique(Y[,3])) 
+        }
+        
+        Yclass<-as.factor(Y[,2]):as.factor(Y[,3])
+        
+        Y<-as.numeric(as.factor(Yclass))
+      }else{
+        Yclass<-Y[,3] #:Y[,3]
+        
+        Y<-as.numeric(Yclass)
+      }
+      
+      
+    }else{
+      if(analysismode=="classification"){
+        
+        if(alphabetical.order==FALSE){
+          
+          Y[,2]<-factor(Y[,2],levels=unique(Y[,2]))
+          
+        }
+      }
+      
+      Yclass<-Y[,2]
+      Y<-as.numeric(Y[,2])
+      # Y<-as.factor(Y[,2])
+    }
+    
+  }
+  
   
   
   #Y<-as.numeric(as.factor(Y[,1]))
@@ -19324,16 +19478,32 @@ get_pcascoredistplots_child<-function(X,Y,feature_table_file,parentoutput_dir,cl
                         
                       }else{
                         #colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
-                        if(length(sample.col.opt)==1){
+                      #  if(length(sample.col.opt)==1){
                           
                           ###save(sample.col.opt,file="sample.col.opt.Rda")
                           ###save(class_labels_levels,file="class_labels_levels.Rda")
-                          col_vec <-rep(sample.col.opt,length(class_labels_levels))
-                        }else{
+                       #   col_vec <-rep(sample.col.opt,length(class_labels_levels))
+                      #  }else{
                           #fixthis2
                           #colfunc <-colorRampPalette(sample.col.opt)
                           
-                          col_vec<-sample.col.opt #colfunc(length(class_labels_levels))
+                       #   col_vec<-sample.col.opt #colfunc(length(class_labels_levels))
+                          
+                        #}
+                        
+                        if(length(sample.col.opt)==1){
+                          col_vec <-rep(sample.col.opt,length(class_labels_levels))
+                        }else{
+                          
+                          if(length(sample.col.opt)<=length(class_labels_levels)){
+                            
+                            col_vec <-sample.col.opt
+                            col_vec <- rep(col_vec,length(class_labels_levels))
+                            
+                            
+                          }else{
+                            colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                          }
                           
                         }
                       }
@@ -19393,7 +19563,7 @@ get_pcascoredistplots_child<-function(X,Y,feature_table_file,parentoutput_dir,cl
         
       }
       
-      pcnum_limit<-min(2,dim(scores_res)[2])
+      pcnum_limit<-min(5,dim(scores_res)[2])
       
       get_pooled_sp<-function(n1,n2,S1,S2){a<-(n1-1)*S1;b<-(n2-1)*S2;c<-(n1+n2-2);return((a+b)/c)}
       #S2<-cov(scores_res[16:46,1:2])
@@ -20286,11 +20456,28 @@ get_pcascoredistplots_childv1.0.9.2B<-function(X,Y,feature_table_file,parentoutp
                     }
                   }else{
                     #colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                  #  if(length(sample.col.opt)==1){
+                   #   col_vec <-rep(sample.col.opt,length(class_labels_levels))
+                  #  }else{
+                      
+                   #   colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                      
+                  #  }
+                    
+                    
                     if(length(sample.col.opt)==1){
                       col_vec <-rep(sample.col.opt,length(class_labels_levels))
                     }else{
                       
-                      colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                      if(length(sample.col.opt)<=length(class_labels_levels)){
+                        
+                        col_vec <-sample.col.opt
+                        col_vec <- rep(col_vec,length(class_labels_levels))
+                        
+                        
+                      }else{
+                        colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                      }
                       
                     }
                   }
@@ -20604,18 +20791,31 @@ get_pcascoredistplots_childv1.0.9.2B<-function(X,Y,feature_table_file,parentoutp
                         
                       }else{
                         #colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
-                        if(length(sample.col.opt)==1){
+                       # if(length(sample.col.opt)==1){
                           
-                          ###save(sample.col.opt,file="sample.col.opt.Rda")
-                          ###save(class_labels_levels,file="class_labels_levels.Rda")
+                        #  col_vec <-rep(sample.col.opt,length(class_labels_levels))
+                        #}else{
+                         
+                         # col_vec<-sample.col.opt #colfunc(length(class_labels_levels))
+                          
+                        #}
+                        
+                        if(length(sample.col.opt)==1){
                           col_vec <-rep(sample.col.opt,length(class_labels_levels))
                         }else{
-                          #fixthis2
-                          #colfunc <-colorRampPalette(sample.col.opt)
                           
-                          col_vec<-sample.col.opt #colfunc(length(class_labels_levels))
+                          if(length(sample.col.opt)<=length(class_labels_levels)){
+                            
+                            col_vec <-sample.col.opt
+                            col_vec <- rep(col_vec,length(class_labels_levels))
+                            
+                            
+                          }else{
+                            colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                          }
                           
                         }
+                        
                       }
                     }
                     
@@ -21600,13 +21800,29 @@ get_biorep.cor.plots<-function(X=NA,Y=NA,feature_table_file=NA,parentoutput_dir=
                     }else{
                       #colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
                       
-                      if(length(sample.col.opt)==1){
-                        col_vec <-rep(sample.col.opt,length(col_class_levels))
-                      }else{
+                     # if(length(sample.col.opt)==1){
+                      #  col_vec <-rep(sample.col.opt,length(col_class_levels))
+                      #}else{
                         
-                        colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(col_class_levels))
+                       # colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(col_class_levels))
                         
                         ##savecolfunc,file="colfunc.Rda")
+                        
+                    #  }
+                      
+                      if(length(sample.col.opt)==1){
+                        col_vec <-rep(sample.col.opt,length(class_labels_levels))
+                      }else{
+                        
+                        if(length(sample.col.opt)<=length(class_labels_levels)){
+                          
+                          col_vec <-sample.col.opt
+                          col_vec <- rep(col_vec,length(class_labels_levels))
+                          
+                          
+                        }else{
+                          colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                        }
                         
                       }
                     }
@@ -23806,11 +24022,27 @@ get_plsplots_v1.0.8.64<-function(X,plsres,plsvar,samplelabels,filename=NA,ncomp=
                   
                 }else{
                   
+                 # if(length(sample.col.opt)==1){
+                  #  col_vec <-rep(sample.col.opt,length(class_labels_levels))
+                  #}else{
+                    
+                   # colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                    
+                  #}
+                  
                   if(length(sample.col.opt)==1){
                     col_vec <-rep(sample.col.opt,length(class_labels_levels))
                   }else{
                     
-                    colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                    if(length(sample.col.opt)<=length(class_labels_levels)){
+                      
+                      col_vec <-sample.col.opt
+                      col_vec <- rep(col_vec,length(class_labels_levels))
+                      
+                      
+                    }else{
+                      colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                    }
                     
                   }
                 }
@@ -23994,7 +24226,7 @@ get_plsplots_v1.0.8.64<-function(X,plsres,plsvar,samplelabels,filename=NA,ncomp=
 #get pls plots _v1.0.9.14
 get_plsplots<-function(X,plsres,plsvar,samplelabels,filename=NA,ncomp=5,center=TRUE,scale=TRUE,legendcex=0.5,
                        outloc=getwd(),col_vec=NA,sample.col.opt="default",alphacol=0.3,legendlocation="topright",
-                       class_levels=NA,pca.cex.val=0.8,pls.ellipse=TRUE,ellipse.conf.level=0.95,main_text="PLS-DA score plots"){
+                       class_levels=NA,pca.cex.val=0.8,pls.ellipse=TRUE,ellipse.conf.level=0.95,main_text="PLS-DA score plots",alphabetical.order=FALSE){
   
   result<-plsres
   r1<-plsvar
@@ -24004,10 +24236,16 @@ get_plsplots<-function(X,plsres,plsvar,samplelabels,filename=NA,ncomp=5,center=T
   
   samplelabels<-as.data.frame(samplelabels)
   samplelabels<-as.factor(samplelabels[,1])
+  if(alphabetical.order==FALSE){
+    
+    samplelabels=factor(samplelabels,levels=unique(samplelabels))
+  }
   l2<-levels(as.factor(samplelabels))
   col_all=topo.colors(256)
   
   t1<-table(samplelabels)
+  t1=t1[which(t1>0)]
+  
   if(is.na(class_levels)==TRUE){
     
     l1<-levels(as.factor(samplelabels))
@@ -24130,11 +24368,28 @@ get_plsplots<-function(X,plsres,plsvar,samplelabels,filename=NA,ncomp=5,center=T
                   
                 }else{
                   
+                 # if(length(sample.col.opt)==1){
+                  #  col_vec <-rep(sample.col.opt,length(class_labels_levels))
+                  #}else{
+                    
+                   # colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                    
+                  #}
+                  
+                  
                   if(length(sample.col.opt)==1){
                     col_vec <-rep(sample.col.opt,length(class_labels_levels))
                   }else{
                     
-                    colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                    if(length(sample.col.opt)<=length(class_labels_levels)){
+                      
+                      col_vec <-sample.col.opt
+                      col_vec <- rep(col_vec,length(class_labels_levels))
+                      
+                      
+                    }else{
+                      colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                    }
                     
                   }
                 }
@@ -24200,14 +24455,18 @@ get_plsplots<-function(X,plsres,plsvar,samplelabels,filename=NA,ncomp=5,center=T
   
   #print(plotIndiv(result, comp = c(1,2),ind.names = FALSE, group=samplelabels, cex = cex[1], pch = pch, ellipse=FALSE, ellipse.level = 0.95, X.label=paste("PLS1 (",r1[1],"% variation)",sep=""),Y.label=paste("PLS2 (",r1[2],"% variation)",sep=""),add.legend=TRUE))
   
-  save(result,samplelabels,col_per_group,col_vec,main_text,col,cex,pch,pls.ellipse,r1,file="plsdebug.Rda")
+  #save(result,samplelabels,col_per_group,col_vec,main_text,col,cex,pch,pls.ellipse,r1,file="plsdebug.Rda")
   if(result$ncomp>1){
     
    # w <- 0.1
     #par(omd=c(0, 1-w, 0, 1),cex.main=0.7)
     
-    print(plotIndiv(result, comp = c(1,2),ind.names = FALSE, group=samplelabels, cex = cex[1], pch = pch, ellipse=pls.ellipse, style="lattice",col.per.group=col_per_group,
-                    ellipse.level = 0.95, X.label=paste("PLS1 (",r1[1],"% variation)",sep=""),Y.label=paste("PLS2 (",r1[2],"% variation)",sep=""),legend=TRUE,title=main_text))
+   # print(plotIndiv(result, comp = c(1,2),ind.names = FALSE, group=samplelabels, cex = cex[1], pch = pch, ellipse=pls.ellipse, style="lattice",col.per.group=col_per_group,
+    #                ellipse.level = 0.95, X.label=paste("PLS1 (",r1[1],"% variation)",sep=""),Y.label=paste("PLS2 (",r1[2],"% variation)",sep=""),legend=TRUE,title=main_text))
+    plotIndiv(result,comp=c(1,2),group=as.factor(samplelabels),legend = TRUE,
+              ellipse=pls.ellipse,style="lattice",
+              title = main_text,col.per.group=col_per_group,
+              X.label=paste("PLS1 (",r1[1],"% variation)",sep=""),Y.label=paste("PLS2 (",r1[2],"% variation)",sep=""))
     
    
   }
@@ -24215,16 +24474,24 @@ get_plsplots<-function(X,plsres,plsvar,samplelabels,filename=NA,ncomp=5,center=T
     
    # w <- 0.1
     #par(omd=c(0, 1-w, 0, 1),cex.main=0.7)
-    print(plotIndiv(result, comp = c(1,3),ind.names = FALSE, group=samplelabels, cex = cex[1], pch = pch, ellipse=pls.ellipse, style="lattice",col.per.group=col_per_group,
-                    ellipse.level = 0.95, X.label=paste("PLS1 (",r1[1],"% variation)",sep=""),Y.label=paste("PLS3 (",r1[3],"% variation)",sep=""),legend=TRUE,title=main_text))
-    
+   # print(plotIndiv(result, comp = c(1,3),ind.names = FALSE, group=samplelabels, cex = cex[1], pch = pch, ellipse=pls.ellipse, style="lattice",col.per.group=col_per_group,
+    #                ellipse.level = 0.95, X.label=paste("PLS1 (",r1[1],"% variation)",sep=""),Y.label=paste("PLS3 (",r1[3],"% variation)",sep=""),legend=TRUE,title=main_text))
+    plotIndiv(result,comp=c(1,3),group=as.factor(samplelabels),legend = TRUE,
+              ellipse=pls.ellipse,style="lattice",
+              title = main_text,col.per.group=col_per_group,
+              X.label=paste("PLS1 (",r1[1],"% variation)",sep=""),Y.label=paste("PLS3 (",r1[3],"% variation)",sep=""))
     
    
    # w <- 0.1
     #par(omd=c(0, 1-w, 0, 1),cex.main=0.7)
    
-    print(plotIndiv(result, comp = c(2,3),ind.names = FALSE, group=samplelabels, cex = cex[1], pch = pch, ellipse=pls.ellipse, style="lattice",col.per.group=col_per_group,
-                    ellipse.level = 0.95, X.label=paste("PLS2 (",r1[2],"% variation)",sep=""),Y.label=paste("PLS3 (",r1[3],"% variation)",sep=""),legend=TRUE,title=main_text))
+   # print(plotIndiv(result, comp = c(2,3),ind.names = FALSE, group=samplelabels, cex = cex[1], pch = pch, ellipse=pls.ellipse, style="lattice",col.per.group=col_per_group,
+    #                ellipse.level = 0.95, X.label=paste("PLS2 (",r1[2],"% variation)",sep=""),Y.label=paste("PLS3 (",r1[3],"% variation)",sep=""),legend=TRUE,title=main_text))
+    
+    plotIndiv(result,comp=c(2,3),group=as.factor(samplelabels),legend = TRUE,
+              ellipse=pls.ellipse,style="lattice",
+              title = main_text,col.per.group=col_per_group,
+              X.label=paste("PLS2 (",r1[2],"% variation)",sep=""),Y.label=paste("PLS3 (",r1[3],"% variation)",sep=""))
     
   }
   
@@ -24885,13 +25152,30 @@ get_individualsampleplots<-function(feature_table_file,class_labels_file,X=NA,Y=
                   
                 }else{
                   #col_vec <-rep(sample.col.opt,length(class_labels_levels))
+                #  if(length(sample.col.opt)==1){
+                 #   col_vec <-rep(sample.col.opt,length(class_labels_levels))
+                  #}else{
+                    
+                   # colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                    
+                  #}
+                  
                   if(length(sample.col.opt)==1){
                     col_vec <-rep(sample.col.opt,length(class_labels_levels))
                   }else{
                     
-                    colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                    if(length(sample.col.opt)<=length(class_labels_levels)){
+                      
+                      col_vec <-sample.col.opt
+                      col_vec <- rep(col_vec,length(class_labels_levels))
+                      
+                      
+                    }else{
+                      colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                    }
                     
                   }
+                  
                 }
                 
               }
@@ -25377,16 +25661,33 @@ get_hca_child<-function(feature_table_file,parentoutput_dir,class_labels_file,X=
                 }else{
                   #colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
                   
+                 # if(length(sample.col.opt)==1){
+                  #  col_vec <-rep(sample.col.opt,length(class_labels_levels))
+                  #}else{
+                    
+                   # colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                    
+                   # col_vec <-sample.col.opt
+                    #col_vec <- rep(col_vec,length(class_labels_levels))
+                    
+                  #}
+                  
                   if(length(sample.col.opt)==1){
                     col_vec <-rep(sample.col.opt,length(class_labels_levels))
                   }else{
                     
-                   # colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
-                    
-                    col_vec <-sample.col.opt
-                    col_vec <- rep(col_vec,length(class_labels_levels))
+                    if(length(sample.col.opt)<=length(class_labels_levels)){
+                      
+                      col_vec <-sample.col.opt
+                      col_vec <- rep(col_vec,length(class_labels_levels))
+                      
+                      
+                    }else{
+                      colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                    }
                     
                   }
+                  
                 }
                 
               }
@@ -27535,7 +27836,7 @@ outlier_detect<-function(data_matrix,ncomp=2,pthresh=0.005,outlier.method="sumtu
   
   }
   if(length(cnames)>0){
-  print(paste("Outliers: ",cnames,sep=""))
+    print(paste("Potential outliers: ",paste(cnames,sep="",collapse=";"),sep=""))
   }else{
     
     print("No outliers detected.")
@@ -32964,7 +33265,7 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
       {
         #analysismode="classification"
         
-        save(classlabels,file="thisclasslabels.Rda")
+        #save(classlabels,file="thisclasslabels.Rda")
         #if(is.na(Ymat)==TRUE)
         {
           #classlabels<-read.table(class_labels_file,sep="\t",header=TRUE)
@@ -34471,15 +34772,34 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
                   
                 }else{
                   #colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                #  if(length(sample.col.opt)==1){
+                 #   col_vec <-rep(sample.col.opt,length(class_labels_levels))
+                #  }else{
+                    
+                 #   colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                    
+                  #  col_vec<-col_vec[sample(col_vec)]
+                    
+                  #}
+                  
                   if(length(sample.col.opt)==1){
                     col_vec <-rep(sample.col.opt,length(class_labels_levels))
                   }else{
                     
-                    colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
-                    
-                    col_vec<-col_vec[sample(col_vec)]
+                    if(length(sample.col.opt)<=length(class_labels_levels)){
+                      
+                      col_vec <-sample.col.opt
+                      col_vec <- rep(col_vec,length(class_labels_levels))
+                      
+                      
+                    }else{
+                      colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                    }
                     
                   }
+                  
+                  
+                  
                 }
                 
               }
@@ -35335,12 +35655,12 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
               
             }
             
-            print("Paired samples order")
+            #print("Paired samples order")
             
             f1<-subject_inf
-            print(subject_inf)
-            print("Design matrix")
-            print(design)
+          #  print(subject_inf)
+         #   print("Design matrix")
+           # print(design)
             
             ####savelist=ls(),file="limma.Rda")
             
@@ -35722,8 +36042,8 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
           options(digit=3)
           parameterNames<-colnames(design)
           
-          print("Design matrix")
-          print(design)
+       #   print("Design matrix")
+        #  print(design)
           
           
           
@@ -36333,7 +36653,7 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
               plsres1<-do_plsda(X=data_m_fc,Y=classlabels_sub,oscmode=featselmethod,numcomp=pls_ncomp,kfold=kfold,evalmethod=pred.eval.method,keepX=max_varsel,sparseselect=TRUE,
                                 analysismode,sample.col.opt=sample.col.opt,sample.col.vec=col_vec,scoreplot_legend=scoreplot_legend,pairedanalysis=pairedanalysis,
                                 optselect=optselect,class_labels_levels_main=class_labels_levels_main,legendlocation=legendlocation,output.device.type=output.device.type,
-                                plots.res=plots.res,plots.width=plots.width,plots.height=plots.height,plots.type=plots.type,pls.ellipse=pca.ellipse)
+                                plots.res=plots.res,plots.width=plots.width,plots.height=plots.height,plots.type=plots.type,pls.ellipse=pca.ellipse,alphabetical.order=alphabetical.order)
               
               if (is(plsres1, "try-error")){
                 print(paste("sPLS could not be performed at RSD threshold: ",log2.fold.change.thresh,sep=""))
@@ -36342,7 +36662,7 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
               
               opt_comp<-plsres1$opt_comp
               #for(randindex in 1:100)
-              save(plsres1,file="plsres1.Rda")
+              #save(plsres1,file="plsres1.Rda")
               
               if(is.na(pls.permut.count)==FALSE){
                 set.seed(999)
@@ -36371,7 +36691,11 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
                     set.seed(seedvec[x])
                     
                     
-                    plsresrand<-do_plsda_rand(X=data_m_fc,Y=classlabels_sub[sample(x=seq(1,dim(classlabels_sub)[1]),size=dim(classlabels_sub)[1]),],oscmode=featselmethod,numcomp=opt_comp,kfold=kfold,evalmethod=pred.eval.method,keepX=max_varsel,sparseselect=TRUE,analysismode,sample.col.vec=col_vec,scoreplot_legend=scoreplot_legend,pairedanalysis=pairedanalysis,optselect=FALSE,class_labels_levels_main=class_labels_levels_main,legendlocation=legendlocation,plotindiv=FALSE) #,silent=TRUE)
+                    plsresrand<-do_plsda_rand(X=data_m_fc,Y=classlabels_sub[sample(x=seq(1,dim(classlabels_sub)[1]),
+                                                                                   size=dim(classlabels_sub)[1]),],oscmode=featselmethod,
+                                              numcomp=opt_comp,kfold=kfold,evalmethod=pred.eval.method,keepX=max_varsel,sparseselect=TRUE,
+                                              analysismode,sample.col.vec=col_vec,scoreplot_legend=scoreplot_legend,pairedanalysis=pairedanalysis,
+                                              optselect=FALSE,class_labels_levels_main=class_labels_levels_main,legendlocation=legendlocation,plotindiv=FALSE,alphabetical.order=alphabetical.order) #,silent=TRUE)
                     
                     #rand_pls_sel<-cbind(rand_pls_sel,plsresrand$vip_res[,1])
                     if (is(plsresrand, "try-error")){
@@ -36398,7 +36722,7 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
                                 scoreplot_legend=scoreplot_legend,pairedanalysis=pairedanalysis,optselect=optselect,
                                 class_labels_levels_main=class_labels_levels_main,legendlocation=legendlocation,
                                 pls.vip.selection=pls.vip.selection,output.device.type=output.device.type,
-                                plots.res=plots.res,plots.width=plots.width,plots.height=plots.height,plots.type=plots.type,pls.ellipse=pca.ellipse)
+                                plots.res=plots.res,plots.width=plots.width,plots.height=plots.height,plots.type=plots.type,pls.ellipse=pca.ellipse,alphabetical.order=alphabetical.order)
               
               opt_comp<-plsres1$opt_comp
               
@@ -36435,7 +36759,10 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
                     set.seed(seedvec[x])
                     
                     
-                    plsresrand<-do_plsda_rand(X=data_m_fc,Y=classlabels[sample(x=seq(1,dim(classlabels)[1]),size=dim(classlabels)[1]),],oscmode=featselmethod,numcomp=opt_comp,kfold=kfold,evalmethod=pred.eval.method,keepX=max_varsel,sparseselect=TRUE,analysismode,sample.col.vec=col_vec,scoreplot_legend=scoreplot_legend,pairedanalysis=pairedanalysis,optselect=FALSE,class_labels_levels_main=class_labels_levels_main,legendlocation=legendlocation,plotindiv=FALSE)
+                    plsresrand<-do_plsda_rand(X=data_m_fc,Y=classlabels[sample(x=seq(1,dim(classlabels)[1]),size=dim(classlabels)[1]),],oscmode=featselmethod,numcomp=opt_comp,kfold=kfold,
+                                              evalmethod=pred.eval.method,keepX=max_varsel,sparseselect=TRUE,analysismode,sample.col.vec=col_vec,scoreplot_legend=scoreplot_legend,
+                                              pairedanalysis=pairedanalysis,optselect=FALSE,class_labels_levels_main=class_labels_levels_main,
+                                              legendlocation=legendlocation,plotindiv=FALSE,alphabetical.order=alphabetical.order)
                     
                     #rand_pls_sel<-cbind(rand_pls_sel,plsresrand$vip_res[,1])
                     #return(plsresrand$vip_res[,1])		
@@ -36470,7 +36797,8 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
                                 keepX=max_varsel,sparseselect=FALSE,analysismode=analysismode,vip.thresh=pls_vip_thresh,sample.col.opt=sample.col.opt,
                                 sample.col.vec=col_vec,scoreplot_legend=scoreplot_legend,pairedanalysis=pairedanalysis,optselect=optselect,
                                 class_labels_levels_main=class_labels_levels_main,legendlocation=legendlocation,pls.vip.selection=pls.vip.selection,
-                                output.device.type=output.device.type,plots.res=plots.res,plots.width=plots.width,plots.height=plots.height,plots.type=plots.type,pls.ellipse=pca.ellipse)
+                                output.device.type=output.device.type,plots.res=plots.res,plots.width=plots.width,
+                                plots.height=plots.height,plots.type=plots.type,pls.ellipse=pca.ellipse,alphabetical.order=alphabetical.order)
               
               if (is(plsres1, "try-error")){
                 print(paste("PLS could not be performed at RSD threshold: ",log2.fold.change.thresh,sep=""))
@@ -36486,7 +36814,7 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
                                 sample.col.vec=col_vec,scoreplot_legend=scoreplot_legend,pairedanalysis=pairedanalysis,optselect=optselect,
                                 class_labels_levels_main=class_labels_levels_main,legendlocation=legendlocation,pls.vip.selection=pls.vip.selection,
                                 output.device.type=output.device.type,plots.res=plots.res,plots.width=plots.width,plots.height=plots.height,
-                                plots.type=plots.type,pls.ellipse=pca.ellipse)
+                                plots.type=plots.type,pls.ellipse=pca.ellipse,alphabetical.order=alphabetical.order)
               
               if (is(plsres1, "try-error")){
                 print(paste("PLS could not be performed at RSD threshold: ",log2.fold.change.thresh,sep=""))
@@ -36526,7 +36854,11 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
                     ####savelist=ls(),file=t1fname)
                     print(paste("PLSDA permutation number: ",x,sep=""))
                     
-                    plsresrand<-do_plsda_rand(X=data_m_fc,Y=classlabels[sample(x=seq(1,dim(classlabels)[1]),size=dim(classlabels)[1]),],oscmode=featselmethod,numcomp=opt_comp,kfold=kfold,evalmethod=pred.eval.method,keepX=max_varsel,sparseselect=FALSE,analysismode,sample.col.vec=col_vec,scoreplot_legend=scoreplot_legend,pairedanalysis=pairedanalysis,optselect=FALSE,class_labels_levels_main=class_labels_levels_main,legendlocation=legendlocation,plotindiv=FALSE) #,silent=TRUE)
+                    plsresrand<-do_plsda_rand(X=data_m_fc,Y=classlabels[sample(x=seq(1,dim(classlabels)[1]),size=dim(classlabels)[1]),],
+                                              oscmode=featselmethod,numcomp=opt_comp,kfold=kfold,evalmethod=pred.eval.method,
+                                              keepX=max_varsel,sparseselect=FALSE,analysismode,sample.col.vec=col_vec,
+                                              scoreplot_legend=scoreplot_legend,pairedanalysis=pairedanalysis,optselect=FALSE,
+                                              class_labels_levels_main=class_labels_levels_main,legendlocation=legendlocation,plotindiv=FALSE,alphabetical.order=alphabetical.order) #,silent=TRUE)
                     
                     if (is(plsresrand, "try-error")){
                       
@@ -36696,7 +37028,7 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
             
             goodip<-which(sel.diffdrthresh==TRUE)
             
-            save(goodip,pls_vip,rand_pls_sel_fdr,rand_pls_sel_prob,sel.diffdrthresh,file="splsdebug1.Rda")
+           # save(goodip,pls_vip,rand_pls_sel_fdr,rand_pls_sel_prob,sel.diffdrthresh,file="splsdebug1.Rda")
             
             
             
