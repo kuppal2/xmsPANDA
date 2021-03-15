@@ -12520,7 +12520,10 @@ do_plsda<-function(X,Y,oscmode="pls",numcomp=3,kfold=10,evalmethod="CV",keepX=15
 }
 
 
-do_plsda_rand<-function(X,Y,oscmode="pls",numcomp=3,kfold=10,evalmethod="CV",keepX=15,sparseselect=FALSE,analysismode="classification",vip.thresh=1,sample.col.opt="default",sample.col.vec=c("red","green","blue","purple"),scoreplot_legend=TRUE,feat_names=NA,pairedanalysis=FALSE,optselect=FALSE,class_labels_levels_main=NA,legendlocation="bottomleft",plotindiv=TRUE)
+do_plsda_rand<-function(X,Y,oscmode="pls",numcomp=3,kfold=10,evalmethod="CV",keepX=15,sparseselect=FALSE,analysismode="classification",
+                        vip.thresh=1,sample.col.opt="default",sample.col.vec=c("red","green","blue","purple"),scoreplot_legend=TRUE,
+                        feat_names=NA,pairedanalysis=FALSE,optselect=FALSE,class_labels_levels_main=NA,
+                        legendlocation="bottomleft",plotindiv=TRUE,alphabetical.order=FALSE)
 {
   repeatmeasures=pairedanalysis
   
