@@ -7,6 +7,11 @@ library(shinycssloaders)
 library(colourpicker)
 library(R.utils)
 library(shinyWidgets)
+library(shinyBS)
+require(shiny)
+require(shinyjs)
+require(shinyBS)
+require(DT)
 
 # Define UI for data upload app ----
 

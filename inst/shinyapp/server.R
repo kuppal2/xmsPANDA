@@ -1,16 +1,16 @@
 options(shiny.maxRequestSize=100*1024^2)
 options(shiny.sanitize.errors=FALSE)
-library('xmsPANDA')
+#library('xmsPANDA')
 #library('lsmeans')
 #library('car')
 #library('KEGGREST')
 #.libPaths("R/source_codes/library/")
-library(shiny)
-library(shinyjs)
-library(shinyBS)
-library(DT)
+require(shiny)
+require(shinyjs)
+require(shinyBS)
+require(DT)
 
-#source("R/source_codes/xmsPANDA_v1.0.9.32.R")
+source("R/source_codes/xmsPANDA_v1.0.9.32.R")
 
 # Server logic
 

@@ -1,4 +1,9 @@
 library(shiny)
+require(shiny)
+require(shinyjs)
+require(shinyBS)
+require(DT)
+
 
 data_preprocessing<-fluidRow(
   tags$div(
