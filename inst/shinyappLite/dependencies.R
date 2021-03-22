@@ -1,4 +1,5 @@
 require('xmsPANDA')
+require(RColorBrewer)
 require(lsmeans)
 #library('car')
 require(KEGGREST)
@@ -37,7 +38,7 @@ require(pROC)
 
 
 
-require(RColorBrewer)
+
 
 require(nlme)
 require(multcomp)
