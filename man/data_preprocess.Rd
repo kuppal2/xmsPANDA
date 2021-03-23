@@ -121,4 +121,4 @@ Performs median adjusted scale normalization. Normalization options: Please set 
 \value{
 Pre-processed data matrix.
 }
-\author{Karan Uppal <kuppal2@emory.edu>}
+\author{Karan Uppal <kuppal3gt@gmail.com>}

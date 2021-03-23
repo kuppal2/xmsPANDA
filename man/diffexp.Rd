@@ -669,4 +669,4 @@ Pairwise correlation matrix CIRCOS format ready to be uploaded to:
 Or uploaded to Cytoscape gml format
 
 }
-\author{Karan Uppal <kuppal2@emory.edu>}
+\author{Karan Uppal <kuppal3gt@gmail.com>}
