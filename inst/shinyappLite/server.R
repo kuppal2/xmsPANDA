@@ -534,7 +534,7 @@ server <- function(input, output, session) {
           fdrthresh = fdrthresh, fdrmethod=fdr_method,
          analysismode=input$analysismode, 
           pls_vip_thresh = pls_vip_thresh, pls_ncomp = input$pls_ncomp, foldchangethresh=foldchangethresh,
-          optselect=input$optselect,max_comp_sel=input$max_comp_sel,
+          optselect=TRUE,max_comp_sel=input$max_comp_sel,
          limmadecideTests=input$limmadecideTests,lme.modeltype=input$lme.modeltype,
           
         
