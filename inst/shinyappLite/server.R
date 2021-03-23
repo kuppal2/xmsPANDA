@@ -600,7 +600,7 @@ server <- function(input, output, session) {
         
         check$count=0
         go <- reactiveValues(count = 0)
-        reset("go")
+        #reset("go")
         if(is(demetabs_res,"try-error")){
           done$count=1
           go <- reactiveValues(count = 0)
