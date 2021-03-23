@@ -42,7 +42,11 @@ statistical_analysis_page_lite <- fluidPage(
                                                column(width=12,style="margin-top:10px",
                                                       #column(width=6,style='padding-left:0;',numericInput(width="350px","pvalue_thresh", "P-value threshold:", 0.05, min = 0, max = 1)),
                                                       #column(width=6,numericInput(width="350px","foldchangethresh", "Fold change threshold (0-100 limit):", 0, min = 0, max = 100))
-                                                      column(width=12,style='margin-top:25px;padding-left:0;',actionButton("argumentbutton1", "More arguments"))
+                                                      column(width=6,style='margin-top:25px;padding-left:0;',actionButton("argumentbutton1", "More arguments")),
+                                                      #column(width=6,selectInput(width="350px","example_data","Use example data",c("FALSE","TRUE"),selected="FALSE"))
+                                                      #radioButtons
+                                                      column(width=6,radioButtons(width="350px","example_data","Use example data",inline=TRUE,c("FALSE","TRUE"),selected="FALSE"))
+                                                      
                                                ),
                                                
                                                
@@ -93,15 +97,17 @@ statistical_analysis_page_lite <- fluidPage(
                                                                    selected=c("log2transform")))),style = "primary"),
                         bsCollapsePanel("Feature Selection",column(12,textOutput("txt")),
                                         column(width=12, 
-                                               id="inputarea",column(width=2,selectInput("analysismode","Select analysis mode:",c("classification","regression"))),column(width=3,selectInput("pairedanalysis", "Is this a repeated-measurement design?", 
+                                               id="inputarea",column(width=2,selectInput("analysismode","Select analysis mode:",c("classification","regression"))),
+                                               column(width=2,selectInput("pairedanalysis", "Time-series design?", 
                                                                            c(True = "TRUE",False = "FALSE"),selected = "FALSE")), #inline=TRUE,
-                                               column(width=7,
+                                               column(width=8,
                                                       conditionalPanel(
                                                         condition = "input.analysismode == 'classification' && input.pairedanalysis == 'FALSE'",
                                                        # column(width=6,
+                                                       # 
                                                               column(width=12,selectInput("featselmethodi", "Select feature selection methods
-                                                                                           for classification (click in the box to edit or select more options)", 
-                                                                                           multiple = TRUE,c('limma (one-way ANOVA using LIMMA)'='limma', 'pls (partial least squares using VIP)'='pls',
+                                                                                           for classification \n(click in the box to edit or select more options)", 
+                                                                                           multiple = TRUE,width="500px",c('limma (one-way ANOVA using LIMMA)'='limma', 'pls (partial least squares using VIP)'='pls',
                                                                                                              'limma2way (two-way ANOVA using LIMMA)'='limma2way',
                                                                                                              'limmarobust (one-way ANOVA using LIMMA robust)'='limmarobust',
                                                                                                              'limma2wayrobust (two-way ANOVA using LIMMA robust)'='limma2wayrobust',
@@ -122,7 +128,7 @@ statistical_analysis_page_lite <- fluidPage(
                                                                                                              'spls2way (two-factor analysis using sparse partial least squares)'='spls2way',
                                                                                                              'o1pls (orthogonal partial least squares)'='o1pls',
                                                                                                              'pamr (nearest shrunked centroid method)'='pamr'),
-                                                                                           selected=c('limma')
+                                                                                           selected=c('limma','pls')
                                                                ))),
                                                       conditionalPanel(
                                                         condition = "input.analysismode == 'classification' && input.pairedanalysis == 'TRUE'",
@@ -130,7 +136,8 @@ statistical_analysis_page_lite <- fluidPage(
                                                                #  div(style="display: inline-block;vertical-align:top",tags$p(style="margin:0;padding-top:4px;padding-bottom:4px;font-weight:bold","Choose feature selection methods:  ")),
                                                                # div(style="display: inline-block;vertical-align:top",actionButton("methodbuttonii", "View")),
                                                                # bsModal("method_modalii", "Method List", "methodbuttonii", size = "large",
-                                                               column(width=6,selectInput("featselmethodii", "Select feature selection methods for classification with repeat measures (click in the box to edit or select more options)", multiple = TRUE,
+                                                               column(width=6,selectInput("featselmethodii", width="500px","Select feature selection methods for 
+                                                                                          classification with repeat measures (click in the box to edit or select more options)", multiple = TRUE,
                                                                                            c('limma1wayrepeat (one-way ANOVA repeated measures using LIMMA)'='limma1wayrepeat',
                                                                                              'limma2wayrepeat (two-way ANOVA repeated measures using LIMMA)'='limma2wayrepeat',
                                                                                              'limma1wayrepeatrobust (one-way ANOVA repeated measures using LIMMA robust)'='limma1wayrepeatrobust',
@@ -146,7 +153,7 @@ statistical_analysis_page_lite <- fluidPage(
                                                         condition = "input.analysismode == 'regression' && input.pairedanalysis == 'FALSE'",
                                                         column(width=6,style='margin-top:25px;padding-left:0;',
                                                                
-                                                               column(width=6,selectInput("featselmethodiii", "Select feature selection methods for regression", multiple = TRUE,
+                                                               column(width=6,selectInput("featselmethodiii", width="500px","Select feature selection methods for regression", multiple = TRUE,
                                                                                            c('lmreg (linear regression)'='lmreg',
                                                                                              'lmregrobust (linear regression using robust sandwich estimator)'='lmregrobust',
                                                                                              'poissonreg (poisson regression)'='poissonreg',
@@ -166,7 +173,7 @@ statistical_analysis_page_lite <- fluidPage(
                                                         condition = "input.analysismode == 'regression' && input.pairedanalysis == 'TRUE'",
                                                         column(width=6,style='margin-top:25px;padding-left:0;',
                                                                
-                                                               column(width=6,selectInput("featselmethodiv", "Select feature selection methods for regression", multiple = FALSE,
+                                                               column(width=6,selectInput("featselmethodiv", width="500px","Select feature selection methods for regression", multiple = TRUE,
                                                                                            c('lmregrepeat (linear regression with mixed effects model)'='lmregrepeat',
                                                                                              
                                                                                              'plsrepeat (multilevel partial least squares using VIP)'='plsrepeat',

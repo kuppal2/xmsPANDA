@@ -293,14 +293,18 @@ server <- function(input, output, session) {
     })
   })
   
+  #observeEvent(input$go,{check1$count=0})
+  
   observeEvent(input$go,
                
                {
                  
-                 
+                 check$count=0
                  # reset("nText2")
                  #reset("nText")
                  #reset("id1")
+                 
+                 if(input$example_data=='FALSE'){
                  output$nText2 <- renderText({shiny::validate(
                    need(input$featuretable, "No datasetA provided. Please upload dataset A in 'Choose Files'."),
                    need(input$featuretable$type=="text/csv" || input$featuretable$type=="text/plain", "The format of datasetA is not correct. Please upload the file with correct format."),
@@ -316,6 +320,9 @@ server <- function(input, output, session) {
                    need(featselmethod_check(),"No feature selection method was selected. Please select at least one method.")
                  )
                  check$count=1
+                 }else{
+                   check$count=1
+                 }
                  id1 <<- showNotification("Starting processing now. Your results will be available for download shortly. The processing time depends on the number of methods used.", duration=NULL)
                  
                  output$output_results <- renderUI({})
@@ -327,7 +334,10 @@ server <- function(input, output, session) {
   #########################################
   
   
-  featselmethod_check <-eventReactive(input$go,{
+  featselmethod_check <-eventReactive({input$go
+                                    },
+                                     {
+    #featselmethod<-NULL #change on 3/23/2021
     if(input$analysismode=='classification' && input$pairedanalysis=='FALSE'){
       featselmethod<-input$featselmethodi
     }else{
@@ -347,6 +357,8 @@ server <- function(input, output, session) {
       }
     }
     featselmethod
+    
+    #showNotification(featselmethod)
   })
   
   
@@ -368,7 +380,15 @@ server <- function(input, output, session) {
       }
     }else{
       
-      NA
+      #NA
+      if(input$example_data=='TRUE'){
+      load("/Users/karanuppal/Documents/Emory/JonesLab/Projects/DifferentialExpression/xmsPaNDA/git-current/xmsPANDA/data/exh1n1.Rda")
+      featuretable=exh1n1$Xmat
+      exh1n1$Xmat<-{}
+      featuretable
+      }else{
+        NA
+      }
     }
   })
   
@@ -388,18 +408,33 @@ server <- function(input, output, session) {
       }
     }else{
       
-      NA
+      #NA
+      #NA
+      if(input$example_data=='TRUE'){
+      load("/Users/karanuppal/Documents/Emory/JonesLab/Projects/DifferentialExpression/xmsPaNDA/git-current/xmsPANDA/data/exh1n1.Rda")
+      classlabel=exh1n1$Ymat
+      exh1n1$Ymat<-{}
+      classlabel
+      }else{
+        
+        NA
+      }
     }
   })
   
   
-  
+ # run_diffexp<-eventReactive(input$go,1)
   
   
   ##########################################
   
-  output$nText <- renderPrint({
-    if(input$go!=0  & check$count==1 & !is.null(featselmethod_check()) & is.data.frame(featuretable()) & is.data.frame(classlabel()) & all_alert()==TRUE){
+  observeEvent(input$go,{
+    output$nText <- #eventReactive(input$go,
+                           #    {
+                               renderPrint(
+    {
+ if(input$go!=0  & check$count==1 & !is.null(featselmethod_check()) & is.data.frame(featuretable()) & is.data.frame(classlabel()) & all_alert()==TRUE)
+      {
       
       
       
@@ -500,14 +535,12 @@ server <- function(input, output, session) {
       msg=""
       # if(input$workflow=='workflowI')
       # if(check$count==1)
-      if(input$go)
+     # if(input$go)
+     # observeEvent(input$go,
+      #observeEvent(input$go,{
+                     if(input$go!=0)
       {
-        
-        
-        
-        
-        #start: see manual for additional arguments and description
-        #start: see manual for additional arguments and description
+      
         #try(
         demetabs_res<-diffexp.lite(
           #1) arguments for input files
@@ -529,7 +562,7 @@ server <- function(input, output, session) {
           ##3) arguments for feature seletion: c("limma","pls","pamr","spls","pls","MARS","RF","rfesvm","logitreg","ttest","wilcox","o1pls","lmreg")
           #"rfesvm","pamr","MARS","RF","logitreg","ttest","wilcox","o1pls","lmreg","lm1wayanova"
           #c("limma","pls","spls","pls","MARS","RF","rfesvm","logitreg","ttest","wilcox","o1pls","lmreg","lm1wayanova")
-          pairedanalysis = pairedanalysis, featselmethod=featselmethod,
+          pairedanalysis = pairedanalysis, featselmethod=input$featselmethodi,
           pvalue.thresh=pvalue_thresh,
           fdrthresh = fdrthresh, fdrmethod=fdr_method,
          analysismode=input$analysismode, 
@@ -566,6 +599,8 @@ server <- function(input, output, session) {
         ) #,silent=TRUE)
         
         check$count=0
+        go <- reactiveValues(count = 0)
+        reset("go")
         if(is(demetabs_res,"try-error")){
           done$count=1
           go <- reactiveValues(count = 0)
@@ -625,12 +660,14 @@ server <- function(input, output, session) {
         }
         
       }
-      
-      #   input$go=0
+     #              })
+       #input$go=0
       
       go <- reactiveValues(count = 0)
       # go <- reactiveValues(count = 0)
-      #  suppressWarnings(reset("go"))
+       #suppressWarnings(reset("go"))
+       
+       #reset("go")
       
       #   done <- reactiveValues(count = 0)
       #go <- reactiveValues(count = 0)
@@ -644,6 +681,8 @@ server <- function(input, output, session) {
     
     #msg
   })
+
+                                 })
   
   ##########################################
   

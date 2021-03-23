@@ -31980,6 +31980,9 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
   factor2_msg=NA
   
   
+    cat(paste("Running feature selection method: ",featselmethod,sep=""),sep="\n")
+  #}
+  
   
   if(featselmethod=="limmarobust"){
     
@@ -32110,7 +32113,8 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
   rfconditional=FALSE
   
  # print("############################")
-  cat(paste("Running feature selection method: ",featselmethod,sep=""),sep="\n")
+  
+  
   #print("############################")
   if(featselmethod=="rf" | featselmethod=="RF"){
     
@@ -35049,7 +35053,7 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
         if(featselmethod=="limma" | featselmethod=="limma1way")
         {
           
-          cat("Performing limma analysis",sep="\n")
+        #  cat("Performing limma analysis",sep="\n")
         #  save(classlabels,classlabels_orig,classlabels_dataframe,classlabels_response_mat,file="cldebug.Rda")
           
           classlabels_temp1<-classlabels
@@ -35386,7 +35390,7 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
         if(featselmethod=="limma2way")
         {
           
-          cat("Performing limma2way analysis",sep="\n")
+         # cat("Performing limma2way analysis",sep="\n")
           
           #design <- cbind(Grp1vs2=c(rep(1,num_samps_group[[1]]),rep(0,num_samps_group[[2]])),Grp2vs1=c(rep(0,num_samps_group[[1]]),rep(1,num_samps_group[[2]])))
          # print("here")
@@ -35885,7 +35889,7 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
         
         if(featselmethod=="RF")
         {
-          cat("Performing RF analysis",sep="\n")
+      #    cat("Performing RF analysis",sep="\n")
           maxint<-apply(data_m_fc,1,max)
           
           
@@ -36000,7 +36004,7 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
         
         if(featselmethod=="MARS"){
           
-          cat("Performing MARS analysis",sep="\n")
+        #  cat("Performing MARS analysis",sep="\n")
           
           mars_classlabels<-classlabels[,1]
           marsres1<-do_mars(X=data_m_fc,mars_classlabels, analysismode,kfold)
@@ -36610,7 +36614,7 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
           if(featselmethod=="lm1wayanova")
           {
             
-            cat("Performing one-way ANOVA analysis",sep="\n")
+          #  cat("Performing one-way ANOVA analysis",sep="\n")
             
             #print(dim(data_m_fc))
             #print(dim(classlabels_response_mat))
@@ -36809,7 +36813,7 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
           if(featselmethod=="ttest" && pairedanalysis==TRUE)
           {
             
-           cat("Performing paired t-test analysis",sep="\n")
+         #  cat("Performing paired t-test analysis",sep="\n")
             
             #print(dim(data_m_fc))
             #print(dim(classlabels_response_mat))
@@ -36953,7 +36957,7 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
           if(featselmethod=="ttest" && pairedanalysis==FALSE)
           {
             
-            cat("Performing t-test analysis",sep="\n")
+            #cat("Performing t-test analysis",sep="\n")
             
             #print(dim(data_m_fc))
             #print(dim(classlabels_response_mat))
@@ -37098,7 +37102,7 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
           if(featselmethod=="wilcox")
           {
             
-            cat("Performing Wilcox rank-sum analysis",sep="\n")
+         #   cat("Performing Wilcox rank-sum analysis",sep="\n")
             
             #print(dim(data_m_fc))
             #print(dim(classlabels_response_mat))
@@ -37249,7 +37253,7 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
                 next;
               }
               
-              cat("Performing logistic regression analysis",sep="\n")
+             # cat("Performing logistic regression analysis",sep="\n")
               
               classlabels_response_mat[,1]<-as.numeric((classlabels_response_mat[,1]))-1
               
@@ -37261,12 +37265,12 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
               if(poisson_reg==TRUE){
                 
                 
-                cat("Performing poisson regression analysis",sep="\n")
+             #   cat("Performing poisson regression analysis",sep="\n")
                 fileheader="poissonreg"
                 classlabels_response_mat[,1]<-as.numeric((classlabels_response_mat[,1]))
                 
               }else{
-               cat("Performing linear regression analysis",sep="\n")
+           #    cat("Performing linear regression analysis",sep="\n")
                 fileheader="lmreg"
               }
             }
