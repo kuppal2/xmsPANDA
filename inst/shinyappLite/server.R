@@ -382,8 +382,8 @@ server <- function(input, output, session) {
       
       #NA
       if(input$example_data=='TRUE'){
-      load("/Users/karanuppal/Documents/Emory/JonesLab/Projects/DifferentialExpression/xmsPaNDA/git-current/xmsPANDA/data/exh1n1.Rda")
-      featuretable=exh1n1$Xmat
+          data(exh1n1)
+        featuretable=exh1n1$Xmat
       exh1n1$Xmat<-{}
       featuretable
       }else{
@@ -411,7 +411,7 @@ server <- function(input, output, session) {
       #NA
       #NA
       if(input$example_data=='TRUE'){
-      load("/Users/karanuppal/Documents/Emory/JonesLab/Projects/DifferentialExpression/xmsPaNDA/git-current/xmsPANDA/data/exh1n1.Rda")
+        data(exh1n1) 
       classlabel=exh1n1$Ymat
       exh1n1$Ymat<-{}
       classlabel
