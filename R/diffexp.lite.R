@@ -264,8 +264,8 @@ function(Xmat=NA,Ymat=NA,outloc=NA,
   plot_DiNa_graph=FALSE
   
   
-  hca.labRow.value = TRUE
-  hca.labCol.value = TRUE
+  #hca.labRow.value = TRUE
+  #hca.labCol.value = TRUE
   plot.boxplots.raw=FALSE
   vcovHC.type="HC3"
   ggplot.type1=TRUE

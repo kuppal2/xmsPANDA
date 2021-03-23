@@ -5,6 +5,6 @@ account: xmspanda
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 3835139
-bundleId: 4382343
+bundleId: 4382440
 url: https://xmspanda.shinyapps.io/xmsPANDALite/
-when: 1616458546.98476
+when: 1616460783.02236
