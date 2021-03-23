@@ -122,7 +122,7 @@ statistical_analysis_page_lite <- fluidPage(
                                                                                                              'spls2way (two-factor analysis using sparse partial least squares)'='spls2way',
                                                                                                              'o1pls (orthogonal partial least squares)'='o1pls',
                                                                                                              'pamr (nearest shrunked centroid method)'='pamr'),
-                                                                                           selected=c('limma','pls')
+                                                                                           selected=c('limma')
                                                                ))),
                                                       conditionalPanel(
                                                         condition = "input.analysismode == 'classification' && input.pairedanalysis == 'TRUE'",
@@ -265,7 +265,7 @@ statistical_analysis_page_lite <- fluidPage(
                         column(width=12,
                                #   column(width=6,numericInput(width="350px","ellipse_conf_level", "Confidence interval for PCA ellipses (0-1 limit):", 0.95, min = 0, max = 1)),
                              #  column(width=6,selectInput(width="350px","pca_ellipse","Should ellipse be plotted on PCA plots?",c("TRUE","FALSE"),selected="TRUE")),
-                               column(width=6,selectInput(width="350px","boxplot.type", "Boxplot type:", c("ggplot","simple"))),
+                               column(width=6,selectInput(width="350px","boxplot.type", "Boxplot type:", c("ggplot","simple"),selected="simple")),
                                column(width=6,selectInput(width="350px","boxplot.bool", "Generate boxplots:", c("TRUE","FALSE")))
                                # column(width=6,numericInput(width="350px","pca_cex_val", "Size of points on PCA plots (1-20 limit):", 4, min = 1, max = 20))
                         ),
