@@ -324,10 +324,10 @@ tags$div(tags$h5(style='font-weight:bold',"Description:")),
 tags$p(style='font-weight:normal',"Functional class scoring determines enrichment of functional classes or sets (e.g. pathways, modules, classes) in 
       association with a phenotype based on the p-value, VIP, fold change, and other statistics. 
             In stage one, statistics of individual entities (features, metabolites) within each functional class are combined to assign an 
-           summary statistic at the functional class level using the max-mean method developed by Efron and Tibshiranil (Efron, Bradley; Tibshirani, Robert. On testing the significance of sets of genes. Ann. Appl. Stat. 1 (2007), no. 1, 107--129. 
-doi:10.1214/07-AOAS101. https://projecteuclid.org/euclid.aoas/1183143731). Both the raw max-mean statistics and the standardized (z-scale) max-mean statistics are reported. Only the IDs with unique chemical formula are used for aggregation within each functional class. 
-          In case of redundancies, the entry with the highest statistic is used. A permutation test by shuffling the metabolites/genes is used to estimate p-values. 
-       Benjamini-Hochberg method is used for false discovery correction. The input file can be provided in three formats as described below. For the formats where the input file does not contain database identifiers, please see formats 2 and 3 and the corresponding annotation files as a separate input."),
+           summary statistic at the functional class level using: 1) z-score calculated as sqrt(number of entities in a set)*average value of the statistic (based on Irizarry 2009; PMC3134237); 2) max-mean method developed by Efron and Tibshiranil (Efron, Bradley; Tibshirani, Robert. On testing the significance of sets of genes. Ann. Appl. Stat. 1 (2007), no. 1, 107--129. 
+doi:10.1214/07-AOAS101. https://projecteuclid.org/euclid.aoas/1183143731). Only the IDs with unique chemical formula are used for aggregation within each functional class. 
+          In case of redundancies, the entry with the highest statistic is used. The p-values are calculated using the one-sample z-test for the z-score method and using the permutation test by 
+       shuffling the functional sets for the max-mean method. Benjamini-Hochberg method is used for false discovery correction. The input file can be provided in three formats as described below. For the formats where the input file does not contain database identifiers, please see formats 2 and 3 and the corresponding annotation files as a separate input."),
 tags$div(tags$h5(style='font-weight:bold',"Input file format(s) for target IDs file:")),
                                 tags$p(style='font-weight:normal',"Format 1) column A: XID (e.g. KEGG ID); column B: Statistic (p-value,vip,beta coefficient,fold change)"),
                                 tags$p(style='font-weight:normal',"Example:"),
