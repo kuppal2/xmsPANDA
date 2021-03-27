@@ -1,4 +1,4 @@
-
+#Example script to run diffexp.lite() to compare categorical groups "classification" mode
 #load xmsPANDA
 library(xmsPANDA)
 
@@ -13,10 +13,10 @@ Ymat<-read.table(class_labels_file,sep="\t",header=TRUE,stringsAsFactors = FALSE
 
 #limma
 demetabs_reslite1<-diffexp.lite(Xmat=Xmat,Ymat=Ymat,outloc=outloc,featselmethod="limma",normalization.method = "log2transform",
-                                fdrthresh=0.005,fdrmethod="none",globalcor=TRUE,rocclassifier="logit")
+                                pvalue.thresh = 0.05,fdrthresh=0.1,fdrmethod="BH",foldchangethresh = 0)
 
 #pls
-demetabs_reslite2<-diffexp.lite(Xmat=Xmat,Ymat=Ymat,outloc=outloc,featselmethod="pls",normalization.method = "log2transform",vipthresh=2)
+demetabs_reslite2<-diffexp.lite(Xmat=Xmat,Ymat=Ymat,outloc=outloc,featselmethod="pls",normalization.method = "log2transform",vipthresh=2,foldchangethresh = 0)
 
 
 #find common features selected by limma and pls

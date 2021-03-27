@@ -5,13 +5,17 @@ function(Xmat=NA,Ymat=NA,Zmat=NA,feature_table_file=NA,parentoutput_dir,class_la
                                 normalization.method=c("all","log2quantilenorm","log2transform","znormtransform","lowess_norm","quantile_norm","rangescaling",
                                                        "paretoscaling","mstus","eigenms_norm","vsn_norm","sva_norm","tic_norm","cubicspline_norm","mad_norm"),input.intensity.scale="raw",
                                 abs.cor.thresh=0.4,pvalue.thresh=0.05,cor.fdrthresh=0.2,cex.plots=0.7,plots.width=8,plots.height=8,plots.res=600,
-                                plots.type="cairo",heatmap.col.opt="RdBu",cor.method="spearman",pca.ellipse=FALSE,ground_truth_file=NA,cutree.method="default",rsd.filt.thresh=1,alphabetical.order=TRUE,analysistype="classification",lme.modeltype="RI",
+                                plots.type="cairo",heatmap.col.opt="RdBu",cor.method="pearson",pca.ellipse=FALSE,ground_truth_file=NA,cutree.method="dynamic",rsd.filt.thresh=1,alphabetical.order=TRUE,analysistype="classification",lme.modeltype="RI",
                                 study.design=c("multiclass","onewayanova","twowayanova","onewayanovarepeat","twowayanovarepeat"),log2.transform.constant=1,
                                 featselmethod="limma",similarity.matrix="correlation",...){
   
   #featselmethod=NA
+  suppressMessages(require(dynamicTreeCut))
+  suppressMessages(require(mclust))
+  suppressMessages(require(cluster))
+  suppressMessages(require(WGCNA))
   
-  
+  parallel:::setDefaultClusterOptions(setup_strategy = "sequential")
   if(is.na(Xmat)==TRUE){
     Xmat<-read.table(feature_table_file,sep="\t",header=TRUE,stringsAsFactors=FALSE,check.names=FALSE)
   }
@@ -165,6 +169,7 @@ function(Xmat=NA,Ymat=NA,Zmat=NA,feature_table_file=NA,parentoutput_dir,class_la
       setwd(normalization.method[i])
       outloc=paste(parentoutput_dir,"/",normalization.method[i],sep="")
       
+      print(outloc)
       fname1<-paste(normalization.method[i],".pdf",sep="")
       
       
@@ -344,16 +349,74 @@ function(Xmat=NA,Ymat=NA,Zmat=NA,feature_table_file=NA,parentoutput_dir,class_la
         #print(X[1:3,1:5])
         #print(head(Y))
        # save(X,Y,pairedanalysis,pca.ellipse,normalization.method,i,alphabetical.order,analysistype,lme.modeltype,file="pcad1.Rda")
+      
+        cat("Starting PCA",sep="\n")  
         pcares<-get_pcascoredistplots(X=X,Y=Y,feature_table_file=NA,parentoutput_dir=outloc,class_labels_file=NA,sample.col.opt="journal",
                                       plots.width=2000,plots.height=2000,plots.res=300, alphacol=0.3,col_vec=NA,pairedanalysis=pairedanalysis,pca.cex.val=2,legendlocation="topright",
                                       pca.ellipse=pca.ellipse,ellipse.conf.level=0.95,filename=paste(normalization.method[i], "data ",sep=""),paireddesign=NA,
                                       lineplot.col.opt="black",lineplot.lty.option=c("solid", "dashed", "dotted", "dotdash", "longdash", "twodash"),timeseries.lineplots=FALSE,pcacenter=TRUE,pcascale=TRUE,alphabetical.order=alphabetical.order,study.design=analysistype,lme.modeltype=lme.modeltype) #,silent=TRUE)
         
-        
+       #save(pcares,file="pcares.Rda")
+      
         setwd(parentoutput_dir)
         
+        classgroup=Y[,2]
+        classgroup=as.data.frame(classgroup)
+        
+        
         setwd(normalization.method[i])
-        #print("Starting HCA")
+        cat("Starting HCA")
+        st1=Sys.time()
+        
+        #cluster features
+        x=pcares$X
+        #row samples; column: features
+        dist1<-as.dist(1-WGCNA::cor(x))
+        f1=fastcluster::hclust(d=dist1,method = "complete")
+        
+        mycl_metabs <-cutreeDynamic(f1,distM=as.matrix((1-WGCNA::cor(x))),method="hybrid",cutHeight = 0.95,
+                                    deepSplit = 4,minClusterSize = 2,verbose = FALSE)
+        names(mycl_metabs)<-f1$labels
+        
+        Silhouette.features<- silhouette(mycl_metabs,dmatrix=as.matrix(dist1))
+        
+        Silhouette.features<-round(mean(Silhouette.features[,3]),3)
+        
+        #transpose for W.k: row: features; col: samples
+        #gap.stat.features<-E.W.k(x=(x), d.power=1,B=100)-W.k(x=t(x), clus=mycl_metabs,d.power=1)
+        
+        
+        #cluster samples
+        x=t(pcares$X)
+        #row samples; column: features
+        dist1<-as.dist(1-WGCNA::cor(x))
+        f1=fastcluster::hclust(d=dist1,method = "complete")
+        
+        mycl_samples <-cutreeDynamic(f1,distM=as.matrix((1-WGCNA::cor(x))),method="hybrid",cutHeight = 0.95,
+                                    deepSplit = 2,minClusterSize =2,verbose = FALSE)
+        names(mycl_samples)<-f1$labels
+        
+        Silhouette.samples<- silhouette(mycl_samples,dmatrix=as.matrix(dist1))
+        Silhouette.samples<-round(mean(Silhouette.samples[,3]),3)
+        
+        ari_val<-try(round(adjustedRandIndex(x=classgroup[,1], y=mycl_samples),2),silent=TRUE)
+        
+       # save(f1,mycl_samples,classgroup,file="hcasamples.Rda")
+        
+        plotDendroAndColors(f1,mycl_samples,rowText = mycl_samples,groupLabels = c("Cluster"),
+                            rowTextAlignment = "center",
+                            dendroLabels = rownames(f1),
+                            main=paste("Cluster dendrogram for samples\n Adjusted Rand Index:",ari_val,sep=""))
+        
+        
+       
+        #transpose for W.k: row: features; col: samples
+    #    gap.stat.samples<-E.W.k(x=(x), d.power=1,B=100)-W.k(x=t(x), clus=mycl_samples,d.power=1)
+        
+        
+        #W.k <- function(x, kk,clus,d.power=1) {
+      if(FALSE)
+      {
         hca_res<-get_hca(parentoutput_dir=outloc,X=X,Y=Y,heatmap.col.opt=heatmap.col.opt,cor.method=cor.method,is.data.znorm=FALSE,analysismode="classification",
                          sample.col.opt="journal",plots.width=plots.width,plots.height=plots.height,plots.res=plots.res, plots.type=plots.type, 
                          alphacol=0.3, hca_type="two-way",newdevice=FALSE,input.type="intensity",mainlab="",
@@ -362,10 +425,16 @@ function(Xmat=NA,Ymat=NA,Zmat=NA,feature_table_file=NA,parentoutput_dir,class_la
                          study.design=analysistype,similarity.matrix=similarity.matrix,cexRow=cex.plots,cexCol=cex.plots)
         
         classlabels_response_mat=Y[,2]
+        st2=Sys.time()
+        cat("Done with HCA",sep="\n")
+        print(st2-st1)
+      }
         
+        
+        if(FALSE){ 
         if(analysistype=="classification"){
           
-          print("Performing one-way ANOVA analysis")
+          #print("Performing one-way ANOVA analysis")
           
           #numcores<-round(detectCores()*0.6)
           cl <- parallel::makeCluster(getOption("cl.cores", 2))
@@ -406,7 +475,8 @@ function(Xmat=NA,Ymat=NA,Zmat=NA,feature_table_file=NA,parentoutput_dir,class_la
           
           pvalues<-unlist(res1)
           
-        }else{
+        }
+        else{
           
           # numcores<-num_nodes #round(detectCores()*0.5)
           
@@ -484,11 +554,11 @@ function(Xmat=NA,Ymat=NA,Zmat=NA,feature_table_file=NA,parentoutput_dir,class_la
           
         }
         
+        }
         
         
         
-        
-        
+        if(FALSE){
         
         Silhouette.sample=hca_res$Silhouette.sample
         
@@ -499,7 +569,7 @@ function(Xmat=NA,Ymat=NA,Zmat=NA,feature_table_file=NA,parentoutput_dir,class_la
         ##save(hca_res,file="hca_res.Rda")
         
         classgroup=hca_res$classgroup[,1]
-        
+      }
         #rownames(X)<-NULL
         
         setwd(outloc)
@@ -523,7 +593,13 @@ function(Xmat=NA,Ymat=NA,Zmat=NA,feature_table_file=NA,parentoutput_dir,class_la
         dev.off()
         
         
-        return(list("data_matrix_list"=data_matrix_list,"Silhouette.sample"=Silhouette.sample,"Silhouette.feature"=Silhouette.feature,"ari_val"=ari_val,"feat.cor.mat"=feat.cor.mat))
+        
+        
+        return(list("data_matrix_list"=data_matrix_list,"Silhouette.sample"=Silhouette.samples,
+                    "Silhouette.feature"=Silhouette.features,"ari_val"=ari_val,
+                   #"Gap.feature"=gap.stat.features,
+                    #"Gap.sample"=gap.stat.samples,
+                    "feat.cor.mat"=feat.cor.mat))
         
       }
       
@@ -536,8 +612,17 @@ function(Xmat=NA,Ymat=NA,Zmat=NA,feature_table_file=NA,parentoutput_dir,class_la
   })
   
   #   ##save(data_matrix_list,file="data_matrix_list1.Rda")
+  if(FALSE){   
+  Gap.sample=lapply(1:length(data_matrix_list),function(j){
+    
+    return(data_matrix_list[[j]]$Gap.sample)
+  })
   
-  
+  Gap.feature=lapply(1:length(data_matrix_list),function(j){
+    
+    return(data_matrix_list[[j]]$Gap.feature)
+  })
+}
   Silhouette.sample=lapply(1:length(data_matrix_list),function(j){
     
     return(data_matrix_list[[j]]$Silhouette.sample)
@@ -572,19 +657,68 @@ function(Xmat=NA,Ymat=NA,Zmat=NA,feature_table_file=NA,parentoutput_dir,class_la
   norm_method_names<-gsub(norm_method_names,pattern="_norm|norm",replacement="")
   
   setwd(parentoutput_dir)
-  pdf("Compare.HCA.performance.pdf")
   
+  #save(norm_method_names,Silhouette.feature,Silhouette.sample,ari_val,file="hcaplotdebug.Rda")
   
-  plot(unlist(Silhouette.feature),type="o",ylim=c(0,1),col="#0072B2",lwd=2,xaxt="n",xlab="",ylab="Value",main="Comparison of Silhouette coefficients for features and samples \nand adjusted rand index",cex.main=0.8)
+  pdf("Compare.HCA.performance.pdf",height=8,width=12)
+  
+  par(mfrow=c(1,3))
+  par(mar=c(10,3,4,3))
+  #    ##save(varimp_res2,data_m_fc,rf_classlabels,sorted_varimp_res,file="test_rf.Rda")
+  #xaxt="n",
+
+  cval1<-unlist(Silhouette.feature)
+  names(cval1)<-norm_method_names
+  x=barplot(cval1,ylab="",main="mean Silhouette coefficient \n for clustering of features",cex.axis=0.9,cex.names=0.9, xlab="",las=2,ylim=c(0,1))
+ # title(ylab = "mean Silhouette coefficient \n for clustering of features", cex.lab = 1.5,line = 4.5)
+            
+  cval1<-unlist(Silhouette.sample)
+  names(cval1)<-norm_method_names
+  x=barplot(cval1,ylab="",main="mean Silhouette coefficient \n for clustering of samples",cex.axis=0.9,cex.names=0.9, xlab="",las=2,ylim=c(0,1))
+ # title(ylab = "mean Silhouette coefficient \n for clustering of samples", cex.lab = 1.5,line = 4.5)
+ if(FALSE){ 
+  cval1<-unlist(Gap.feature)
+  x=barplot(cval1,xlab="",main="",cex.axis=0.9,cex.names=0.9, ylab="",las=2,ylim=range(pretty(c(min(cval1,na.rm=TRUE),max(cval1,na.rm=TRUE)))))
+  title(ylab = "mean Gap statistic \n for clustering of features", cex.lab = 1.5,line = 4.5)
+  
+  cval1<-unlist(Gap.sample)
+  x=barplot(cval1,xlab="",main="",cex.axis=0.9,cex.names=0.9, ylab="",las=2,ylim=range(pretty(c(min(cval1,na.rm=TRUE),max(cval1,na.rm=TRUE)))))
+  title(ylab = "mean Gap statistic \n for clustering of samples", cex.lab = 1.5,line = 4.5)
+ }  
+  
+  cval1<-unlist(ari_val)
+  print(cval1)
+  names(cval1)<-norm_method_names
+  x=barplot(cval1,ylab="",main="Adjusted rand index \n for comparing sample clustering \nwith the ground truth (class labels)",cex.axis=0.9,
+            cex.names=0.9, xlab="",las=2,ylim=c(0,1))
+ # title(ylab = "Adjusted rand index \n for comparing sample clustering \nwith the ground truth (class labels)", cex.lab = 1.5,line = 4.5)
+  
+  #par(mar=c(1,1))
+  
+  if(FALSE){
+    plot(unlist(Silhouette.feature),type="o",ylim=c(0,1),col="#0072B2",lwd=2,xaxt="n",xlab="",ylab="Value",
+       main="Comparison of clustering quality evaluation \n (silhouette, gap, and adjusted rand index) metrics",cex.main=0.8)
   lines(unlist(Silhouette.sample),type="o",lty=2,col="#E69F00",lwd=2)
-  lines(unlist(ari_val),type="o",lty=5,col="#009E73",lwd=2)
+  lines(unlist(Gap.feature),type="o",lty=5,col="#009E73",lwd=2)
+  lines(unlist(Gap.sample),type="o",lty=3,col="#56B4E9",lwd=2)
+  lines(unlist(ari_val),type="o",lty=4,col="#D55E00",lwd=2)
   axis(labels=norm_method_names,at=seq(1,length(norm_method_names)),side=1,las=2,cex.axis=0.65)
-  legend("topright",legend=c("Silhouette.features","Silhouette.samples","Adjusted Rand Index"),lty=c(1,2,5),col=c("#0072B2","#E69F00","#009E73"))
-  
+  legend("topright",legend=c("Silhouette.features","Silhouette.samples","Gap.feautres","Gap.samples","Adjusted Rand Index"),
+         lty=c(1,2,5,3,4),col=c("#0072B2","#E69F00",
+                                                                                                                      "#009E73","#56B4E9",
+                                                                                                                      "#D55E00"))
+  }
   
   dev.off()  
-  
-  return(list(data_matrix_list=data_matrix_list,normalization.methods=normalization.method, Silhouette.sample=Silhouette.sample,Silhouette.feature=Silhouette.feature,ari_val=ari_val,feat.cor.mat=feat.cor.mat))
+  #unlist(Gap.feature),unlist(Gap.sample),
+  resmat<-cbind(normalization.method,unlist(Silhouette.feature),unlist(Silhouette.sample),unlist(ari_val))
+  colnames(resmat)<-c("Normalization.method","Silhouette.feature","Silhouette.sample","Adjusted_Rand_Index")
+  write.csv(resmat,file="comparison.HCA.performance.csv",row.names=FALSE)
+  return(list(data_matrix_list=data_matrix_list,normalization.methods=normalization.method,
+              Silhouette.sample=Silhouette.sample,Silhouette.feature=Silhouette.feature,
+              #Gap.sample=Gap.sample,
+              #Gap.feature=Gap.feature,
+              ari_val=ari_val,feat.cor.mat=feat.cor.mat))
   
   
   

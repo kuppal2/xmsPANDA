@@ -469,15 +469,15 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,
       s1<-summary(df.sub1$PCscore)
       sadj=(s1[5]-s1[3])*0.5
       
-      plot_res<-ggscatter(df.sub1,x="Outcome",y="PCscore",xlab="Outcome",ylab="PC1score",
+      plot_res<-suppressMessages(ggscatter(df.sub1,x="Outcome",y="PCscore",xlab="Outcome",ylab="PC1score",
                           title="Outcome vs PC1 scores scatter plot",col="darkblue",
                           palette="jco", shape = 20, size = 3, # Points color, shape and size
                           add = "reg.line",  # Add regressin line
                           add.params = list(color = "#0072B2", fill = "lightgray"), # Customize reg. line
-                          conf.int = TRUE)+theme(plot.title = element_text(hjust = 0.5,size=10))+stat_cor(method = "spearman",
+                          conf.int = TRUE))+theme(plot.title = element_text(hjust = 0.5,size=10))+stat_cor(method = "spearman",
                                                                                                           label.y=max(df.sub1$PCscore+sadj))
       
-      print(plot_res)
+      suppressMessages(print(plot_res))
       if(pcnum_limit>1){
       df.sub1<-cbind(classlabels_orig[,2],scores_res[,2])
       df.sub1<-as.data.frame(df.sub1)
@@ -486,16 +486,16 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,
       s1<-summary(df.sub1$PCscore)
       sadj=(s1[5]-s1[3])*0.5
       
-      plot_res<-ggscatter(df.sub1,x="Outcome",y="PCscore",xlab="Outcome",ylab="PC2score",
+      plot_res<-suppressMessages(ggscatter(df.sub1,x="Outcome",y="PCscore",xlab="Outcome",ylab="PC2score",
                           title="Outcome vs PC2 scores scatter plot",col="darkblue",
                           palette="jco", shape = 20, size = 3, # Points color, shape and size
                           add = "reg.line",  # Add regressin line
                           add.params = list(color = "#0072B2", fill = "lightgray"), # Customize reg. line
-                          conf.int = TRUE)+theme(plot.title = element_text(hjust = 0.5,size=10))+stat_cor(method = "spearman",
+                          conf.int = TRUE))+theme(plot.title = element_text(hjust = 0.5,size=10))+stat_cor(method = "spearman",
                                                                                                           label.y=max(df.sub1$PCscore+sadj))
       
       
-      print(plot_res)
+      suppressMessages(print(plot_res))
       }
       
       if(pcnum_limit>2){
@@ -507,15 +507,15 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,
       s1<-summary(df.sub1$PCscore)
       sadj=(s1[5]-s1[3])*0.5
       
-      plot_res<-ggscatter(df.sub1,x="Outcome",y="PCscore",xlab="Outcome",ylab="PC3score",
+      plot_res<-suppressMessages(ggscatter(df.sub1,x="Outcome",y="PCscore",xlab="Outcome",ylab="PC3score",
                           title="Outcome vs PC3 scores scatter plot",col="darkblue",
                           palette="jco", shape = 20, size = 3, # Points color, shape and size
                           add = "reg.line",  # Add regressin line
                           add.params = list(color = "#0072B2", fill = "lightgray"), # Customize reg. line
-                          conf.int = TRUE)+theme(plot.title = element_text(hjust = 0.5,size=10))+stat_cor(method = "spearman",
+                          conf.int = TRUE))+theme(plot.title = element_text(hjust = 0.5,size=10))+stat_cor(method = "spearman",
                                                                                                           label.y=max(df.sub1$PCscore+sadj))
       
-      print(plot_res)
+      suppressMessages(print(plot_res))
       }
       
       
@@ -1225,14 +1225,11 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,
                       
                       sadj=(s1[5]-s1[3])*ypos.adj.factor
                       
-                      plot_res<-ggscatter(df.sub1,x="x",y="PCscore",xlab="Outcome",col=class_col_vec,
+                      plot_res<-suppressMessages(ggscatter(df.sub1,x="x",y="PCscore",xlab="Outcome",col=class_col_vec,
                                           palette="jco", shape = 20, size = 3, # Points color, shape and size
                                           add = "reg.line",  # Add regressin line
                                           add.params = list(color = "#0072B2", fill = "lightgray"), # Customize reg. line
-                                          conf.int = TRUE, # Add confidence interval
-                                          #  cor.coef = TRUE, # Add correlation coefficient. see ?stat_cor
-                                          #cor.coeff.args = list(method = "spearman", label.sep = "\n")
-                      )+stat_cor(method = "spearman",
+                                          conf.int = TRUE))+stat_cor(method = "spearman",
                                  #aes(label = paste(..r.label.., ..p.label..),
                                  label.x = 3,label.y=max(df.sub1$PCscore+sadj)
                       )
@@ -1314,7 +1311,7 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,
             
             #    plot_res<-plot_res + theme(axis.title.x=element_blank(),axis.text.x=element_blank(),axis.ticks.x=element_blank())
             
-            print(plot_res)
+            suppressMessages(print(plot_res))
             
           })
         }

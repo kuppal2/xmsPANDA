@@ -15,7 +15,7 @@ statistical_analysis_page_lite <- fluidPage(
     column(width=12,
            mainPanel(
              width=12,
-             bsCollapse(open = "Input Files",
+             bsCollapse(open = c("Input Files","Feature Selection"),multiple=TRUE,
                         bsCollapsePanel("Input Files",
                                         column(width=12,
                                                h4("Choose your Files:"),

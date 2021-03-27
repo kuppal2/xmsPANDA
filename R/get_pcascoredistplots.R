@@ -25,6 +25,8 @@ function(X=NA,Y=NA,feature_table_file,parentoutput_dir,class_labels_file,
   }
   }  
   
+  parallel:::setDefaultClusterOptions(setup_strategy = "sequential")
+  
   match_col.opt=match(sample.col.opt,c("journal","npg","nejm","jco","lancet","custom1","brewer.RdYlBu","brewer.RdBu","brewer.PuOr","brewer.PRGn","brewer.PiYG","brewer.BrBG",
                                        "brewer.Set2","brewer.Paired","brewer.Dark2","brewer.YlGnBu","brewer.YlGn","brewer.YlOrRd","brewer.YlOrBr","brewer.PuBuGn",
                                        "brewer.PuRd","brewer.PuBu",

@@ -1,4 +1,4 @@
-evaluate.classification.accuracy <-
+eval.class.acc1 <-
 function(){
   
   

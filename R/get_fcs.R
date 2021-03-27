@@ -2,6 +2,8 @@ get_fcs <-
 function(target.data,target.data.annot=NA,kegg_species_code="hsa",database="pathway",
                   reference_set=NA,type.statistic=c("pvalue","t-statistic","fold.change","VIP"),fcs.min.hits=2,itrs=100, numnodes=2){
   
+  parallel:::setDefaultClusterOptions(setup_strategy = "sequential")
+  
   #metab_data: ID, Statistic
   #reference set: SetID, Name
   suppressMessages(library('KEGGREST'))

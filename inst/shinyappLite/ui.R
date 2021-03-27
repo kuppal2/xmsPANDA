@@ -41,5 +41,5 @@ ui<-fluidPage(
     column(style="padding-top:0px;padding-bottom:0px;",12,tags$hr(style="margin-top:0px;margin-bottom:15px;border-top: 0.5px solid #ccccb3;")),
  column(12,  tags$div(style="margin-center",tags$footer(align="center",color="white",style="font-weight:normal;font-size:95%;color:black","Please ask questions or report any issues on the ",
                                                         tags$a(href='https://github.com/kuppal2/xmsPANDA/issues',target="_blank","GitHub"), " page"))),
-column(12,  tags$div(style="margin-center",tags$footer(align="center",color="white",style="font-weight:normal;font-size:95%;color:black","Release date: 03/23/2021"))),
+column(12,  tags$div(style="margin-center",tags$footer(align="center",color="white",style="font-weight:normal;font-size:95%;color:black","Release date: 03/26/2021"))),
 )

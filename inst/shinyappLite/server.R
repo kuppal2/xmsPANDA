@@ -786,8 +786,8 @@ server <- function(input, output, session) {
   observeEvent(input$normstart,{normcheck2$count=0})
   
   
-  #observeEvent(input$normstart,
-  eventReactive(input$normstart,
+  observeEvent(input$normstart,
+  #eventReactive(input$normstart,
                 {
                   output$normText4 <- renderText({shiny::validate(
                     need(input$norminput1, "No data file was provided. Please upload your data file."),
@@ -866,10 +866,11 @@ server <- function(input, output, session) {
       outloc
     }
     
-    # normid3 <<- showNotification("Data is starting now.", duration=NULL)
+    #normid3 <<- showNotification("Data is starting now.", duration=NULL)
   })
   
-  output$normText5 <- renderText({
+  observeEvent(input$normstart,{
+    output$normText5 <- renderText({
     
     if(input$normstart!=0  & normcheck2$count==1){
       
@@ -884,11 +885,14 @@ server <- function(input, output, session) {
       
       res<-compare.normalization(Xmat=norm_metab_data(),Ymat=norm_class_data(),Zmat=NA,feature_table_file=NA,parentoutput_dir=session_outloc2(),class_labels_file=NA,num_replicates=1,feat.filt.thresh=NA,summarize.replicates=TRUE,summary.method="mean",
                                  all.missing.thresh=0.5,group.missing.thresh=0.7,
-                                 missing.val=0,samplermindex=NA, rep.max.missing.thresh=0.5,summary.na.replacement=input$summary_na_replacement,featselmethod,pairedanalysis=FALSE,
+                                 missing.val=0,samplermindex=NA, rep.max.missing.thresh=0.5,summary.na.replacement=input$summary_na_replacement,
+                                 featselmethod="limma",pairedanalysis=FALSE,
                                  normalization.method=input$normalization.method,input.intensity.scale="raw",
                                  abs.cor.thresh=abs.cor.thresh,pvalue.thresh=input$pvalue.thresh,cor.fdrthresh=input$cor.fdrthresh,cex.plots=0.7,plots.width=8,plots.height=8,plots.res=600,
-                                 plots.type="cairo",heatmap.col.opt="RdBu",cor.method="spearman",pca.ellipse=FALSE,ground_truth_file=NA,cutree.method="default",rsd.filt.thresh=1,alphabetical.order=TRUE,
-                                 analysistype=input$analysistype,lme.modeltype="RI",study.design=input$study.design,log2.transform.constant=input$log2.transform.constant)
+                                 plots.type="cairo",heatmap.col.opt="RdBu",cor.method="spearman",pca.ellipse=FALSE,ground_truth_file=NA,
+                                 cutree.method="default",rsd.filt.thresh=1,alphabetical.order=TRUE,
+                                 analysistype=input$analysistype,lme.modeltype="RI",
+                                 study.design=input$study.design,log2.transform.constant=input$log2.transform.constant)
       
       
       normdone2$count=1
@@ -906,6 +910,7 @@ server <- function(input, output, session) {
       NULL
     }
     
+  })
   })
   
   observeEvent(req(normdone2$count==1),{

@@ -45,7 +45,7 @@ if(FALSE)
   
   suppressMessages(library(ROCR))
   
-  suppressMessages(library(flashClust))
+  suppressMessages(library(fastcluster)) #flashClust))
   
   #suppressMessages(library(data.table))
   
@@ -6907,37 +6907,37 @@ get_scatter_plots<-function (X = NA, Y = NA, feature_table_file, parentoutput_di
     
     sadj = (s1[5] - s1[3]) * ypos.adj.factor
     if (is.na(group_by_mat[1]) == TRUE) {
-      p <- ggscatter(temp_dm, y = "Class", x = "Feature", conf.int=conf.int,
+      p <- suppressMessages(ggscatter(temp_dm, y = "Class", x = "Feature", conf.int=conf.int,
                      title = mzname, xlab = xlabel, ylab = ylabel, 
                      palette = col_vec[1], col = col_vec[1], shape = 20, 
-                     size = 3, add = "reg.line", add.params = list(color = "black", 
-                                                                   fill = "lightgray")) + theme(plot.title = element_text(hjust = 0.5, 
-                                                                                                                          size = 10)) + stat_cor(method = cor.method, 
-                                                                                                                                                 label.y = max(temp_dm$Feature + (sadj)))
+                     size = 3, add = "reg.line",
+                     add.params = list(color = "black", 
+                    fill = "lightgray"))) + theme(plot.title = element_text(hjust = 0.5, size = 10)) + stat_cor(method = cor.method, 
+                    label.y = max(temp_dm$Feature + (sadj)))
     }
     else {
       temp_dm$GroupBy <- as.factor(temp_dm$GroupBy)
       
       if(multiple.facets==TRUE){
-        p <- ggscatter(temp_dm, y = "Class", x = "Feature", conf.int=conf.int,
+        p <- suppressMessages(ggscatter(temp_dm, y = "Class", x = "Feature", conf.int=conf.int,
                        title = mzname, xlab = xlabel, ylab = ylabel,
                        add = "reg.line", color = "GroupBy", facet.by="GroupBy", scales="free",
                        palette = col_vec, fullrange = TRUE, shapez = 20, 
-                       size = 3) + theme(plot.title = element_text(hjust = 0.5, 
+                       size = 3)) + theme(plot.title = element_text(hjust = 0.5, 
                                                                    size = 10)) + stat_cor(method = cor.method, aes(color = GroupBy))
       }else{
         
         #ylim=c(s1[1],s1[6]),
         
-        p <- ggscatter(temp_dm, y = "Class", x = "Feature", conf.int=conf.int,
+        p <- suppressMessages(ggscatter(temp_dm, y = "Class", x = "Feature", conf.int=conf.int,
                        title = mzname, xlab = xlabel, ylab = ylabel, 
                        add = "reg.line", color = "GroupBy", 
                        palette = col_vec, fullrange = TRUE, shape = 20, 
-                       size = 3) + theme(plot.title = element_text(hjust = 0.5, 
+                       size = 3)) + theme(plot.title = element_text(hjust = 0.5, 
                                                                    size = 10)) + stat_cor(method = cor.method, aes(color = GroupBy))
       }
     }
-    print(p)
+    suppressMessages(print(p))
   })
   if (newdevice == TRUE) {
     dev.off()
@@ -6945,722 +6945,16 @@ get_scatter_plots<-function (X = NA, Y = NA, feature_table_file, parentoutput_di
 }
 
 
-get_scatter_plots_vold1<-function (X = NA, Y = NA, feature_table_file, parentoutput_dir, 
-                             class_labels_file, group_by_mat_file = NA, scatterplot.col.opt = "journal", 
-                             alphacol = 0.3, newdevice = TRUE, cex.plots = 0.6, replace.by.NA = FALSE, 
-                             pairedanalysis = FALSE, filename = "", ylabel = "Response", 
-                             alphabetical.order = FALSE, name = NA, add.jitter = TRUE, 
-                             add.pvalues = TRUE, xlabel = "Predictor", ellipse = FALSE, 
-                             ypos.adj.factor = 0.5, group_by_mat = NA, cor.method = "pearson", multiple.facets=TRUE,
-                             ...) 
-{
-  suppressMessages(library(ggpubr))
-  if (is.na(X[1]) == TRUE) {
-    data_matrix <- read.table(feature_table_file, sep = "\t", 
-                              header = TRUE)
-  }
-  else {
-    data_matrix <- X
-  }
-  if (is.na(Y[1]) == TRUE) {
-    classlabels <- read.table(class_labels_file, sep = "\t", 
-                              header = TRUE)
-  }
-  else {
-    classlabels <- Y
-  }
-  if (is.na(group_by_mat_file[1]) == FALSE) {
-    group_by_mat <- read.table(group_by_mat_file, sep = "\t", 
-                               header = TRUE)
-  }
-  class_labels_levels <- c("A")
-  sample.col.opt = scatterplot.col.opt
-  if (sample.col.opt == "default") {
-    col_vec <- c("#CC0000", "#AAC000", "blue", 
-                 "mediumpurple4", "mediumpurple1", "blueviolet", 
-                 "cornflowerblue", "cyan4", "skyblue", 
-                 "darkgreen", "seagreen1", "green", 
-                 "yellow", "orange", "pink", "coral1", 
-                 "palevioletred2", "red", "saddlebrown", 
-                 "brown", "brown3", "white", "darkgray", 
-                 "aliceblue", "aquamarine", "aquamarine3", 
-                 "bisque", "burlywood1", "lavender", 
-                 "khaki3", "black")
-  }
-  else {
-    if (sample.col.opt == "topo") {
-      col_vec <- topo.colors(length(class_labels_levels), 
-                             alpha = alphacol)
-    }
-    else {
-      if (sample.col.opt == "heat") {
-        col_vec <- heat.colors(length(class_labels_levels), 
-                               alpha = alphacol)
-      }
-      else {
-        if (sample.col.opt == "rainbow") {
-          col_vec <- rainbow(length(class_labels_levels), 
-                             start = 0, end = alphacol)
-        }
-        else {
-          if (sample.col.opt == "terrain") {
-            col_vec <- cm.colors(length(class_labels_levels), 
-                                 alpha = alphacol)
-          }
-          else {
-            if (sample.col.opt == "colorblind") {
-              if (length(class_labels_levels) < 9) {
-                col_vec <- c("#0072B2", "#E69F00", 
-                             "#009E73", "#56B4E9", "#D55E00", 
-                             "#CC79A7", "#E64B35FF", 
-                             "grey57")
-              }
-              else {
-                col_vec <- c("#0072B2", "#E69F00", 
-                             "#009E73", "#56B4E9", "#D55E00", 
-                             "#CC79A7", "#E64B35B2", 
-                             "#4DBBD5B2", "#00A087B2", 
-                             "#3C5488B2", "#F39B7FB2", 
-                             "#8491B4B2", "#91D1C2B2", 
-                             "#DC0000B2", "#7E6148B2", 
-                             "#374E55B2", "#DF8F44B2", 
-                             "#00A1D5B2", "#B24745B2", 
-                             "#79AF97B2", "#6A6599B2", 
-                             "#80796BB2", "#0073C2B2", 
-                             "#EFC000B2", "#868686B2", 
-                             "#CD534CB2", "#7AA6DCB2", 
-                             "#003C67B2", "grey57")
-              }
-            }
-            else {
-              check_brewer <- grep(pattern = "brewer", 
-                                   x = sample.col.opt)
-              if (length(check_brewer) > 0) {
-                sample.col.opt_temp = gsub(x = sample.col.opt, 
-                                           pattern = "brewer.", replacement = "")
-                col_vec <- colorRampPalette(brewer.pal(10, 
-                                                       sample.col.opt_temp))(length(class_labels_levels))
-              }
-              else {
-                if (sample.col.opt == "journal") {
-                  col_vec <- c("#0072B2", "#E69F00", 
-                               "#009E73", "#56B4E9", 
-                               "#D55E00", "#CC79A7", 
-                               "#E64B35FF", "#3C5488FF", 
-                               "#F39B7FFF", "#8491B4FF", 
-                               "#91D1C2FF", "#DC0000FF", 
-                               "#B09C85FF", "#5F559BFF", 
-                               "#808180FF", "#20854EFF", 
-                               "#FFDC91FF", "#B24745FF", 
-                               "#374E55FF", "#8F7700FF", 
-                               "#5050FFFF", "#6BD76BFF", 
-                               "#E64B3519", "#4DBBD519", 
-                               "#631879E5", "grey75")
-                  if (length(class_labels_levels) < 8) {
-                    col_vec <- c("#0072B2", "#E69F00", 
-                                 "#009E73", "#56B4E9", 
-                                 "#D55E00", "#CC79A7", 
-                                 "grey75")
-                  }
-                  else {
-                    if (length(class_labels_levels) <= 
-                        28) {
-                      col_vec <- c("#0072B2", "#E69F00", 
-                                   "#009E73", "#56B4E9", 
-                                   "#D55E00", "#CC79A7", 
-                                   "#E64B35FF", "#3C5488FF", 
-                                   "#F39B7FFF", "#8491B4FF", 
-                                   "#91D1C2FF", "#DC0000FF", 
-                                   "#B09C85FF", "#5F559BFF", 
-                                   "#808180FF", "#20854EFF", 
-                                   "#FFDC91FF", "#B24745FF", 
-                                   "#374E55FF", "#8F7700FF", 
-                                   "#5050FFFF", "#6BD76BFF", 
-                                   "#8BD76BFF", "#E64B3519", 
-                                   "#9DBBD0FF", "#631879E5", 
-                                   "#666666", "grey75")
-                    }
-                    else {
-                      colfunc <- colorRampPalette(c("#0072B2", 
-                                                    "#E69F00", "#009E73", 
-                                                    "#56B4E9", "#D55E00", 
-                                                    "#CC79A7", "grey75"))
-                      col_vec <- colfunc(length(class_labels_levels))
-                      col_vec <- col_vec[sample(col_vec)]
-                    }
-                  }
-                }
-                else {
-                  #if (length(sample.col.opt) == 1) {
-                   # col_vec <- rep(sample.col.opt, length(class_labels_levels))
-                  #}
-                  #else {
-                   # colfunc <- colorRampPalette(sample.col.opt)
-                    #col_vec <- colfunc(length(class_labels_levels))
-                  #}
-                  
-                  if(length(sample.col.opt)==1){
-                    col_vec <-rep(sample.col.opt,length(class_labels_levels))
-                  }else{
-                    
-                    if(length(sample.col.opt)>=length(class_labels_levels)){
-                      
-                      col_vec <-sample.col.opt
-                      col_vec <- rep(col_vec,length(class_labels_levels))
-                      
-                      
-                    }else{
-                      colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
-                    }
-                    
-                  }
-                  
-                  
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-  rm(X)
-  rm(Y)
-  cnames <- colnames(data_matrix)
-  cnames <- tolower(cnames)
-  cnames <- tolower(cnames)
-  check_names <- grep(cnames, pattern = "^name$")
-  if (length(check_names) > 0) {
-    if (check_names == 1) {
-      check_names1 <- grep(cnames, pattern = "^mz$")
-      check_names2 <- grep(cnames, pattern = "^time$")
-      if (length(check_names1) < 1 & length(check_names2) < 
-          1) {
-        mz <- seq(1.00001, nrow(data_matrix) + 1, 1)
-        time <- seq(1.01, nrow(data_matrix) + 1, 1)
-        check_ind <- gregexpr(cnames, pattern = "^name$")
-        check_ind <- which(check_ind > 0)
-        X <- as.data.frame(data_matrix)
-        Name <- as.character(X[, check_ind])
-        X <- cbind(mz, time, X[, -check_ind])
-        names_with_mz_time = cbind(Name, mz, time)
-        names_with_mz_time <- as.data.frame(names_with_mz_time)
-        write.table(names_with_mz_time, file = "Stage1/Name_mz_time_mapping.txt", 
-                    sep = "\t", row.names = FALSE)
-        X <- as.data.frame(X)
-      }
-      else {
-        if (length(check_names1) > 0 & length(check_names2) > 
-            0) {
-          check_ind <- gregexpr(cnames, pattern = "^name$")
-          check_ind <- which(check_ind > 0)
-          Name <- as.character(X[, check_ind])
-          X <- X[, -check_ind]
-          names_with_mz_time = cbind(Name, X$mz, X$time)
-          colnames(names_with_mz_time) <- c("Name", 
-                                            "mz", "time")
-          names_with_mz_time <- as.data.frame(names_with_mz_time)
-          X <- as.data.frame(X)
-          write.table(names_with_mz_time, file = "Stage1/Name_mz_time_mapping.txt", 
-                      sep = "\t", row.names = FALSE)
-        }
-      }
-    }
-  }
-  else {
-    check_names1 <- grep(cnames[1], pattern = "^mz$")
-    check_names2 <- grep(cnames[2], pattern = "^time$")
-    if (length(check_names1) < 1 || length(check_names2) < 
-        1) {
-      stop("Invalid feature table format. The format should be either Name in column A or mz and time in columns A and B. Please check example files.")
-    }
-  }
-  dir.create(parentoutput_dir,showWarnings = FALSE)
-  setwd(parentoutput_dir)
-  data_matrix <- X
-  data_m <- data_matrix[, -c(1:2)]
-  data_m <- as.matrix(data_m)
-  mzvec <- data_matrix[, 1]
-  timevec <- data_matrix[, 2]
-  goodfeats <- data_m
-  rm(data_m)
-  file_ind <- 0
-  boxplots_fname <- paste("scatterplots", filename, ".pdf", 
-                          sep = "")
-  if (newdevice == TRUE) {
-    pdf(boxplots_fname)
-  }
-  par(mfrow = c(1, 1), family = "sans", cex = cex.plots)
-  class_vec <- classlabels[, 2]
-  lapply(1:dim(goodfeats)[1], function(m) {
-    if (m%%9 == 0) {
-      file_ind <- file_ind + 1
-      boxplots_fname <- paste("scatterplots_file", 
-                              file_ind, ".tiff", sep = "")
-    }
-    round_mzval <- mzvec[m] #sprintf("%.4f", mzvec[m])
-    round_timeval <- timevec[m] #sprintf("%.1f", timevec[m])
-    if (is.na(name) == TRUE) {
-      if (length(check_names) > 0) {
-        if (check_names == 1) {
-          mzname <- as.character(names_with_mz_time[m, 
-                                                    1])
-        }
-        else {
-          mzname <- paste("mz_time: ", round_mzval, 
-                          "_", round_timeval, sep = "")
-        }
-      }
-      else {
-        mzname <- paste("mz_time: ", round_mzval, 
-                        "_", round_timeval, sep = "")
-      }
-    }
-    else {
-      mzname = as.character(name[m])
-    }
-    cur_d <- new("list")
-    feat_vec <- {
-    }
-    temp_dm <- cbind(colnames(goodfeats), class_vec, as.vector(t(goodfeats[m, 
-                                                                           ])))
-    temp_dm <- as.data.frame(temp_dm)
-    colnames(temp_dm) <- c("SID", "Class", "Feature")
-    temp_dm$Class <- as.numeric(as.character(temp_dm$Class))
-    temp_dm$Feature <- as.numeric(as.character(temp_dm$Feature))
-    par(mfrow = c(1, 1), family = "sans", cex = cex.plots)
-    w <- 0.1
-    par(omd = c(0, 1 - w, 0, 1), cex.main = 0.7)
-    if (is.na(group_by_mat[1]) == FALSE) {
-      colnames(group_by_mat) <- c("SID", "GroupBy")
-      temp_dm <- merge(temp_dm, group_by_mat, by = "SID")
-    }
-    temp_dm <- as.data.frame(temp_dm)
-    s1 = summary(temp_dm$Feature)
-    sadj = (s1[5] - s1[3]) * ypos.adj.factor
-    if (is.na(group_by_mat) == TRUE) {
-      p <- ggscatter(temp_dm, y = "Class", x = "Feature", 
-                     title = mzname, xlab = xlabel, ylab = ylabel, 
-                     palette = col_vec[1], col = col_vec[1], shape = 20, 
-                     size = 3, add = "reg.line", add.params = list(color = "black", 
-                                                                   fill = "lightgray"), conf.int = TRUE, 
-      ) + theme(plot.title = element_text(hjust = 0.5, 
-                                          size = 10)) + stat_cor(method = cor.method, label.x = 3, 
-                                                                 label.y = max(temp_dm$Feature + (sadj)))
-    }
-    else {
-      temp_dm$GroupBy <- as.factor(temp_dm$GroupBy)
-      
-      if(multiple.facets==TRUE){
-        p <- ggscatter(temp_dm, y = "Class", x = "Feature", 
-                       title = mzname, xlab = xlabel, ylab = ylabel, 
-                       add = "reg.line", color = "GroupBy", facet.by="GroupBy",
-                       palette = col_vec, fullrange = TRUE, shape = 20, 
-                       size = 3, conf.int = FALSE, ) + theme(plot.title = element_text(hjust = 0.5, 
-                                                                                       size = 10)) + stat_cor(method = cor.method, aes(color = GroupBy))
-      }else{
-        
-        
-        p <- ggscatter(temp_dm, y = "Class", x = "Feature", 
-                       title = mzname, xlab = xlabel, ylab = ylabel, 
-                       add = "reg.line", color = "GroupBy", 
-                       palette = col_vec, fullrange = TRUE, shape = 20, 
-                       size = 3, conf.int = FALSE, ) + theme(plot.title = element_text(hjust = 0.5, 
-                                                                                       size = 10)) + stat_cor(method = cor.method, aes(color = GroupBy))
-      }
-    }
-    print(p)
-  })
-  if (newdevice == TRUE) {
-    dev.off()
-  }
-}
 
-get_scatter_plots_vold<-function(X=NA,Y=NA,feature_table_file,parentoutput_dir,class_labels_file,group_by_mat_file=NA,scatterplot.col.opt="journal",
-                            alphacol=0.3,newdevice=TRUE,cex.plots=0.6,replace.by.NA=FALSE,pairedanalysis=FALSE,filename="",ylabel="Response",
-                            alphabetical.order=FALSE,name=NA,add.jitter=TRUE,add.pvalues=TRUE,
-                            xlabel="Predictor",ellipse=FALSE,ypos.adj.factor=0.5,group_by_mat=NA,cor.method="pearson",...)
-{
-  
-  
-  suppressMessages(library(ggpubr))
-  if(typeof(X)=="logical"){
-    data_matrix<-read.table(feature_table_file,sep="\t",header=TRUE,stringsAsFactors=FALSE,check.names=FALSE)
-  }else{
-    data_matrix<-X
-  }
-  if(typeof(Y)=="logical"){
-    classlabels<-read.table(class_labels_file,sep="\t",header=TRUE)
-  }else{
-    classlabels<-Y
-  }
-  
-  if(is.na(group_by_mat_file)==FALSE){
-    
-    group_by_mat<-read.table(group_by_mat_file,sep="\t",header=TRUE)
-  }
-  class_labels_levels<-c("A")
-  
-  sample.col.opt=scatterplot.col.opt
-  
-  if(sample.col.opt=="default"){
-    
-    col_vec<-c("#CC0000","#AAC000","blue","mediumpurple4","mediumpurple1","blueviolet","cornflowerblue","cyan4","skyblue",
-               "darkgreen", "seagreen1", "green","yellow","orange","pink", "coral1", "palevioletred2",
-               "red","saddlebrown","brown","brown3","white","darkgray","aliceblue",
-               "aquamarine","aquamarine3","bisque","burlywood1","lavender","khaki3","black")
-    
-  }else{
-    if(sample.col.opt=="topo"){
-      
-      
-      col_vec <- topo.colors(length(class_labels_levels), alpha=alphacol)
-    }else{
-      if(sample.col.opt=="heat"){
-        #col_vec<-heat.colors(256) #length(class_labels_levels))
-        
-        col_vec <- heat.colors(length(class_labels_levels), alpha=alphacol)
-      }else{
-        if(sample.col.opt=="rainbow"){
-          #col_vec<-heat.colors(256) #length(class_labels_levels))
-          col_vec<-rainbow(length(class_labels_levels), start = 0, end = alphacol)
-          
-          #col_vec <- heat.colors(length(class_labels_levels), alpha=alphacol)
-        }else{
-          
-          if(sample.col.opt=="terrain"){
-            #col_vec<-heat.colors(256) #length(class_labels_levels))
-            #col_vec<-rainbow(length(class_labels_levels), start = 0, end = alphacol)
-            
-            col_vec <- cm.colors(length(class_labels_levels), alpha=alphacol)
-          }else{
-            
-            if(sample.col.opt=="colorblind"){
-              #col_vec <-c("#386cb0","#fdb462","#7fc97f","#ef3b2c","#662506","#a6cee3","#fb9a99","#984ea3","#ffff33")
-              # col_vec <- c("#0072B2", "#E69F00", "#009E73", "gold1", "#56B4E9", "#D55E00", "#CC79A7","black")
-              
-              if(length(class_labels_levels)<9){
-                
-                col_vec <- c("#0072B2", "#E69F00", "#009E73", "#56B4E9", "#D55E00", "#CC79A7", "#E64B35FF", "grey57")
-                
-              }else{
-                
-                #col_vec<-colorRampPalette(brewer.pal(10, "RdBu"))(length(class_labels_levels))
-                col_vec<-c("#0072B2", "#E69F00", "#009E73", "#56B4E9", "#D55E00", "#CC79A7","#E64B35B2", "#4DBBD5B2","#00A087B2","#3C5488B2","#F39B7FB2","#8491B4B2","#91D1C2B2","#DC0000B2","#7E6148B2",
-                           "#374E55B2","#DF8F44B2","#00A1D5B2","#B24745B2","#79AF97B2","#6A6599B2","#80796BB2","#0073C2B2","#EFC000B2", "#868686B2","#CD534CB2","#7AA6DCB2","#003C67B2","grey57")
-                
-              }
-              
-              
-            }else{
-              
-              check_brewer<-grep(pattern="brewer",x=sample.col.opt)
-              
-              if(length(check_brewer)>0){
-                sample.col.opt_temp=gsub(x=sample.col.opt,pattern="brewer.",replacement="")
-                col_vec <- colorRampPalette(brewer.pal(10, sample.col.opt_temp))(length(class_labels_levels))
-                
-              }else{
-                
-                if(sample.col.opt=="journal"){
-                  
-                  col_vec<-c("#0072B2", "#E69F00", "#009E73", "#56B4E9", "#D55E00", "#CC79A7","#E64B35FF","#3C5488FF","#F39B7FFF",
-                             "#8491B4FF","#91D1C2FF","#DC0000FF","#B09C85FF","#5F559BFF",
-                             "#808180FF","#20854EFF","#FFDC91FF","#B24745FF",
-                             
-                             "#374E55FF","#8F7700FF","#5050FFFF","#6BD76BFF",
-                             "#E64B3519","#4DBBD519","#631879E5","grey75")
-                  if(length(class_labels_levels)<8){
-                    col_vec<-c("#0072B2", "#E69F00", "#009E73", "#56B4E9", "#D55E00", "#CC79A7","grey75")
-                    
-                    #col_vec2<-brewer.pal(n = 8, name = "Dark2")
-                    
-                  }else{
-                    if(length(class_labels_levels)<=28){
-                      # col_vec<-c("#0072B2", "#E69F00", "#009E73", "#56B4E9", "#D55E00", "#CC79A7", "grey75","#D95F02", "#7570B3", "#E7298A", "#66A61E", "#E6AB02", "#A6761D", "#666666","#1B9E77", "#7570B3", "#E7298A", "#A6761D", "#666666", "#1B9E77", "#D95F02", "#7570B3", "#E7298A", "#66A61E", "#E6AB02", "#A6761D", "#666666")
-                      
-                      col_vec<-c("#0072B2", "#E69F00", "#009E73", "#56B4E9", "#D55E00", "#CC79A7","#E64B35FF","#3C5488FF","#F39B7FFF",
-                                 "#8491B4FF","#91D1C2FF","#DC0000FF","#B09C85FF","#5F559BFF",
-                                 "#808180FF","#20854EFF","#FFDC91FF","#B24745FF",
-                                 
-                                 "#374E55FF","#8F7700FF","#5050FFFF","#6BD76BFF", "#8BD76BFF",
-                                 "#E64B3519","#9DBBD0FF","#631879E5","#666666","grey75")
-                      
-                    }else{
-                      
-                      
-                      
-                      
-                      colfunc <-colorRampPalette(c("#0072B2", "#E69F00", "#009E73", "#56B4E9", "#D55E00", "#CC79A7","grey75"));col_vec<-colfunc(length(class_labels_levels))
-                      
-                      col_vec<-col_vec[sample(col_vec)]
-                      
-                      
-                    }
-                  }
-                }else{
-                  #colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
-                #  if(length(sample.col.opt)==1){
-                 #   col_vec <-rep(sample.col.opt,length(class_labels_levels))
-                #  }else{
-                    
-                 #   colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
-                    
-                #  }
-                  
-                  
-                  if(length(sample.col.opt)==1){
-                    col_vec <-rep(sample.col.opt,length(class_labels_levels))
-                  }else{
-                    
-                    if(length(sample.col.opt)>=length(class_labels_levels)){
-                      
-                      col_vec <-sample.col.opt
-                      col_vec <- rep(col_vec,length(class_labels_levels))
-                      
-                      
-                    }else{
-                      colfunc <-colorRampPalette(sample.col.opt);col_vec<-colfunc(length(class_labels_levels))
-                    }
-                    
-                  }
-                  
-                }
-                
-              }
-              
-            }
-          }
-          
-          
-        }
-        
-      }
-      
-    }
-  }
-  
-  rm(X)
-  rm(Y)
-  cnames<-colnames(data_matrix)
-  cnames<-tolower(cnames)
-  cnames<-tolower(cnames)
-  
-  check_names<-grep(cnames,pattern="^name$")
-  
-  
-  
-  if(length(check_names)>0){
-    
-    if(check_names==1){
-      
-      check_names1<-grep(cnames,pattern="^mz$")
-      check_names2<-grep(cnames,pattern="^time$")
-      
-      if(length(check_names1)<1 & length(check_names2)<1){
-        mz<-seq(1.00001,nrow(data_matrix)+1,1)
-        time<-seq(1.01,nrow(data_matrix)+1,1.00)
-        check_ind<-gregexpr(cnames,pattern="^name$")
-        check_ind<-which(check_ind>0)
-        X<-as.data.frame(data_matrix)
-        
-        
-        Name<-as.character(X[,check_ind])
-        
-        X<-cbind(mz,time,X[,-check_ind])
-        names_with_mz_time=cbind(Name,mz,time)
-        
-        names_with_mz_time<-as.data.frame(names_with_mz_time)
-        write.table(names_with_mz_time,file="Stage1/Name_mz_time_mapping.txt",sep="\t",row.names=FALSE)
-        X<-as.data.frame(X)
-        
-      }else{
-        
-        if(length(check_names1)>0 & length(check_names2)>0){
-          
-          check_ind<-gregexpr(cnames,pattern="^name$")
-          check_ind<-which(check_ind>0)
-          Name<-as.character(X[,check_ind])
-          X<-X[,-check_ind]
-          names_with_mz_time=cbind(Name,X$mz,X$time)
-          colnames(names_with_mz_time)<-c("Name","mz","time")
-          names_with_mz_time<-as.data.frame(names_with_mz_time)
-          X<-as.data.frame(X)
-          write.table(names_with_mz_time,file="Stage1/Name_mz_time_mapping.txt",sep="\t",row.names=FALSE)
-        }
-      }
-      
-    }
-  }else{
-    
-    check_names1<-grep(cnames[1],pattern="^mz$")
-    check_names2<-grep(cnames[2],pattern="^time$")
-    
-    if(length(check_names1)<1 || length(check_names2)<1){
-      
-      
-      stop("Invalid feature table format. The format should be either Name in column A or mz and time in columns A and B. Please check example files.")
-    }
-  }
-  
-  
-  
-  
-  dir.create(parentoutput_dir,showWarnings = FALSE)
-  setwd(parentoutput_dir)
-  
-  data_matrix<-X
-  data_m<-data_matrix[,-c(1:2)]
-  
-  data_m<-as.matrix(data_m)
-  
-  mzvec<-data_matrix[,1]
-  timevec<-data_matrix[,2]
-  goodfeats<-data_m
-  rm(data_m)
-  
-  #library(extrafont)
-  #loadfonts()
-  
-  file_ind<-0
-  boxplots_fname<-paste("scatterplots",filename,".pdf",sep="")
-  #tiff(boxplots_fname, width=plots.width,height=plots.height,res=plots.res, compression="lzw")
-  
-  #tiff(boxplots_fname, width=2000,height=3000,res=plots.res, compression="lzw")
-  
-  if(newdevice==TRUE){
-    pdf(boxplots_fname)
-  }
-  #par(mfrow=c(par_rows,max_per_row))
-  ###save(goodfeats,class_labels_levels,file="debug1.Rda")
-  
-  par(mfrow=c(1,1),family="sans",cex=cex.plots)
-  class_vec<-classlabels[,2]
-  #for(m in 1:dim(goodfeats)[1])
-  
-  #
-  lapply(1:dim(goodfeats)[1],function(m)
-  {
-    
-    if(m%%9==0){
-      
-      file_ind<-file_ind+1
-      boxplots_fname<-paste("scatterplots_file",file_ind,".tiff",sep="")
-      
-    }
-    
-    
-    
-    round_mzval<-mzvec[m] #sprintf("%.4f",mzvec[m])
-    
-    round_timeval<-timevec[m] #sprintf("%.1f",timevec[m])
-    
-    if(is.na(name[1])==TRUE){
-      
-      if(length(check_names)>0){
-        if(check_names==1){
-          
-          mzname<-as.character(names_with_mz_time[m,1])
-        }else{
-          
-          mzname<-paste("mz_time: ",round_mzval,"_",round_timeval,sep="")
-        }
-        
-      }else{
-        
-        mzname<-paste("mz_time: ",round_mzval,"_",round_timeval,sep="")
-      }
-    }else{
-      
-      mzname=as.character(name[m])
-    }
-    
-    
-    cur_d<-new("list")
-    feat_vec<-{}
-    
-    
- # save(goodfeats,class_vec,cex.plots,mzname,group_by_mat,m,mzvec,timevec,file="d1.Rda")
-    
-    temp_dm<-cbind(colnames(goodfeats),class_vec,as.vector(t(goodfeats[m,])))
-    temp_dm<-as.data.frame(temp_dm)
-    colnames(temp_dm)<-c("SID","Class","Feature")
-    
-    temp_dm$Class<-as.numeric(as.character(temp_dm$Class))
-    temp_dm$Feature<-as.numeric(as.character(temp_dm$Feature))
-    par(mfrow=c(1,1),family="sans",cex=cex.plots)
-    
-    w <- 0.1
-    par(omd=c(0, 1-w, 0, 1),cex.main=0.7)
-    
-#   save(temp_dm,mzname,ylabel,xlabel,file="temp_dm.Rda")
 
-    
-    if(is.na(group_by_mat)==FALSE){
-      
-      colnames(group_by_mat)<-c("SID","GroupBy")
-      
-      #  
-      temp_dm<-merge(temp_dm,group_by_mat,by="SID")
-    }
-    
-    
-    #temp_dm<-temp_dm[,c("Class","Feature")]
-    #temp_dm<-apply(temp_dm,2,as.numeric)
-    temp_dm<-as.data.frame(temp_dm)
-    
-   
-    s1=summary(temp_dm$Feature)
-    
-    sadj=(s1[5]-s1[3])*ypos.adj.factor
-    
-   # save(temp_dm,group_by_mat,file="d2.Rda")
-    
-    if(is.na(group_by_mat)==TRUE){
-    p<-ggscatter(temp_dm,y="Class",x="Feature",title=mzname,xlab=xlabel,ylab=ylabel,
-                 palette=col_vec[1], col=col_vec[1],shape = 20, size = 3,  # Points color, shape and size
-                 add = "reg.line",  # Add regressin line
-                 add.params = list(color = "black", fill = "lightgray"), # Customize reg. line
-                 conf.int = TRUE, # Add confidence interval
-                 #  cor.coef = TRUE, # Add correlation coefficient. see ?stat_cor
-                 # cor.coeff.args = list(method = "spearman", label.x=3,label.y=max(temp_dm$Class))
-    )+theme(plot.title = element_text(hjust = 0.5,size=10))+stat_cor(method =cor.method,
-                                                                     #aes(label = paste(..r.label.., ..p.label..),
-                                                                     label.x = 3,label.y=max(temp_dm$Feature+(sadj)))
-    
-    }else{
-      temp_dm$GroupBy<-as.factor(temp_dm$GroupBy)
-     p<-ggscatter(temp_dm,y="Class",x="Feature",title=mzname, xlab=xlabel,ylab=ylabel,
-                  add = "reg.line",color="GroupBy",  
-                  palette=col_vec, fullrange=TRUE,shape = 20, size = 3,  # Points color, shape and size
-                 
-                  
-                  conf.int = FALSE, # Add confidence interval
-                  #  cor.coef = TRUE, # Add correlation coefficient. see ?stat_cor
-                  # cor.coeff.args = list(method = "spearman", label.x=3,label.y=max(temp_dm$Class))
-     )+theme(plot.title = element_text(hjust = 0.5,size=10))+stat_cor(method = cor.method,aes(color=GroupBy)) 
-                                                                     # aes(label = paste(..r.label.., ..p.label..)))
-                                                                      #label.x = 3,label.y=max(temp_dm$Feature+(sadj)))
-                  
-                   
-                   
-       
-    }
-    print(p)    
-    
-    
-  })
-  
-  if(newdevice==TRUE){
-    dev.off()
-  }
-}
 
 
 
 #metab_data: KEGGID, Statistic
 get_fcs<-function(target.data,target.data.annot=NA,kegg_species_code="hsa",database="pathway",
                   reference_set=NA,type.statistic=c("pvalue","t-statistic","fold.change","VIP"),fcs.min.hits=2,itrs=100, numnodes=2){
+  
+  parallel:::setDefaultClusterOptions(setup_strategy = "sequential")
   
   #metab_data: ID, Statistic
   #reference set: SetID, Name
@@ -16157,8 +15451,8 @@ do_rf<-function(X,classlabels, ntrees=1000, analysismode="classification"){
   varimp_res_scaled<-randomForest::importance(rf2,type=1,scale=TRUE)
   rm(dataA)
   
-  return(varimp_res)
-  #return(list("rf_model"=rf2,"rf_varimp"=varimp_res,"rf_varimp_scaled"=varimp_res_scaled))
+  #return(varimp_res)
+  return(list("rf_model"=rf2,"rf_varimp"=varimp_res,"rf_varimp_scaled"=varimp_res_scaled))
 }
 
 do_rf_conditional<-function(X,classlabels, ntrees=1000, analysismode="classification"){
@@ -16303,7 +15597,7 @@ do_mars<-function(X,classlabels, analysismode="classification",kfold=10){
   
   dataA<-t(X)
   dataA<-as.data.frame(dataA)
-  
+  rnames1<-rownames(X)
   
   if(analysismode=="classification"){
     
@@ -16332,9 +15626,9 @@ do_mars<-function(X,classlabels, analysismode="classification",kfold=10){
     
     gcv_list<-c(mars_res[[1]]$gcv,mars_res[[2]]$gcv,mars_res[[3]]$gcv)
     
-    min_gcv<-which(gcv_list==min(gcv_list,na.rm=TRUE))
+    max_gcv<-which(gcv_list==max(gcv_list,na.rm=TRUE))
     
-    mars_res<-earth(formula=factor(Targetvar) ~ .,data=dataA,Use.beta.cache=FALSE,degree=min_gcv[1],ncross=kfold,nfold=kfold)
+    mars_res<-earth(formula=factor(Targetvar) ~ .,data=dataA,Use.beta.cache=FALSE,degree=max_gcv[1],ncross=kfold,nfold=kfold)
     
   }else{
     if(analysismode=="regression"){
@@ -16369,6 +15663,7 @@ do_mars<-function(X,classlabels, analysismode="classification",kfold=10){
       
       attach(dataA,warn.conflicts=FALSE)
       
+     # save(dataA,kfold,file="dataA.rda")
       #mars_res[[1]]<-earth(y=(classlabels),x=dataA,Use.beta.cache=FALSE,degree=1,ncross=kfold,nfold=kfold)
       #		mars_res[[2]]<-earth(y=(classlabels),x=dataA,Use.beta.cache=FALSE,degree=2,ncross=kfold,nfold=kfold)
       #		mars_res[[3]]<-earth(y=(classlabels),x=dataA,Use.beta.cache=FALSE,degree=3,ncross=kfold,nfold=kfold)
@@ -16377,9 +15672,9 @@ do_mars<-function(X,classlabels, analysismode="classification",kfold=10){
       mars_res[[2]]<-earth(formula=as.numeric(Targetvar) ~ .,data=dataA,Use.beta.cache=FALSE,degree=2,ncross=kfold,nfold=kfold)
       mars_res[[3]]<-earth(formula=as.numeric(Targetvar) ~ .,data=dataA,Use.beta.cache=FALSE,degree=3,ncross=kfold,nfold=kfold)
       gcv_list<-c(mars_res[[1]]$gcv,mars_res[[2]]$gcv,mars_res[[3]]$gcv)
-      min_gcv<-which(gcv_list==min(gcv_list,na.rm=TRUE))
+      max_gcv<-which(gcv_list==max(gcv_list,na.rm=TRUE))
       
-      mars_res<-earth(formula=as.numeric(Targetvar) ~ .,data=dataA,Use.beta.cache=FALSE,degree=min_gcv[1],ncross=kfold,nfold=kfold)
+      mars_res<-earth(formula=as.numeric(Targetvar) ~ .,data=dataA,Use.beta.cache=FALSE,degree=max_gcv[1],ncross=kfold,nfold=kfold)
       #mars_res<-earth(formula=(Targetvar) ~ .,data=dataA,Use.beta.cache=FALSE,degree=3,ncross=kfold,nfold=kfold)
       #mars_res<-earth(y=(classlabels),x=dataA,Use.beta.cache=FALSE,degree=min_gcv[1],ncross=kfold,nfold=kfold)
       
@@ -16398,11 +15693,17 @@ do_mars<-function(X,classlabels, analysismode="classification",kfold=10){
   #if(FALSE)
   {
     varimp_res <- evimp(mars_res,trim=FALSE)
+
+    #save(varimp_res,file="varimp_res.Rda")    
+    #varimp_res<-as.data.frame(varimp_res)
+    varimp_res<-varimp_res[order(varimp_res[,1]),]
+    rownames(varimp_res)<-rnames1
     
     #print(varimp_res[1:10,])
     varimp_marsres1<-varimp_res #[order(varimp_res[,2],decreasing=TRUE),]
     
     mars_mznames<-rownames(varimp_marsres1)
+    
     
     g1<-grep(pattern="NA",x=mars_mznames)
     if(length(g1)>0){
@@ -16737,7 +16038,7 @@ metabnet<-function(feature_table_file,target.metab.file,sig.metab.file,class_lab
   
   
   
-  
+  parallel:::setDefaultClusterOptions(setup_strategy = "sequential")
   data_matrix<-data_preprocess(Xmat=NA,Ymat=NA,feature_table_file=feature_table_file,parentoutput_dir=parentoutput_dir,class_labels_file=NA,num_replicates=num_replicates,feat.filt.thresh=NA,
                                summarize.replicates=summarize.replicates,summary.method=summary.method,
                                all.missing.thresh=all.missing.thresh,group.missing.thresh=group.missing.thresh,
@@ -17088,7 +16389,7 @@ get_boxplots<-function(X=NA,Y=NA,feature_table_file,parentoutput_dir,class_label
                        numnodes=2,hightlight.points=FALSE,ref.group.val=FALSE,facet.nrow=1,facet.ncol=NULL,...)
 {
   
- 
+  parallel:::setDefaultClusterOptions(setup_strategy = "sequential")
   match_col.opt=match(boxplot.col.opt,c("journal","npg","nejm","jco","lancet","custom1","brewer.RdYlBu","brewer.RdBu","brewer.PuOr","brewer.PRGn","brewer.PiYG","brewer.BrBG",
                                        "brewer.Set2","brewer.Paired","brewer.Dark2","brewer.YlGnBu","brewer.YlGn","brewer.YlOrRd","brewer.YlOrBr","brewer.PuBuGn",
                                        "brewer.PuRd","brewer.PuBu",
@@ -17889,6 +17190,9 @@ get_boxplots_child<-function(X,Y,feature_table_file,parentoutput_dir,class_label
                 }
             
             if(is.na(boxplot.col.opt)==FALSE){
+              
+              p=p+stat_boxplot(geom='errorbar',width=0.2)
+              
               if(boxplot.col.opt=="white"){
                 p<-p + geom_boxplot()
               }else{
@@ -18948,6 +18252,8 @@ get_pcascoredistplots<-function(X=NA,Y=NA,feature_table_file,parentoutput_dir,cl
   }
   }  
   
+  parallel:::setDefaultClusterOptions(setup_strategy = "sequential")
+  
   match_col.opt=match(sample.col.opt,c("journal","npg","nejm","jco","lancet","custom1","brewer.RdYlBu","brewer.RdBu","brewer.PuOr","brewer.PRGn","brewer.PiYG","brewer.BrBG",
                                        "brewer.Set2","brewer.Paired","brewer.Dark2","brewer.YlGnBu","brewer.YlGn","brewer.YlOrRd","brewer.YlOrBr","brewer.PuBuGn",
                                        "brewer.PuRd","brewer.PuBu",
@@ -19457,15 +18763,15 @@ get_pcascoredistplots_child<-function(X,Y,feature_table_file,parentoutput_dir,cl
       s1<-summary(df.sub1$PCscore)
       sadj=(s1[5]-s1[3])*0.5
       
-      plot_res<-ggscatter(df.sub1,x="Outcome",y="PCscore",xlab="Outcome",ylab="PC1score",
+      plot_res<-suppressMessages(ggscatter(df.sub1,x="Outcome",y="PCscore",xlab="Outcome",ylab="PC1score",
                           title="Outcome vs PC1 scores scatter plot",col="darkblue",
                           palette="jco", shape = 20, size = 3, # Points color, shape and size
                           add = "reg.line",  # Add regressin line
                           add.params = list(color = "#0072B2", fill = "lightgray"), # Customize reg. line
-                          conf.int = TRUE)+theme(plot.title = element_text(hjust = 0.5,size=10))+stat_cor(method = "spearman",
+                          conf.int = TRUE))+theme(plot.title = element_text(hjust = 0.5,size=10))+stat_cor(method = "spearman",
                                                                                                           label.y=max(df.sub1$PCscore+sadj))
       
-      print(plot_res)
+      suppressMessages(print(plot_res))
       if(pcnum_limit>1){
       df.sub1<-cbind(classlabels_orig[,2],scores_res[,2])
       df.sub1<-as.data.frame(df.sub1)
@@ -19474,16 +18780,16 @@ get_pcascoredistplots_child<-function(X,Y,feature_table_file,parentoutput_dir,cl
       s1<-summary(df.sub1$PCscore)
       sadj=(s1[5]-s1[3])*0.5
       
-      plot_res<-ggscatter(df.sub1,x="Outcome",y="PCscore",xlab="Outcome",ylab="PC2score",
+      plot_res<-suppressMessages(ggscatter(df.sub1,x="Outcome",y="PCscore",xlab="Outcome",ylab="PC2score",
                           title="Outcome vs PC2 scores scatter plot",col="darkblue",
                           palette="jco", shape = 20, size = 3, # Points color, shape and size
                           add = "reg.line",  # Add regressin line
                           add.params = list(color = "#0072B2", fill = "lightgray"), # Customize reg. line
-                          conf.int = TRUE)+theme(plot.title = element_text(hjust = 0.5,size=10))+stat_cor(method = "spearman",
+                          conf.int = TRUE))+theme(plot.title = element_text(hjust = 0.5,size=10))+stat_cor(method = "spearman",
                                                                                                           label.y=max(df.sub1$PCscore+sadj))
       
       
-      print(plot_res)
+      suppressMessages(print(plot_res))
       }
       
       if(pcnum_limit>2){
@@ -19495,15 +18801,15 @@ get_pcascoredistplots_child<-function(X,Y,feature_table_file,parentoutput_dir,cl
       s1<-summary(df.sub1$PCscore)
       sadj=(s1[5]-s1[3])*0.5
       
-      plot_res<-ggscatter(df.sub1,x="Outcome",y="PCscore",xlab="Outcome",ylab="PC3score",
+      plot_res<-suppressMessages(ggscatter(df.sub1,x="Outcome",y="PCscore",xlab="Outcome",ylab="PC3score",
                           title="Outcome vs PC3 scores scatter plot",col="darkblue",
                           palette="jco", shape = 20, size = 3, # Points color, shape and size
                           add = "reg.line",  # Add regressin line
                           add.params = list(color = "#0072B2", fill = "lightgray"), # Customize reg. line
-                          conf.int = TRUE)+theme(plot.title = element_text(hjust = 0.5,size=10))+stat_cor(method = "spearman",
+                          conf.int = TRUE))+theme(plot.title = element_text(hjust = 0.5,size=10))+stat_cor(method = "spearman",
                                                                                                           label.y=max(df.sub1$PCscore+sadj))
       
-      print(plot_res)
+      suppressMessages(print(plot_res))
       }
       
       
@@ -20213,14 +19519,11 @@ get_pcascoredistplots_child<-function(X,Y,feature_table_file,parentoutput_dir,cl
                       
                       sadj=(s1[5]-s1[3])*ypos.adj.factor
                       
-                      plot_res<-ggscatter(df.sub1,x="x",y="PCscore",xlab="Outcome",col=class_col_vec,
+                      plot_res<-suppressMessages(ggscatter(df.sub1,x="x",y="PCscore",xlab="Outcome",col=class_col_vec,
                                           palette="jco", shape = 20, size = 3, # Points color, shape and size
                                           add = "reg.line",  # Add regressin line
                                           add.params = list(color = "#0072B2", fill = "lightgray"), # Customize reg. line
-                                          conf.int = TRUE, # Add confidence interval
-                                          #  cor.coef = TRUE, # Add correlation coefficient. see ?stat_cor
-                                          #cor.coeff.args = list(method = "spearman", label.sep = "\n")
-                      )+stat_cor(method = "spearman",
+                                          conf.int = TRUE))+stat_cor(method = "spearman",
                                  #aes(label = paste(..r.label.., ..p.label..),
                                  label.x = 3,label.y=max(df.sub1$PCscore+sadj)
                       )
@@ -20302,7 +19605,7 @@ get_pcascoredistplots_child<-function(X,Y,feature_table_file,parentoutput_dir,cl
             
             #    plot_res<-plot_res + theme(axis.title.x=element_blank(),axis.text.x=element_blank(),axis.ticks.x=element_blank())
             
-            print(plot_res)
+            suppressMessages(print(plot_res))
             
           })
         }
@@ -23864,7 +23167,61 @@ get_individualsampleplots<-function(feature_table_file,class_labels_file,X=NA,Y=
   
 }
 
+#W.k for gap statistic
+W.k <- function(x, clus,d.power=1) {
+  n <- nrow(x);ii <- seq_len(n)
+  res<-suppressWarnings(0.5 * sum(vapply(split(ii, clus), function(I) {
+    xs <- x[I, , drop = FALSE]
+    sum(dist(xs)^d.power/nrow(xs))
+  }, 0)))
+  
+ print(res)
+  logW.k<-log(res+0.001)
+  return(logW.k)
+}
 
+E.W.k<-function(x, d.power=1,B=100) {
+  
+ 
+  rng.x1 <- apply(x, 2L, range)
+  logWks <- matrix(0, B, 1)
+ 
+  xs <- scale(x, center = TRUE, scale = FALSE)
+  m.x <- rep(attr(xs, "scaled:center"), each = n)
+  z1 <- apply(rng.x1, 2, function(M, nn) runif(nn, min = M[1], 
+                                               max = M[2]), nn = n)
+  
+  cl <- parallel::makeCluster(getOption("cl.cores", 0.5*detectCores()))
+  clusterEvalQ(cl,library(WGCNA))
+  clusterEvalQ(cl,library(fastcluster))
+  clusterEvalQ(cl,library(dynamicTreeCut))
+  clusterExport(cl,"W.k",envir = .GlobalEnv)
+  res<-parLapply(cl,1:B,function(b){
+    z <-x[sample(1:nrow(x)),sample(1:ncol(x))]#z1 + m.x
+    
+   
+    dist2<-as.dist(1-WGCNA::cor(z))
+    f2=fastcluster::hclust(d=dist2,method = "complete")
+    
+    mycl_metabs2 <-suppressWarnings(cutreeDynamic(f2,distM=as.matrix((dist2)),cutHeight = 0.95,verbose = FALSE,
+                                                  ,deepSplit = 4,minClusterSize = 2,pamStage = FALSE,pamRespectsDendro = FALSE))
+    names(mycl_metabs2)<-f2$labels
+    
+    wk<-W.k(x=t(z),clus=mycl_metabs2)
+    #if(wk>0){
+    cval1<- wk
+    #}else{
+      
+     # cval1<- log(0.001)
+    #}
+    return(cval1)
+  })
+  stopCluster(cl)
+  res<-unlist(res)
+  print(summary(res,na.rm=TRUE))
+  E.logW<-(mean(res,na.rm=TRUE))
+  return(E.logW)
+}
 
 
 get_hca<-function(feature_table_file=NA,parentoutput_dir,class_labels_file=NA,X=NA,Y=NA,heatmap.col.opt="RdBu",cor.method="spearman",
@@ -23876,7 +23233,7 @@ get_hca<-function(feature_table_file=NA,parentoutput_dir,class_labels_file=NA,X=
                   plots.width=8,plots.height=8,plots.res=600, plots.type="cairo", alphacol=1, hca_type="two-way",
                   newdevice=FALSE,input.type="intensity",mainlab="",cexRow=0.5, cexCol=0.5,plot.bycluster=FALSE,color.rows=TRUE,
                   similarity.matrix="correlation",deepsplit=4,minclustsize=2,mergeCutHeight=0.05,num_nodes=2,alphabetical.order=FALSE,
-                  pairedanalysis=FALSE,cutree.method="dynamic",study.design=c("multiclass","onewayanova","twowayanova","onewayanovarepeat",
+                  pairedanalysis=FALSE,cutree.method=c("dynamic","default"),study.design=c("multiclass","onewayanova","twowayanova","onewayanovarepeat",
                                                                                  "twowayanovarepeat"),labRow.value = FALSE,
                   labCol.value = FALSE,power_val=6,row.col.opt="journal",show.silhouette=FALSE,cexLegend=0.7,ylab_text="",xlab_text="")
 {
@@ -23886,6 +23243,8 @@ get_hca<-function(feature_table_file=NA,parentoutput_dir,class_labels_file=NA,X=
                                        "brewer.OrRd","brewer.GnBu","brewer.BuPu","brewer.BuGn","brewer.blues","black","grey65","terrain","rainbow","heat","topo"))
   
   match_col.opt=length(which(is.na(match_col.opt)==TRUE))
+  
+  cutree.method=cutree.method[1]
   
   if(length(match_col.opt)<1){
     
@@ -24434,7 +23793,7 @@ get_hca_child<-function(feature_table_file,parentoutput_dir,class_labels_file,X=
       TOM = TOMsimilarity(ADJdataOne, TOMType="signed") # specify network type
       dissTOMCormat = 1-TOM
       #dissTOMCormat=TOMdist(ADJdataOne) #(1-global_cor)
-      hr = flashClust(as.dist(dissTOMCormat),method="complete");
+      hr = fastcluster::hclust(as.dist(dissTOMCormat),method="complete");
       
       
       
@@ -24497,14 +23856,14 @@ get_hca_child<-function(feature_table_file,parentoutput_dir,class_labels_file,X=
       TOM = TOMsimilarity(ADJdataOne, TOMType="signed") # specify network type
       dissTOMCormat = 1-TOM
      # dissTOMCormat=TOMdist(ADJdataOne) #(1-global_cor)
-      hc = flashClust(as.dist(dissTOMCormat),method="complete");
+      hc = fastcluster::hclust(as.dist(dissTOMCormat),method="complete");
       
       pdf("sampleplot.pdf")
       plot(hc,labels=F,main="Dendrogram")
       dev.off()
       
       
-      mycl_samples <-cutreeDynamic(hc,distM= dissTOMCormat,deepSplit=deepsplit, minClusterSize=minclustsize, pamRespectsDendro = FALSE, pamStage=TRUE,verbose=0)
+      mycl_samples <-cutreeDynamic(hc,distM= dissTOMCormat,deepSplit=deepsplit, minClusterSize=minclustsize, pamRespectsDendro = FALSE, pamStage=FALSE,verbose=0)
       
       m3=try(mergeCloseModules((data_m),colors=mycl_samples,cutHeight=mergeCutheight),silent=TRUE)
       
@@ -24546,7 +23905,7 @@ get_hca_child<-function(feature_table_file,parentoutput_dir,class_labels_file,X=
       if(cutree.method=="dynamic"){
         
        # save(distc,distc_m,deepsplit,minclustsize,mergeCutHeight,data_m,file="debugdynamic.Rda")
-        hc = flashClust(distc,method="complete")
+        hc = fastcluster::hclust(distc,method="complete")
         
         mycl_samples <-cutreeDynamic(hc,distM= distc_m,deepSplit=deepsplit, method="hybrid",minClusterSize=minclustsize, pamRespectsDendro = FALSE, pamStage=FALSE,verbose=0)
         
@@ -24562,7 +23921,7 @@ get_hca_child<-function(feature_table_file,parentoutput_dir,class_labels_file,X=
         
         mycl_samples<-mod_list2
         names(mycl_samples)<-hc$labels
-        hr = flashClust(distr,method="complete")
+        hr = fastcluster::hclust(distr,method="complete")
         
         mycl_metabs <-cutreeDynamic(hr,distM=distr_m,deepSplit=deepsplit, method="hybrid",minClusterSize=minclustsize, pamRespectsDendro = FALSE, pamStage=FALSE,verbose=0)
         
@@ -26412,13 +25771,17 @@ compare.normalization<-function(Xmat=NA,Ymat=NA,Zmat=NA,feature_table_file=NA,pa
                                 normalization.method=c("all","log2quantilenorm","log2transform","znormtransform","lowess_norm","quantile_norm","rangescaling",
                                                        "paretoscaling","mstus","eigenms_norm","vsn_norm","sva_norm","tic_norm","cubicspline_norm","mad_norm"),input.intensity.scale="raw",
                                 abs.cor.thresh=0.4,pvalue.thresh=0.05,cor.fdrthresh=0.2,cex.plots=0.7,plots.width=8,plots.height=8,plots.res=600,
-                                plots.type="cairo",heatmap.col.opt="RdBu",cor.method="spearman",pca.ellipse=FALSE,ground_truth_file=NA,cutree.method="default",rsd.filt.thresh=1,alphabetical.order=TRUE,analysistype="classification",lme.modeltype="RI",
+                                plots.type="cairo",heatmap.col.opt="RdBu",cor.method="pearson",pca.ellipse=FALSE,ground_truth_file=NA,cutree.method="dynamic",rsd.filt.thresh=1,alphabetical.order=TRUE,analysistype="classification",lme.modeltype="RI",
                                 study.design=c("multiclass","onewayanova","twowayanova","onewayanovarepeat","twowayanovarepeat"),log2.transform.constant=1,
                                 featselmethod="limma",similarity.matrix="correlation",...){
   
   #featselmethod=NA
+  suppressMessages(require(dynamicTreeCut))
+  suppressMessages(require(mclust))
+  suppressMessages(require(cluster))
+  suppressMessages(require(WGCNA))
   
-  
+  parallel:::setDefaultClusterOptions(setup_strategy = "sequential")
   if(is.na(Xmat)==TRUE){
     Xmat<-read.table(feature_table_file,sep="\t",header=TRUE,stringsAsFactors=FALSE,check.names=FALSE)
   }
@@ -26572,6 +25935,7 @@ compare.normalization<-function(Xmat=NA,Ymat=NA,Zmat=NA,feature_table_file=NA,pa
       setwd(normalization.method[i])
       outloc=paste(parentoutput_dir,"/",normalization.method[i],sep="")
       
+      print(outloc)
       fname1<-paste(normalization.method[i],".pdf",sep="")
       
       
@@ -26751,16 +26115,74 @@ compare.normalization<-function(Xmat=NA,Ymat=NA,Zmat=NA,feature_table_file=NA,pa
         #print(X[1:3,1:5])
         #print(head(Y))
        # save(X,Y,pairedanalysis,pca.ellipse,normalization.method,i,alphabetical.order,analysistype,lme.modeltype,file="pcad1.Rda")
+      
+        cat("Starting PCA",sep="\n")  
         pcares<-get_pcascoredistplots(X=X,Y=Y,feature_table_file=NA,parentoutput_dir=outloc,class_labels_file=NA,sample.col.opt="journal",
                                       plots.width=2000,plots.height=2000,plots.res=300, alphacol=0.3,col_vec=NA,pairedanalysis=pairedanalysis,pca.cex.val=2,legendlocation="topright",
                                       pca.ellipse=pca.ellipse,ellipse.conf.level=0.95,filename=paste(normalization.method[i], "data ",sep=""),paireddesign=NA,
                                       lineplot.col.opt="black",lineplot.lty.option=c("solid", "dashed", "dotted", "dotdash", "longdash", "twodash"),timeseries.lineplots=FALSE,pcacenter=TRUE,pcascale=TRUE,alphabetical.order=alphabetical.order,study.design=analysistype,lme.modeltype=lme.modeltype) #,silent=TRUE)
         
-        
+       #save(pcares,file="pcares.Rda")
+      
         setwd(parentoutput_dir)
         
+        classgroup=Y[,2]
+        classgroup=as.data.frame(classgroup)
+        
+        
         setwd(normalization.method[i])
-        #print("Starting HCA")
+        cat("Starting HCA")
+        st1=Sys.time()
+        
+        #cluster features
+        x=pcares$X
+        #row samples; column: features
+        dist1<-as.dist(1-WGCNA::cor(x))
+        f1=fastcluster::hclust(d=dist1,method = "complete")
+        
+        mycl_metabs <-cutreeDynamic(f1,distM=as.matrix((1-WGCNA::cor(x))),method="hybrid",cutHeight = 0.95,
+                                    deepSplit = 4,minClusterSize = 2,verbose = FALSE)
+        names(mycl_metabs)<-f1$labels
+        
+        Silhouette.features<- silhouette(mycl_metabs,dmatrix=as.matrix(dist1))
+        
+        Silhouette.features<-round(mean(Silhouette.features[,3]),3)
+        
+        #transpose for W.k: row: features; col: samples
+        #gap.stat.features<-E.W.k(x=(x), d.power=1,B=100)-W.k(x=t(x), clus=mycl_metabs,d.power=1)
+        
+        
+        #cluster samples
+        x=t(pcares$X)
+        #row samples; column: features
+        dist1<-as.dist(1-WGCNA::cor(x))
+        f1=fastcluster::hclust(d=dist1,method = "complete")
+        
+        mycl_samples <-cutreeDynamic(f1,distM=as.matrix((1-WGCNA::cor(x))),method="hybrid",cutHeight = 0.95,
+                                    deepSplit = 2,minClusterSize =2,verbose = FALSE)
+        names(mycl_samples)<-f1$labels
+        
+        Silhouette.samples<- silhouette(mycl_samples,dmatrix=as.matrix(dist1))
+        Silhouette.samples<-round(mean(Silhouette.samples[,3]),3)
+        
+        ari_val<-try(round(adjustedRandIndex(x=classgroup[,1], y=mycl_samples),2),silent=TRUE)
+        
+       # save(f1,mycl_samples,classgroup,file="hcasamples.Rda")
+        
+        plotDendroAndColors(f1,mycl_samples,rowText = mycl_samples,groupLabels = c("Cluster"),
+                            rowTextAlignment = "center",
+                            dendroLabels = rownames(f1),
+                            main=paste("Cluster dendrogram for samples\n Adjusted Rand Index:",ari_val,sep=""))
+        
+        
+       
+        #transpose for W.k: row: features; col: samples
+    #    gap.stat.samples<-E.W.k(x=(x), d.power=1,B=100)-W.k(x=t(x), clus=mycl_samples,d.power=1)
+        
+        
+        #W.k <- function(x, kk,clus,d.power=1) {
+      if(FALSE)
+      {
         hca_res<-get_hca(parentoutput_dir=outloc,X=X,Y=Y,heatmap.col.opt=heatmap.col.opt,cor.method=cor.method,is.data.znorm=FALSE,analysismode="classification",
                          sample.col.opt="journal",plots.width=plots.width,plots.height=plots.height,plots.res=plots.res, plots.type=plots.type, 
                          alphacol=0.3, hca_type="two-way",newdevice=FALSE,input.type="intensity",mainlab="",
@@ -26769,10 +26191,16 @@ compare.normalization<-function(Xmat=NA,Ymat=NA,Zmat=NA,feature_table_file=NA,pa
                          study.design=analysistype,similarity.matrix=similarity.matrix,cexRow=cex.plots,cexCol=cex.plots)
         
         classlabels_response_mat=Y[,2]
+        st2=Sys.time()
+        cat("Done with HCA",sep="\n")
+        print(st2-st1)
+      }
         
+        
+        if(FALSE){ 
         if(analysistype=="classification"){
           
-          print("Performing one-way ANOVA analysis")
+          #print("Performing one-way ANOVA analysis")
           
           #numcores<-round(detectCores()*0.6)
           cl <- parallel::makeCluster(getOption("cl.cores", 2))
@@ -26813,7 +26241,8 @@ compare.normalization<-function(Xmat=NA,Ymat=NA,Zmat=NA,feature_table_file=NA,pa
           
           pvalues<-unlist(res1)
           
-        }else{
+        }
+        else{
           
           # numcores<-num_nodes #round(detectCores()*0.5)
           
@@ -26891,11 +26320,11 @@ compare.normalization<-function(Xmat=NA,Ymat=NA,Zmat=NA,feature_table_file=NA,pa
           
         }
         
+        }
         
         
         
-        
-        
+        if(FALSE){
         
         Silhouette.sample=hca_res$Silhouette.sample
         
@@ -26906,7 +26335,7 @@ compare.normalization<-function(Xmat=NA,Ymat=NA,Zmat=NA,feature_table_file=NA,pa
         ##save(hca_res,file="hca_res.Rda")
         
         classgroup=hca_res$classgroup[,1]
-        
+      }
         #rownames(X)<-NULL
         
         setwd(outloc)
@@ -26930,7 +26359,13 @@ compare.normalization<-function(Xmat=NA,Ymat=NA,Zmat=NA,feature_table_file=NA,pa
         dev.off()
         
         
-        return(list("data_matrix_list"=data_matrix_list,"Silhouette.sample"=Silhouette.sample,"Silhouette.feature"=Silhouette.feature,"ari_val"=ari_val,"feat.cor.mat"=feat.cor.mat))
+        
+        
+        return(list("data_matrix_list"=data_matrix_list,"Silhouette.sample"=Silhouette.samples,
+                    "Silhouette.feature"=Silhouette.features,"ari_val"=ari_val,
+                   #"Gap.feature"=gap.stat.features,
+                    #"Gap.sample"=gap.stat.samples,
+                    "feat.cor.mat"=feat.cor.mat))
         
       }
       
@@ -26943,8 +26378,17 @@ compare.normalization<-function(Xmat=NA,Ymat=NA,Zmat=NA,feature_table_file=NA,pa
   })
   
   #   ##save(data_matrix_list,file="data_matrix_list1.Rda")
+  if(FALSE){   
+  Gap.sample=lapply(1:length(data_matrix_list),function(j){
+    
+    return(data_matrix_list[[j]]$Gap.sample)
+  })
   
-  
+  Gap.feature=lapply(1:length(data_matrix_list),function(j){
+    
+    return(data_matrix_list[[j]]$Gap.feature)
+  })
+}
   Silhouette.sample=lapply(1:length(data_matrix_list),function(j){
     
     return(data_matrix_list[[j]]$Silhouette.sample)
@@ -26979,19 +26423,68 @@ compare.normalization<-function(Xmat=NA,Ymat=NA,Zmat=NA,feature_table_file=NA,pa
   norm_method_names<-gsub(norm_method_names,pattern="_norm|norm",replacement="")
   
   setwd(parentoutput_dir)
-  pdf("Compare.HCA.performance.pdf")
   
+  #save(norm_method_names,Silhouette.feature,Silhouette.sample,ari_val,file="hcaplotdebug.Rda")
   
-  plot(unlist(Silhouette.feature),type="o",ylim=c(0,1),col="#0072B2",lwd=2,xaxt="n",xlab="",ylab="Value",main="Comparison of Silhouette coefficients for features and samples \nand adjusted rand index",cex.main=0.8)
+  pdf("Compare.HCA.performance.pdf",height=8,width=12)
+  
+  par(mfrow=c(1,3))
+  par(mar=c(10,3,4,3))
+  #    ##save(varimp_res2,data_m_fc,rf_classlabels,sorted_varimp_res,file="test_rf.Rda")
+  #xaxt="n",
+
+  cval1<-unlist(Silhouette.feature)
+  names(cval1)<-norm_method_names
+  x=barplot(cval1,ylab="",main="mean Silhouette coefficient \n for clustering of features",cex.axis=0.9,cex.names=0.9, xlab="",las=2,ylim=c(0,1))
+ # title(ylab = "mean Silhouette coefficient \n for clustering of features", cex.lab = 1.5,line = 4.5)
+            
+  cval1<-unlist(Silhouette.sample)
+  names(cval1)<-norm_method_names
+  x=barplot(cval1,ylab="",main="mean Silhouette coefficient \n for clustering of samples",cex.axis=0.9,cex.names=0.9, xlab="",las=2,ylim=c(0,1))
+ # title(ylab = "mean Silhouette coefficient \n for clustering of samples", cex.lab = 1.5,line = 4.5)
+ if(FALSE){ 
+  cval1<-unlist(Gap.feature)
+  x=barplot(cval1,xlab="",main="",cex.axis=0.9,cex.names=0.9, ylab="",las=2,ylim=range(pretty(c(min(cval1,na.rm=TRUE),max(cval1,na.rm=TRUE)))))
+  title(ylab = "mean Gap statistic \n for clustering of features", cex.lab = 1.5,line = 4.5)
+  
+  cval1<-unlist(Gap.sample)
+  x=barplot(cval1,xlab="",main="",cex.axis=0.9,cex.names=0.9, ylab="",las=2,ylim=range(pretty(c(min(cval1,na.rm=TRUE),max(cval1,na.rm=TRUE)))))
+  title(ylab = "mean Gap statistic \n for clustering of samples", cex.lab = 1.5,line = 4.5)
+ }  
+  
+  cval1<-unlist(ari_val)
+  print(cval1)
+  names(cval1)<-norm_method_names
+  x=barplot(cval1,ylab="",main="Adjusted rand index \n for comparing sample clustering \nwith the ground truth (class labels)",cex.axis=0.9,
+            cex.names=0.9, xlab="",las=2,ylim=c(0,1))
+ # title(ylab = "Adjusted rand index \n for comparing sample clustering \nwith the ground truth (class labels)", cex.lab = 1.5,line = 4.5)
+  
+  #par(mar=c(1,1))
+  
+  if(FALSE){
+    plot(unlist(Silhouette.feature),type="o",ylim=c(0,1),col="#0072B2",lwd=2,xaxt="n",xlab="",ylab="Value",
+       main="Comparison of clustering quality evaluation \n (silhouette, gap, and adjusted rand index) metrics",cex.main=0.8)
   lines(unlist(Silhouette.sample),type="o",lty=2,col="#E69F00",lwd=2)
-  lines(unlist(ari_val),type="o",lty=5,col="#009E73",lwd=2)
+  lines(unlist(Gap.feature),type="o",lty=5,col="#009E73",lwd=2)
+  lines(unlist(Gap.sample),type="o",lty=3,col="#56B4E9",lwd=2)
+  lines(unlist(ari_val),type="o",lty=4,col="#D55E00",lwd=2)
   axis(labels=norm_method_names,at=seq(1,length(norm_method_names)),side=1,las=2,cex.axis=0.65)
-  legend("topright",legend=c("Silhouette.features","Silhouette.samples","Adjusted Rand Index"),lty=c(1,2,5),col=c("#0072B2","#E69F00","#009E73"))
-  
+  legend("topright",legend=c("Silhouette.features","Silhouette.samples","Gap.feautres","Gap.samples","Adjusted Rand Index"),
+         lty=c(1,2,5,3,4),col=c("#0072B2","#E69F00",
+                                                                                                                      "#009E73","#56B4E9",
+                                                                                                                      "#D55E00"))
+  }
   
   dev.off()  
-  
-  return(list(data_matrix_list=data_matrix_list,normalization.methods=normalization.method, Silhouette.sample=Silhouette.sample,Silhouette.feature=Silhouette.feature,ari_val=ari_val,feat.cor.mat=feat.cor.mat))
+  #unlist(Gap.feature),unlist(Gap.sample),
+  resmat<-cbind(normalization.method,unlist(Silhouette.feature),unlist(Silhouette.sample),unlist(ari_val))
+  colnames(resmat)<-c("Normalization.method","Silhouette.feature","Silhouette.sample","Adjusted_Rand_Index")
+  write.csv(resmat,file="comparison.HCA.performance.csv",row.names=FALSE)
+  return(list(data_matrix_list=data_matrix_list,normalization.methods=normalization.method,
+              Silhouette.sample=Silhouette.sample,Silhouette.feature=Silhouette.feature,
+              #Gap.sample=Gap.sample,
+              #Gap.feature=Gap.feature,
+              ari_val=ari_val,feat.cor.mat=feat.cor.mat))
   
   
   
@@ -29627,7 +29120,8 @@ diffexp.lite<-function(Xmat=NA,Ymat=NA,outloc=NA,
                                   "brewer.OrRd","brewer.GnBu","brewer.BuPu","brewer.BuGn","brewer.blues","black","grey65","terrain","rainbow","heat","topo"),
                   generate.boxplots=TRUE,
                   hca.cex.legend=0.7, lme.modeltype="lme.RI",globalcor=FALSE,abs.cor.thresh=0.4,cor.fdrthresh=NA,net_legend=TRUE,evaluate.classification.accuracy=FALSE,
-                  limma.contrasts.type=c("contr.sum","contr.treatment"),limmadecideTests=FALSE,cex.plots=0.9,parentoutput_dir=NA, hca.labRow.value = TRUE,hca.labCol.value = TRUE,...)
+                  limma.contrasts.type=c("contr.sum","contr.treatment"),limmadecideTests=FALSE,cex.plots=0.9,parentoutput_dir=NA, hca.labRow.value = TRUE,hca.labCol.value = TRUE,
+                  vcovHC.type=c("HC0","HC3"),...)
 {
   
   options(warn=-1)
@@ -29820,7 +29314,7 @@ diffexp.lite<-function(Xmat=NA,Ymat=NA,outloc=NA,
   pamr.threshold.select.max=FALSE
   aggregation.method="RankAggreg"
   aggregation.max.iter=1000
-  mars.gcv.thresh=1
+  mars.gcv.thresh=10
   
   error.bar=TRUE
   
@@ -29867,7 +29361,7 @@ diffexp.lite<-function(Xmat=NA,Ymat=NA,outloc=NA,
  # hca.labRow.value = TRUE
 #  hca.labCol.value = TRUE
   plot.boxplots.raw=FALSE
-  vcovHC.type="HC3"
+  vcovHC.type=vcovHC.type[1] #"HC3"
   ggplot.type1=TRUE
   facet.nrow=1
   pairwise.correlation.analysis=globalcor
@@ -30418,7 +29912,8 @@ diffexp<-function(Xmat=NA,Ymat=NA,feature_table_file,parentoutput_dir=NA,class_l
                   optselect=TRUE,max_comp_sel=2,saveRda=FALSE,legendlocation="topleft",pcacenter=TRUE,pcascale=TRUE,pca.cex.val=6,
                   pca.ellipse=FALSE,ellipse.conf.level=0.95,pls.permut.count=NA,svm.acc.tolerance=5,limmadecideTests=FALSE,pls.vip.selection="max",globalclustering=FALSE,
                   plots.res=600,plots.width=10,plots.height=8,plots.type="cairo",
-                  output.device.type="pdf",pvalue.thresh=0.05,pamr.threshold.select.max=FALSE,aggregation.method="RankAggreg",aggregation.max.iter=1000,mars.gcv.thresh=1,
+                  output.device.type="pdf",pvalue.thresh=0.05,pamr.threshold.select.max=FALSE,aggregation.method="RankAggreg",aggregation.max.iter=1000,
+                  mars.gcv.thresh=10,
                   error.bar=TRUE,cex.plots=1,lme.modeltype="lme.RI",
                   barplot.xaxis="Factor1",lineplot.lty.option=c("solid", "dashed", "dotted", "dotdash", "longdash", "twodash"),
                   match_class_dist=TRUE,timeseries.lineplots=FALSE,alphabetical.order=FALSE,
@@ -31833,81 +31328,168 @@ diffexp<-function(Xmat=NA,Ymat=NA,feature_table_file,parentoutput_dir=NA,class_l
 #column C: Z-axis data (e.g. statistic)
 #column D: optional group by variable
 get_bubbleplot<-function(Xmat, GroupBy=FALSE,xlab.name="X",ylab.name="Y",cex.plots=0.8,newdevice=TRUE,
+                         
                          filename="bubbleplot",file.format="pdf",
+                         
                          plot.width=8,plot.height=8,plot.res=300,color.scale=c("blue","red"),statistic.type="pvalue",
-                         reverse.yaxis=FALSE){
+                         
+                         reverse.yaxis=FALSE,sizerange=c(0.01,6)){
+  
   options(warn=-1)
+  
+  
+  
+  Xmat<-as.data.frame(Xmat)
   
   if(GroupBy==TRUE){
     
+    
+    
     colnames(Xmat)<-c("X","Y","Statistic","GroupBy")
+    
   }else{
+    
     colnames(Xmat)<-c("X","Y","Statistic")
     
+    
+    
   }
+  
+  
+  
+  Xmat$Statistic<-as.numeric(as.character(Xmat$Statistic))
+  
+ # print(head(Xmat))
+  
+  #save(Xmat,file="Xmat.Rda")
+  
+  
+  
   if(statistic.type=="pvalue"){
-  p=ggplot(Xmat,
-           aes(x = X, y = Y)) +  suppressWarnings(geom_point(aes(size = abs(Statistic)), pch = 21, show.legend= TRUE))
+    
+    p=ggplot(Xmat,
+             
+             aes(x = X, y = Y)) +  suppressWarnings(geom_point(aes(size = abs(Statistic)), pch = 21, show.legend= TRUE))
+    
   }else{
     
+   
     if(statistic.type=="correlation"){
-    p=ggplot(Xmat,
-             aes(x = X, y = Y)) +  suppressWarnings(geom_point(aes(size = abs(Statistic)), pch = 21, show.legend= TRUE))
-    }else{
       
       p=ggplot(Xmat,
+               
                aes(x = X, y = Y)) +  suppressWarnings(geom_point(aes(size = abs(Statistic)), pch = 21, show.legend= TRUE))
+      
+    }else{
+      
+      
+      
+      p=ggplot(Xmat,
+               
+               aes(x = X, y = Y)) +  suppressWarnings(geom_point(aes(size = abs(Statistic)), pch = 21, show.legend= TRUE))
+      
     }
-  }
-  if(GroupBy==TRUE){
-    p=p+  facet_wrap(~ GroupBy, scale="free_x")
     
   }
+  
+  if(GroupBy==TRUE){
+    
+    p=p+  facet_wrap(~ GroupBy, scale="free_x",nrow=1)
+    
+    
+    
+  }
+  
   p=p+labs(x=xlab.name,y=ylab.name)
+  
   p=p +aes(fill = Statistic) + theme_bw()
-  p=p+scale_fill_gradient2(low=color.scale[1],mid="white",high=color.scale[2])+scale_size(range=c(0.5,12))
+  
+  p=p+scale_fill_gradient2(low=color.scale[1],mid="white",high=color.scale[2])+scale_size(range=sizerange)
+  
+  
   
   #scale_size(range=c(floor(min(abs(Xmat$Statistic),na.rm=TRUE)),ceiling(max(abs(Xmat$Statistic),na.rm=TRUE))))
   
+  
+  
   #scale_size(range = c(0.5, 12)
-             
+  
+  
+  
   p=p+theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+            
             panel.grid.minor = element_blank(),
+            
             panel.spacing=unit(1,"lines"),
+            
             axis.line = element_line(colour = "black",size=1),
+            
             axis.text= element_text(size=14*cex.plots), axis.title=element_text(size=18*cex.plots,face="bold"),
+            
             plot.title = element_text(hjust = 0.5,size=18*cex.plots),
+            
             axis.ticks.length = unit(-0.05, "in"),
+            
             axis.text.y = element_text(margin=unit(c(0.3,0.3,0.3,0.3), "cm")),
+            
             axis.text.x = element_text(margin=unit(c(0.3,0.3,0.3,0.3), "cm")),
+            
             axis.ticks.x = element_blank(),
+            
             # aspect.ratio = 1,
+            
             strip.background=element_rect(colour="#f0f0f0",fill="#f0f0f0"),
+            
             strip.text = element_text(face="bold")) + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  
+  
   
   #p=p+scale_fill_manual(values = c("blue","red"))
   
+  
+  
   if(reverse.yaxis==TRUE){
-      p=p+scale_y_discrete(limits=rev)
-  }
-  p=p+theme(axis.title = element_blank())
-  if(newdevice==TRUE){
     
-    if(file.format=="pdf"){
-      fname=paste(filename,".pdf",sep="") 
-       pdf(fname,width=plot.width,height=plot.height)
-    }else{
-      fname=paste(filename,".png",sep="") 
-      png(fname,width=plot.width,height=plot.height,res=plots.res,type="cairo",units="in")
-    }
-    print(p)
-    dev.off()
-  }else{
-    #print(p)
+    p=p+scale_y_discrete(limits=rev)
+    
   }
   
+  p=p+theme(axis.title = element_blank())
+  
+  if(newdevice==TRUE){
+    
+    
+    
+    if(file.format=="pdf"){
+      
+      fname=paste(filename,".pdf",sep="")
+      
+      pdf(fname,width=plot.width,height=plot.height)
+      
+    }else{
+      
+      fname=paste(filename,".png",sep="")
+      
+      png(fname,width=plot.width,height=plot.height,res=plots.res,type="cairo",units="in")
+      
+    }
+    
+    print(p)
+    
+    dev.off()
+    
+  }else{
+    
+    #print(p)
+    
+  }
+  
+  
+  
   options(warn=0)
+  
   return(p)
+  
 }
 
 
@@ -32515,7 +32097,7 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
     
     #log2.fold.change.thresh_list<-c(0)
     
-    print("Performing regression analysis")
+    #print("Performing regression analysis")
     if(is.na(Ymat[1])==TRUE){
       classlabels<-read.table(class_labels_file,sep="\t",header=TRUE)
     
@@ -35898,7 +35480,7 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
           data_m_fc<-as.data.frame(data_m_fc)
           #write.table(classlabels,file="classlabels_rf.txt",sep="\t",row.names=FALSE)
           
-          save(data_m_fc,classlabels,numtrees,analysismode,file="rfdebug.Rda")
+          #save(data_m_fc,classlabels,numtrees,analysismode,file="rfdebug.Rda")
           
           
           
@@ -35921,30 +35503,40 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
               #print("Performing random forest analysis using the randomForest and Boruta functions")
               varimp_res2<-do_rf_boruta(X=data_m_fc,classlabels=rf_classlabels) #,ntrees=numtrees,analysismode)
               filename<-"RF_VIM_Boruta_allfeats.txt"
+              
+              varimp_rf_thresh=0
             }else{
               rf_classlabels<-classlabels
               #print("Performing random forest analysis using the randomForest function")
               varimp_res2<-do_rf(X=data_m_fc,classlabels=rf_classlabels,ntrees=numtrees,analysismode)
+             # save(varimp_res2,data_m_fc,rf_classlabels,numtrees,analysismode,file="varimp_res2.Rda")
+              filename<-"RF_VIM_regression_allfeats.txt"
+              varimp_res2<-varimp_res2$rf_varimp #rf_varimp_scaled
+              
+              
+              #find the lowest value within the top max_varsel features to use as threshold
+              varimp_rf_thresh<-min(varimp_res2[order(varimp_res2,decreasing=TRUE)[1:(max_varsel+1)]],na.rm=TRUE)
+              
             }
             
           }
-          
+          names(varimp_res2)<-rownames(data_m_fc)
           varimp_res3<-cbind(data_m_fc_withfeats[,c(1:2)],varimp_res2)
           
+          rownames(varimp_res3)<-rownames(data_m_fc)
           filename<-paste("Tables/",filename,sep="")
           write.table(varimp_res3, file=filename,sep="\t",row.names=TRUE)
           
           
-          
-          goodip<-which(varimp_res2>0)
+          goodip<-which(varimp_res2>varimp_rf_thresh)
           
           if(length(goodip)<1){
             print("No features were selected using the selection criteria.")
           }
-          var_names<-paste(sprintf("%.3f",data_m_fc_withfeats[,1]),sprintf("%.1f",data_m_fc_withfeats[,2]),sep="_")
+          var_names<-rownames(data_m_fc) #paste(sprintf("%.3f",data_m_fc_withfeats[,1]),sprintf("%.1f",data_m_fc_withfeats[,2]),sep="_")
           
           names(varimp_res2)<-as.character(var_names)
-          sel.diffdrthresh<-varimp_res2>0
+          sel.diffdrthresh<-varimp_res2>varimp_rf_thresh
           
           if(length(which(sel.diffdrthresh==TRUE))<1){
             print("No features were selected using the selection criteria")
@@ -35960,9 +35552,9 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
           }
           sorted_varimp_res<-varimp_res2[order(varimp_res2,decreasing=TRUE)[1:(num_var_rf)]]
           
-          sorted_varimp_res<-sort(sorted_varimp_res)
+          sorted_varimp_res<-rev(sort(sorted_varimp_res))
           
-          barplot_text=paste("Variable Importance measures (top ",length(sorted_varimp_res)," shown)\n",sep="")
+          barplot_text=paste("Variable Importance Measure (VIM) \n(top ",length(sorted_varimp_res)," shown)\n",sep="")
           
           if(output.device.type!="pdf"){
             
@@ -35971,9 +35563,17 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
             png(temp_filename_1,width=plots.width,height=plots.height,res=plots.res,type=plots.type,units="in")
           }
           
+          par(mar=c(10,7,4,2))
           #    ##save(varimp_res2,data_m_fc,rf_classlabels,sorted_varimp_res,file="test_rf.Rda")
+          #xaxt="n",
+          x=barplot(sorted_varimp_res, xlab="", main=barplot_text,cex.axis=0.9,
+                    cex.names=0.9, ylab="",las=2,ylim=range(pretty(c(0,sorted_varimp_res))))
+          title(ylab = "VIM", cex.lab = 1.5,
+                line = 4.5)
           
-          barplot(sorted_varimp_res, xlab="Selected features", main=barplot_text,cex.axis=0.5,cex.names=0.4, ylab="VIM",range(pretty(c(0,sorted_varimp_res))),space=0.1)
+          #x <- barplot(table(mtcars$cyl), xaxt="n")
+       #   labs <- names(sorted_varimp_res)
+        #  text(cex=0.7, labs, xpd=FALSE, srt=45) #,x=x-.25, y=-1.25)
           
           if(output.device.type!="pdf"){
             
@@ -35981,7 +35581,7 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
           }
           
           
-          
+          par(mfrow = c(1,1))
           
           rank_num<-rank(-varimp_res2)
           
@@ -36005,18 +35605,20 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
         if(featselmethod=="MARS"){
           
         #  cat("Performing MARS analysis",sep="\n")
-          
-          mars_classlabels<-classlabels[,1]
+          #print(head(classlabels))
+          mars_classlabels<-classlabels #[,1]
           marsres1<-do_mars(X=data_m_fc,mars_classlabels, analysismode,kfold)
           
+          #save(data_m_fc,mars_classlabels, analysismode,kfold,marsres1,file="mars.Rda")
           varimp_marsres1<-marsres1$mars_varimp
           
+          rownames(varimp_marsres1)<-rownames(data_m_fc)
           mars_mznames<-rownames(varimp_marsres1)
           
           
-          all_names<-paste("mz",seq(1,dim(data_m_fc)[1]),sep="")
+          #all_names<-paste("mz",seq(1,dim(data_m_fc)[1]),sep="")
           
-          com1<-match(all_names,mars_mznames)
+          #com1<-match(all_names,mars_mznames)
           
           
           filename<-"MARS_variable_importance.txt"
@@ -36047,6 +35649,8 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
             
             goodip<-which(sel.diffdrthresh==TRUE)
             
+            
+            
           }else{
             
             #use a threshold of mars.gcv.thresh
@@ -36076,7 +35680,15 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
           }
           
           
-          barplot(sorted_varimp_res, xlab="Selected features", main=barplot_text,cex.axis=0.5,cex.names=0.4, ylab="GCV",range(pretty(c(0,sorted_varimp_res))),space=0.1)
+         # barplot(sorted_varimp_res, xlab="Selected features", main=barplot_text,cex.axis=0.5,cex.names=0.4, ylab="GCV",range(pretty(c(0,sorted_varimp_res))),space=0.1)
+          par(mar=c(10,7,4,2))
+          #    ##save(varimp_res2,data_m_fc,rf_classlabels,sorted_varimp_res,file="test_rf.Rda")
+          #xaxt="n",
+          x=barplot(sorted_varimp_res, xlab="", main=barplot_text,cex.axis=0.9,
+                    cex.names=0.9, ylab="",las=2,ylim=range(pretty(c(0,sorted_varimp_res))))
+          title(ylab = "GCV", cex.lab = 1.5,
+                line = 4.5)
+          
           
           if(output.device.type!="pdf"){
             
@@ -39856,26 +39468,28 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
               classlabels_response_mat<-as.data.frame(classlabels_response_mat[,1])
             }
             
-            
-            svm_model_reg<-try(svm(x=subdata,y=(classlabels_response_mat[,1]),type="eps",cross=kfold),silent=TRUE)
-            
-            if(is(svm_model_reg,"try-error")){
-              print("SVM could not be performed. Skipping to the next step.")
-              termA<-(-1)
-              pred_acc<-termA
-            }else{
-              termA<-svm_model_reg$tot.MSE
-              
-              pred_acc<-termA
-              print(paste(kfold,"-fold mean squared error: ", pred_acc,sep=""))
-              
+            if(FALSE){
+                  svm_model_reg<-try(svm(x=subdata,y=(classlabels_response_mat[,1]),type="eps",cross=kfold),silent=TRUE)
+                  
+                  if(is(svm_model_reg,"try-error")){
+                    print("SVM could not be performed. Skipping to the next step.")
+                    termA<-(-1)
+                    pred_acc<-termA
+                  }else{
+                    termA<-svm_model_reg$tot.MSE
+                    
+                    pred_acc<-termA
+                    print(paste(kfold,"-fold mean squared error: ", pred_acc,sep=""))
+                    
+                  }
             }
-            
+            termA<-(-1)
+            pred_acc<-termA
             
             
           #  print("######################################")
           }else{
-            print("Number of selected variables is too small to perform CV.")
+            #print("Number of selected variables is too small to perform CV.")
             
           }
           
@@ -39912,11 +39526,18 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
    
           goodfeats<-unique(goodfeats)
           
+        #  save(names_with_mz_time,goodfeats,file="goodfeats_1.Rda")
+          
+          if(length(which(is.na(goodfeats$mz)==TRUE))>0){
+            
+            goodfeats<-goodfeats[-which(is.na(goodfeats$mz)==TRUE),]
+          }
           if(is.na(names_with_mz_time)==FALSE){
+            
             goodfeats_with_names<-merge(names_with_mz_time,goodfeats,by=c("mz","time"))
             goodfeats_with_names<-goodfeats_with_names[match(goodfeats$mz,goodfeats_with_names$mz),]
             
-            #save(names_with_mz_time,goodfeats,goodfeats_with_names,file="goodfeats_with_names.Rda")
+            #
             
             goodfeats_name<-goodfeats_with_names$Name
             #}
@@ -40703,7 +40324,7 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
             goodfeats<-goodfeats_temp
             
             rm(goodfeats_temp)
-            print("PCA selected features")
+           
             #      #save(goodfeats,goodfeats_temp,mz_ind,time_ind,classlabels_orig,analysistype,alphabetical.order,col_vec,file="pca1.Rda")
             
             num_sig_feats<-nrow(goodfeats)
@@ -41855,7 +41476,7 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
                 #legend("bottomleft",legend=levels(classlabels_orig[,2]),text.col=unique(patientcolors),pch=13,cex=0.4)
                 #par(xpd=FALSE)
                 
-                clust_res<-cutreeDynamic(distM=as.matrix(d2),dendro=clust1)
+                clust_res<-cutreeDynamic(distM=as.matrix(d2),dendro=clust1,cutHeight = 0.95,minClusterSize = 2,deepSplit = 4,verbose = FALSE)
                 
                 #mycl_samples <- cutree(clust1, h=max(clust1$height)/2)
                 
@@ -42488,6 +42109,7 @@ generate_distribution_concentration<-function(targeted_table,seq,outloc,groupche
       
       #draw the plot
       print(ggplot() +
+              stat_boxplot(geom='errorbar',width=0.2) +
               geom_boxplot(data=plotdata_study, aes(x=batch_study, y=inten_study,fill=batch_study)) +
               geom_point(data=plotdata, aes(x=batch, y=inten,fill=batch,color=col)) +
               scale_y_continuous(name="concentration") +
@@ -42562,6 +42184,7 @@ generate_distribution_concentration<-function(targeted_table,seq,outloc,groupche
         
         
         print(ggplot() +
+                stat_boxplot(geom='errorbar',width=0.2) +
                 geom_boxplot(data=plotdata_study, aes(x="", y=intensity)) +
                 geom_point(data=plotdata, aes(x="", y=intensity,color=col)) +
                 scale_y_continuous(name="concentration") +
@@ -42623,6 +42246,7 @@ generate_distribution_concentration<-function(targeted_table,seq,outloc,groupche
           }
           
           print(ggplot() +
+                  stat_boxplot(geom='errorbar',width=0.2) +
                   geom_boxplot(data=plotdata_study, aes(x="", y=intensity)) +
                   geom_point(data=plotdata, aes(x="", y=intensity,color=col,size=size)) +
                   scale_y_continuous(name="concentration") +
@@ -42664,6 +42288,7 @@ generate_distribution_concentration<-function(targeted_table,seq,outloc,groupche
           }
           
           print(ggplot() +
+                  stat_boxplot(geom='errorbar',width=0.2) +
                   geom_boxplot(data=plotdata_study, aes(x="", y=intensity)) +
                   geom_point(data=plotdata, aes(x="", y=intensity,color=col)) +
                   scale_y_continuous(name="intensity") +
@@ -42770,6 +42395,7 @@ generate_distribution_concentration<-function(targeted_table,seq,outloc,groupche
             }
             
             print(ggplot() +
+                    stat_boxplot(geom='errorbar',width=0.2) +
                     geom_boxplot(data=plotdata, aes(x=group, y=inten,fill=group)) +
                     geom_point(data=plotdata, aes(x=group, y=inten,fill=group,color=col,size=size)) +
                     scale_y_continuous(name="intensity") +
@@ -42810,6 +42436,7 @@ generate_distribution_concentration<-function(targeted_table,seq,outloc,groupche
             }
             
             print(ggplot() +
+                    stat_boxplot(geom='errorbar',width=0.2) +
                     geom_boxplot(data=plotdata, aes(x=group, y=inten,fill=group)) +
                     geom_point(data=plotdata, aes(x=group, y=inten,fill=group,color=col)) +
                     scale_y_continuous(name="intensity") +
@@ -42854,6 +42481,7 @@ generate_distribution_concentration<-function(targeted_table,seq,outloc,groupche
           }
           
           print(ggplot() +
+                  stat_boxplot(geom='errorbar',width=0.2) +
                   geom_boxplot(data=plotdata, aes(x=group, y=inten,fill=group)) +
                   geom_point(data=plotdata, aes(x=group, y=inten,fill=group,color=col)) +
                   scale_y_continuous(name="intensity") +
@@ -42946,6 +42574,7 @@ generate_distribution<-function(targeted_table,seq,outloc,groupcheck=FALSE,targe
       
       #draw the plot
       print(ggplot() +
+              stat_boxplot(geom='errorbar',width=0.2) +
               geom_boxplot(data=plotdata_study, aes(x=batch_study, y=inten_study,fill=batch_study)) +
               geom_point(data=plotdata, aes(x=batch, y=inten,fill=batch,color=col)) +
               scale_y_continuous(name="intensity") +
@@ -43015,6 +42644,7 @@ generate_distribution<-function(targeted_table,seq,outloc,groupcheck=FALSE,targe
         
         
         print(ggplot() +
+                stat_boxplot(geom='errorbar',width=0.2) +
                 geom_boxplot(data=plotdata_study, aes(x="", y=intensity)) +
                 geom_point(data=plotdata, aes(x="", y=intensity,color=col)) +
                 scale_y_continuous(name="intensity") +
@@ -43076,6 +42706,7 @@ generate_distribution<-function(targeted_table,seq,outloc,groupcheck=FALSE,targe
           }
           
           print(ggplot() +
+                  stat_boxplot(geom='errorbar',width=0.2) +
                   geom_boxplot(data=plotdata_study, aes(x="", y=intensity)) +
                   geom_point(data=plotdata, aes(x="", y=intensity,color=col,size=size)) +
                   scale_y_continuous(name="intensity") +
@@ -43117,6 +42748,7 @@ generate_distribution<-function(targeted_table,seq,outloc,groupcheck=FALSE,targe
           }
           
           print(ggplot() +
+                  stat_boxplot(geom='errorbar',width=0.2) +
                   geom_boxplot(data=plotdata_study, aes(x="", y=intensity)) +
                   geom_point(data=plotdata, aes(x="", y=intensity,color=col)) +
                   scale_y_continuous(name="intensity") +
@@ -43215,6 +42847,7 @@ generate_distribution<-function(targeted_table,seq,outloc,groupcheck=FALSE,targe
             }
             
             print(ggplot() +
+                    stat_boxplot(geom='errorbar',width=0.2) +
                     geom_boxplot(data=plotdata, aes(x=group, y=inten,fill=group)) +
                     geom_point(data=plotdata, aes(x=group, y=inten,fill=group,color=col,size=size)) +
                     scale_y_continuous(name="intensity") +
@@ -43255,6 +42888,7 @@ generate_distribution<-function(targeted_table,seq,outloc,groupcheck=FALSE,targe
             }
             
             print(ggplot() +
+                    stat_boxplot(geom='errorbar',width=0.2) +
                     geom_boxplot(data=plotdata, aes(x=group, y=inten,fill=group)) +
                     geom_point(data=plotdata, aes(x=group, y=inten,fill=group,color=col)) +
                     scale_y_continuous(name="intensity") +
@@ -43299,6 +42933,7 @@ generate_distribution<-function(targeted_table,seq,outloc,groupcheck=FALSE,targe
           }
           
           print(ggplot() +
+                  stat_boxplot(geom='errorbar',width=0.2) +
                   geom_boxplot(data=plotdata, aes(x=group, y=inten,fill=group)) +
                   geom_point(data=plotdata, aes(x=group, y=inten,fill=group,color=col)) +
                   scale_y_continuous(name="intensity") +
@@ -43590,6 +43225,8 @@ quant<- function(Xmat=NA,Ymat=NA,Wmat=NA,Zmat=NA,feature_table,class_file,ref_li
   if(is.numeric(feature.table[,2])==FALSE){
     stop('Please double check the time column in your feature table, it is not numeric.')
   }
+  
+  parallel:::setDefaultClusterOptions(setup_strategy = "sequential")
   
   #read in sample id mapping
   if(!is.na(class_file)){

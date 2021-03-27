@@ -27,7 +27,8 @@ function(Xmat=NA,Ymat=NA,outloc=NA,
                                   "brewer.OrRd","brewer.GnBu","brewer.BuPu","brewer.BuGn","brewer.blues","black","grey65","terrain","rainbow","heat","topo"),
                   generate.boxplots=TRUE,
                   hca.cex.legend=0.7, lme.modeltype="lme.RI",globalcor=FALSE,abs.cor.thresh=0.4,cor.fdrthresh=NA,net_legend=TRUE,evaluate.classification.accuracy=FALSE,
-                  limma.contrasts.type=c("contr.sum","contr.treatment"),limmadecideTests=FALSE,cex.plots=0.9,parentoutput_dir=NA, hca.labRow.value = TRUE,hca.labCol.value = TRUE,...)
+                  limma.contrasts.type=c("contr.sum","contr.treatment"),limmadecideTests=FALSE,cex.plots=0.9,parentoutput_dir=NA, hca.labRow.value = TRUE,hca.labCol.value = TRUE,
+                  vcovHC.type=c("HC0","HC3"),...)
 {
   
   options(warn=-1)
@@ -220,7 +221,7 @@ function(Xmat=NA,Ymat=NA,outloc=NA,
   pamr.threshold.select.max=FALSE
   aggregation.method="RankAggreg"
   aggregation.max.iter=1000
-  mars.gcv.thresh=1
+  mars.gcv.thresh=10
   
   error.bar=TRUE
   
@@ -264,10 +265,10 @@ function(Xmat=NA,Ymat=NA,outloc=NA,
   plot_DiNa_graph=FALSE
   
   
-  #hca.labRow.value = TRUE
-  #hca.labCol.value = TRUE
+ # hca.labRow.value = TRUE
+#  hca.labCol.value = TRUE
   plot.boxplots.raw=FALSE
-  vcovHC.type="HC3"
+  vcovHC.type=vcovHC.type[1] #"HC3"
   ggplot.type1=TRUE
   facet.nrow=1
   pairwise.correlation.analysis=globalcor

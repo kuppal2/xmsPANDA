@@ -64,11 +64,12 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
   
   parentfeatselmethod=featselmethod
   
-  cat(paste("Running feature selection method: ",featselmethod,sep=""),sep="\n")
-  
   factor1_msg=NA
   factor2_msg=NA
   
+  
+    cat(paste("Running feature selection method: ",featselmethod,sep=""),sep="\n")
+  #}
   
   
   if(featselmethod=="limmarobust"){
@@ -200,7 +201,8 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
   rfconditional=FALSE
   
  # print("############################")
- 
+  
+  
   #print("############################")
   if(featselmethod=="rf" | featselmethod=="RF"){
     
@@ -601,7 +603,7 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
     
     #log2.fold.change.thresh_list<-c(0)
     
-    print("Performing regression analysis")
+    #print("Performing regression analysis")
     if(is.na(Ymat[1])==TRUE){
       classlabels<-read.table(class_labels_file,sep="\t",header=TRUE)
     
@@ -3975,7 +3977,7 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
         
         if(featselmethod=="RF")
         {
-        #  cat("Performing RF analysis",sep="\n")
+      #    cat("Performing RF analysis",sep="\n")
           maxint<-apply(data_m_fc,1,max)
           
           
@@ -3984,7 +3986,7 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
           data_m_fc<-as.data.frame(data_m_fc)
           #write.table(classlabels,file="classlabels_rf.txt",sep="\t",row.names=FALSE)
           
-          save(data_m_fc,classlabels,numtrees,analysismode,file="rfdebug.Rda")
+          #save(data_m_fc,classlabels,numtrees,analysismode,file="rfdebug.Rda")
           
           
           
@@ -4007,30 +4009,40 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
               #print("Performing random forest analysis using the randomForest and Boruta functions")
               varimp_res2<-do_rf_boruta(X=data_m_fc,classlabels=rf_classlabels) #,ntrees=numtrees,analysismode)
               filename<-"RF_VIM_Boruta_allfeats.txt"
+              
+              varimp_rf_thresh=0
             }else{
               rf_classlabels<-classlabels
               #print("Performing random forest analysis using the randomForest function")
               varimp_res2<-do_rf(X=data_m_fc,classlabels=rf_classlabels,ntrees=numtrees,analysismode)
+             # save(varimp_res2,data_m_fc,rf_classlabels,numtrees,analysismode,file="varimp_res2.Rda")
+              filename<-"RF_VIM_regression_allfeats.txt"
+              varimp_res2<-varimp_res2$rf_varimp #rf_varimp_scaled
+              
+              
+              #find the lowest value within the top max_varsel features to use as threshold
+              varimp_rf_thresh<-min(varimp_res2[order(varimp_res2,decreasing=TRUE)[1:(max_varsel+1)]],na.rm=TRUE)
+              
             }
             
           }
-          
+          names(varimp_res2)<-rownames(data_m_fc)
           varimp_res3<-cbind(data_m_fc_withfeats[,c(1:2)],varimp_res2)
           
+          rownames(varimp_res3)<-rownames(data_m_fc)
           filename<-paste("Tables/",filename,sep="")
           write.table(varimp_res3, file=filename,sep="\t",row.names=TRUE)
           
           
-          
-          goodip<-which(varimp_res2>0)
+          goodip<-which(varimp_res2>varimp_rf_thresh)
           
           if(length(goodip)<1){
             print("No features were selected using the selection criteria.")
           }
-          var_names<-paste(sprintf("%.3f",data_m_fc_withfeats[,1]),sprintf("%.1f",data_m_fc_withfeats[,2]),sep="_")
+          var_names<-rownames(data_m_fc) #paste(sprintf("%.3f",data_m_fc_withfeats[,1]),sprintf("%.1f",data_m_fc_withfeats[,2]),sep="_")
           
           names(varimp_res2)<-as.character(var_names)
-          sel.diffdrthresh<-varimp_res2>0
+          sel.diffdrthresh<-varimp_res2>varimp_rf_thresh
           
           if(length(which(sel.diffdrthresh==TRUE))<1){
             print("No features were selected using the selection criteria")
@@ -4046,9 +4058,9 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
           }
           sorted_varimp_res<-varimp_res2[order(varimp_res2,decreasing=TRUE)[1:(num_var_rf)]]
           
-          sorted_varimp_res<-sort(sorted_varimp_res)
+          sorted_varimp_res<-rev(sort(sorted_varimp_res))
           
-          barplot_text=paste("Variable Importance measures (top ",length(sorted_varimp_res)," shown)\n",sep="")
+          barplot_text=paste("Variable Importance Measure (VIM) \n(top ",length(sorted_varimp_res)," shown)\n",sep="")
           
           if(output.device.type!="pdf"){
             
@@ -4057,9 +4069,17 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
             png(temp_filename_1,width=plots.width,height=plots.height,res=plots.res,type=plots.type,units="in")
           }
           
+          par(mar=c(10,7,4,2))
           #    ##save(varimp_res2,data_m_fc,rf_classlabels,sorted_varimp_res,file="test_rf.Rda")
+          #xaxt="n",
+          x=barplot(sorted_varimp_res, xlab="", main=barplot_text,cex.axis=0.9,
+                    cex.names=0.9, ylab="",las=2,ylim=range(pretty(c(0,sorted_varimp_res))))
+          title(ylab = "VIM", cex.lab = 1.5,
+                line = 4.5)
           
-          barplot(sorted_varimp_res, xlab="Selected features", main=barplot_text,cex.axis=0.5,cex.names=0.4, ylab="VIM",range(pretty(c(0,sorted_varimp_res))),space=0.1)
+          #x <- barplot(table(mtcars$cyl), xaxt="n")
+       #   labs <- names(sorted_varimp_res)
+        #  text(cex=0.7, labs, xpd=FALSE, srt=45) #,x=x-.25, y=-1.25)
           
           if(output.device.type!="pdf"){
             
@@ -4067,7 +4087,7 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
           }
           
           
-          
+          par(mfrow = c(1,1))
           
           rank_num<-rank(-varimp_res2)
           
@@ -4091,18 +4111,20 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
         if(featselmethod=="MARS"){
           
         #  cat("Performing MARS analysis",sep="\n")
-          
-          mars_classlabels<-classlabels[,1]
+          #print(head(classlabels))
+          mars_classlabels<-classlabels #[,1]
           marsres1<-do_mars(X=data_m_fc,mars_classlabels, analysismode,kfold)
           
+          #save(data_m_fc,mars_classlabels, analysismode,kfold,marsres1,file="mars.Rda")
           varimp_marsres1<-marsres1$mars_varimp
           
+          rownames(varimp_marsres1)<-rownames(data_m_fc)
           mars_mznames<-rownames(varimp_marsres1)
           
           
-          all_names<-paste("mz",seq(1,dim(data_m_fc)[1]),sep="")
+          #all_names<-paste("mz",seq(1,dim(data_m_fc)[1]),sep="")
           
-          com1<-match(all_names,mars_mznames)
+          #com1<-match(all_names,mars_mznames)
           
           
           filename<-"MARS_variable_importance.txt"
@@ -4133,6 +4155,8 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
             
             goodip<-which(sel.diffdrthresh==TRUE)
             
+            
+            
           }else{
             
             #use a threshold of mars.gcv.thresh
@@ -4162,7 +4186,15 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
           }
           
           
-          barplot(sorted_varimp_res, xlab="Selected features", main=barplot_text,cex.axis=0.5,cex.names=0.4, ylab="GCV",range(pretty(c(0,sorted_varimp_res))),space=0.1)
+         # barplot(sorted_varimp_res, xlab="Selected features", main=barplot_text,cex.axis=0.5,cex.names=0.4, ylab="GCV",range(pretty(c(0,sorted_varimp_res))),space=0.1)
+          par(mar=c(10,7,4,2))
+          #    ##save(varimp_res2,data_m_fc,rf_classlabels,sorted_varimp_res,file="test_rf.Rda")
+          #xaxt="n",
+          x=barplot(sorted_varimp_res, xlab="", main=barplot_text,cex.axis=0.9,
+                    cex.names=0.9, ylab="",las=2,ylim=range(pretty(c(0,sorted_varimp_res))))
+          title(ylab = "GCV", cex.lab = 1.5,
+                line = 4.5)
+          
           
           if(output.device.type!="pdf"){
             
@@ -4188,7 +4220,7 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
         if(featselmethod=="pls" | featselmethod=="o1pls" | featselmethod=="o2pls" | featselmethod=="spls" | featselmethod=="o1spls" | featselmethod=="o2spls")
         {
           
-        #  cat(paste("Performing ",featselmethod," analysis",sep=""),sep="\n")
+          cat(paste("Performing ",featselmethod," analysis",sep=""),sep="\n")
           
           classlabels<-as.data.frame(classlabels)
           
@@ -4899,7 +4931,7 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
           if(featselmethod=="ttest" && pairedanalysis==TRUE)
           {
             
-        #   cat("Performing paired t-test analysis",sep="\n")
+         #  cat("Performing paired t-test analysis",sep="\n")
             
             #print(dim(data_m_fc))
             #print(dim(classlabels_response_mat))
@@ -5043,7 +5075,7 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
           if(featselmethod=="ttest" && pairedanalysis==FALSE)
           {
             
-          #  cat("Performing t-test analysis",sep="\n")
+            #cat("Performing t-test analysis",sep="\n")
             
             #print(dim(data_m_fc))
             #print(dim(classlabels_response_mat))
@@ -5339,7 +5371,7 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
                 next;
               }
               
-           #   cat("Performing logistic regression analysis",sep="\n")
+             # cat("Performing logistic regression analysis",sep="\n")
               
               classlabels_response_mat[,1]<-as.numeric((classlabels_response_mat[,1]))-1
               
@@ -5356,7 +5388,7 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
                 classlabels_response_mat[,1]<-as.numeric((classlabels_response_mat[,1]))
                 
               }else{
-             #  cat("Performing linear regression analysis",sep="\n")
+           #    cat("Performing linear regression analysis",sep="\n")
                 fileheader="lmreg"
               }
             }
@@ -7942,26 +7974,28 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
               classlabels_response_mat<-as.data.frame(classlabels_response_mat[,1])
             }
             
-            
-            svm_model_reg<-try(svm(x=subdata,y=(classlabels_response_mat[,1]),type="eps",cross=kfold),silent=TRUE)
-            
-            if(is(svm_model_reg,"try-error")){
-              print("SVM could not be performed. Skipping to the next step.")
-              termA<-(-1)
-              pred_acc<-termA
-            }else{
-              termA<-svm_model_reg$tot.MSE
-              
-              pred_acc<-termA
-              print(paste(kfold,"-fold mean squared error: ", pred_acc,sep=""))
-              
+            if(FALSE){
+                  svm_model_reg<-try(svm(x=subdata,y=(classlabels_response_mat[,1]),type="eps",cross=kfold),silent=TRUE)
+                  
+                  if(is(svm_model_reg,"try-error")){
+                    print("SVM could not be performed. Skipping to the next step.")
+                    termA<-(-1)
+                    pred_acc<-termA
+                  }else{
+                    termA<-svm_model_reg$tot.MSE
+                    
+                    pred_acc<-termA
+                    print(paste(kfold,"-fold mean squared error: ", pred_acc,sep=""))
+                    
+                  }
             }
-            
+            termA<-(-1)
+            pred_acc<-termA
             
             
           #  print("######################################")
           }else{
-            print("Number of selected variables is too small to perform CV.")
+            #print("Number of selected variables is too small to perform CV.")
             
           }
           
@@ -7998,11 +8032,18 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
    
           goodfeats<-unique(goodfeats)
           
+        #  save(names_with_mz_time,goodfeats,file="goodfeats_1.Rda")
+          
+          if(length(which(is.na(goodfeats$mz)==TRUE))>0){
+            
+            goodfeats<-goodfeats[-which(is.na(goodfeats$mz)==TRUE),]
+          }
           if(is.na(names_with_mz_time)==FALSE){
+            
             goodfeats_with_names<-merge(names_with_mz_time,goodfeats,by=c("mz","time"))
             goodfeats_with_names<-goodfeats_with_names[match(goodfeats$mz,goodfeats_with_names$mz),]
             
-            #save(names_with_mz_time,goodfeats,goodfeats_with_names,file="goodfeats_with_names.Rda")
+            #
             
             goodfeats_name<-goodfeats_with_names$Name
             #}
@@ -8789,7 +8830,7 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
             goodfeats<-goodfeats_temp
             
             rm(goodfeats_temp)
-            print("PCA selected features")
+           
             #      #save(goodfeats,goodfeats_temp,mz_ind,time_ind,classlabels_orig,analysistype,alphabetical.order,col_vec,file="pca1.Rda")
             
             num_sig_feats<-nrow(goodfeats)
@@ -9941,7 +9982,7 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
                 #legend("bottomleft",legend=levels(classlabels_orig[,2]),text.col=unique(patientcolors),pch=13,cex=0.4)
                 #par(xpd=FALSE)
                 
-                clust_res<-cutreeDynamic(distM=as.matrix(d2),dendro=clust1)
+                clust_res<-cutreeDynamic(distM=as.matrix(d2),dendro=clust1,cutHeight = 0.95,minClusterSize = 2,deepSplit = 4,verbose = FALSE)
                 
                 #mycl_samples <- cutree(clust1, h=max(clust1$height)/2)
                 

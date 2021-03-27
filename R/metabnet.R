@@ -9,7 +9,7 @@ function(feature_table_file,target.metab.file,sig.metab.file,class_labels_file=N
   
   
   
-  
+  parallel:::setDefaultClusterOptions(setup_strategy = "sequential")
   data_matrix<-data_preprocess(Xmat=NA,Ymat=NA,feature_table_file=feature_table_file,parentoutput_dir=parentoutput_dir,class_labels_file=NA,num_replicates=num_replicates,feat.filt.thresh=NA,
                                summarize.replicates=summarize.replicates,summary.method=summary.method,
                                all.missing.thresh=all.missing.thresh,group.missing.thresh=group.missing.thresh,

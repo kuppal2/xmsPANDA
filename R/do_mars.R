@@ -3,7 +3,7 @@ function(X,classlabels, analysismode="classification",kfold=10){
   
   dataA<-t(X)
   dataA<-as.data.frame(dataA)
-  
+  rnames1<-rownames(X)
   
   if(analysismode=="classification"){
     
@@ -32,9 +32,9 @@ function(X,classlabels, analysismode="classification",kfold=10){
     
     gcv_list<-c(mars_res[[1]]$gcv,mars_res[[2]]$gcv,mars_res[[3]]$gcv)
     
-    min_gcv<-which(gcv_list==min(gcv_list,na.rm=TRUE))
+    max_gcv<-which(gcv_list==max(gcv_list,na.rm=TRUE))
     
-    mars_res<-earth(formula=factor(Targetvar) ~ .,data=dataA,Use.beta.cache=FALSE,degree=min_gcv[1],ncross=kfold,nfold=kfold)
+    mars_res<-earth(formula=factor(Targetvar) ~ .,data=dataA,Use.beta.cache=FALSE,degree=max_gcv[1],ncross=kfold,nfold=kfold)
     
   }else{
     if(analysismode=="regression"){
@@ -69,6 +69,7 @@ function(X,classlabels, analysismode="classification",kfold=10){
       
       attach(dataA,warn.conflicts=FALSE)
       
+     # save(dataA,kfold,file="dataA.rda")
       #mars_res[[1]]<-earth(y=(classlabels),x=dataA,Use.beta.cache=FALSE,degree=1,ncross=kfold,nfold=kfold)
       #		mars_res[[2]]<-earth(y=(classlabels),x=dataA,Use.beta.cache=FALSE,degree=2,ncross=kfold,nfold=kfold)
       #		mars_res[[3]]<-earth(y=(classlabels),x=dataA,Use.beta.cache=FALSE,degree=3,ncross=kfold,nfold=kfold)
@@ -77,9 +78,9 @@ function(X,classlabels, analysismode="classification",kfold=10){
       mars_res[[2]]<-earth(formula=as.numeric(Targetvar) ~ .,data=dataA,Use.beta.cache=FALSE,degree=2,ncross=kfold,nfold=kfold)
       mars_res[[3]]<-earth(formula=as.numeric(Targetvar) ~ .,data=dataA,Use.beta.cache=FALSE,degree=3,ncross=kfold,nfold=kfold)
       gcv_list<-c(mars_res[[1]]$gcv,mars_res[[2]]$gcv,mars_res[[3]]$gcv)
-      min_gcv<-which(gcv_list==min(gcv_list,na.rm=TRUE))
+      max_gcv<-which(gcv_list==max(gcv_list,na.rm=TRUE))
       
-      mars_res<-earth(formula=as.numeric(Targetvar) ~ .,data=dataA,Use.beta.cache=FALSE,degree=min_gcv[1],ncross=kfold,nfold=kfold)
+      mars_res<-earth(formula=as.numeric(Targetvar) ~ .,data=dataA,Use.beta.cache=FALSE,degree=max_gcv[1],ncross=kfold,nfold=kfold)
       #mars_res<-earth(formula=(Targetvar) ~ .,data=dataA,Use.beta.cache=FALSE,degree=3,ncross=kfold,nfold=kfold)
       #mars_res<-earth(y=(classlabels),x=dataA,Use.beta.cache=FALSE,degree=min_gcv[1],ncross=kfold,nfold=kfold)
       
@@ -98,11 +99,17 @@ function(X,classlabels, analysismode="classification",kfold=10){
   #if(FALSE)
   {
     varimp_res <- evimp(mars_res,trim=FALSE)
+
+    #save(varimp_res,file="varimp_res.Rda")    
+    #varimp_res<-as.data.frame(varimp_res)
+    varimp_res<-varimp_res[order(varimp_res[,1]),]
+    rownames(varimp_res)<-rnames1
     
     #print(varimp_res[1:10,])
     varimp_marsres1<-varimp_res #[order(varimp_res[,2],decreasing=TRUE),]
     
     mars_mznames<-rownames(varimp_marsres1)
+    
     
     g1<-grep(pattern="NA",x=mars_mznames)
     if(length(g1)>0){

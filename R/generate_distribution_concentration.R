@@ -64,6 +64,7 @@ function(targeted_table,seq,outloc,groupcheck=FALSE,targetID=NA,min_num_nonmissi
       
       #draw the plot
       print(ggplot() +
+              stat_boxplot(geom='errorbar',width=0.2) +
               geom_boxplot(data=plotdata_study, aes(x=batch_study, y=inten_study,fill=batch_study)) +
               geom_point(data=plotdata, aes(x=batch, y=inten,fill=batch,color=col)) +
               scale_y_continuous(name="concentration") +
@@ -138,6 +139,7 @@ function(targeted_table,seq,outloc,groupcheck=FALSE,targetID=NA,min_num_nonmissi
         
         
         print(ggplot() +
+                stat_boxplot(geom='errorbar',width=0.2) +
                 geom_boxplot(data=plotdata_study, aes(x="", y=intensity)) +
                 geom_point(data=plotdata, aes(x="", y=intensity,color=col)) +
                 scale_y_continuous(name="concentration") +
@@ -199,6 +201,7 @@ function(targeted_table,seq,outloc,groupcheck=FALSE,targetID=NA,min_num_nonmissi
           }
           
           print(ggplot() +
+                  stat_boxplot(geom='errorbar',width=0.2) +
                   geom_boxplot(data=plotdata_study, aes(x="", y=intensity)) +
                   geom_point(data=plotdata, aes(x="", y=intensity,color=col,size=size)) +
                   scale_y_continuous(name="concentration") +
@@ -240,6 +243,7 @@ function(targeted_table,seq,outloc,groupcheck=FALSE,targetID=NA,min_num_nonmissi
           }
           
           print(ggplot() +
+                  stat_boxplot(geom='errorbar',width=0.2) +
                   geom_boxplot(data=plotdata_study, aes(x="", y=intensity)) +
                   geom_point(data=plotdata, aes(x="", y=intensity,color=col)) +
                   scale_y_continuous(name="intensity") +
@@ -346,6 +350,7 @@ function(targeted_table,seq,outloc,groupcheck=FALSE,targetID=NA,min_num_nonmissi
             }
             
             print(ggplot() +
+                    stat_boxplot(geom='errorbar',width=0.2) +
                     geom_boxplot(data=plotdata, aes(x=group, y=inten,fill=group)) +
                     geom_point(data=plotdata, aes(x=group, y=inten,fill=group,color=col,size=size)) +
                     scale_y_continuous(name="intensity") +
@@ -386,6 +391,7 @@ function(targeted_table,seq,outloc,groupcheck=FALSE,targetID=NA,min_num_nonmissi
             }
             
             print(ggplot() +
+                    stat_boxplot(geom='errorbar',width=0.2) +
                     geom_boxplot(data=plotdata, aes(x=group, y=inten,fill=group)) +
                     geom_point(data=plotdata, aes(x=group, y=inten,fill=group,color=col)) +
                     scale_y_continuous(name="intensity") +
@@ -430,6 +436,7 @@ function(targeted_table,seq,outloc,groupcheck=FALSE,targetID=NA,min_num_nonmissi
           }
           
           print(ggplot() +
+                  stat_boxplot(geom='errorbar',width=0.2) +
                   geom_boxplot(data=plotdata, aes(x=group, y=inten,fill=group)) +
                   geom_point(data=plotdata, aes(x=group, y=inten,fill=group,color=col)) +
                   scale_y_continuous(name="intensity") +

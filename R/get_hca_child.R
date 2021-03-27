@@ -521,7 +521,7 @@ function(feature_table_file,parentoutput_dir,class_labels_file,X=NA,Y=NA,heatmap
       TOM = TOMsimilarity(ADJdataOne, TOMType="signed") # specify network type
       dissTOMCormat = 1-TOM
       #dissTOMCormat=TOMdist(ADJdataOne) #(1-global_cor)
-      hr = flashClust(as.dist(dissTOMCormat),method="complete");
+      hr = fastcluster::hclust(as.dist(dissTOMCormat),method="complete");
       
       
       
@@ -584,14 +584,14 @@ function(feature_table_file,parentoutput_dir,class_labels_file,X=NA,Y=NA,heatmap
       TOM = TOMsimilarity(ADJdataOne, TOMType="signed") # specify network type
       dissTOMCormat = 1-TOM
      # dissTOMCormat=TOMdist(ADJdataOne) #(1-global_cor)
-      hc = flashClust(as.dist(dissTOMCormat),method="complete");
+      hc = fastcluster::hclust(as.dist(dissTOMCormat),method="complete");
       
       pdf("sampleplot.pdf")
       plot(hc,labels=F,main="Dendrogram")
       dev.off()
       
       
-      mycl_samples <-cutreeDynamic(hc,distM= dissTOMCormat,deepSplit=deepsplit, minClusterSize=minclustsize, pamRespectsDendro = FALSE, pamStage=TRUE,verbose=0)
+      mycl_samples <-cutreeDynamic(hc,distM= dissTOMCormat,deepSplit=deepsplit, minClusterSize=minclustsize, pamRespectsDendro = FALSE, pamStage=FALSE,verbose=0)
       
       m3=try(mergeCloseModules((data_m),colors=mycl_samples,cutHeight=mergeCutheight),silent=TRUE)
       
@@ -633,7 +633,7 @@ function(feature_table_file,parentoutput_dir,class_labels_file,X=NA,Y=NA,heatmap
       if(cutree.method=="dynamic"){
         
        # save(distc,distc_m,deepsplit,minclustsize,mergeCutHeight,data_m,file="debugdynamic.Rda")
-        hc = flashClust(distc,method="complete")
+        hc = fastcluster::hclust(distc,method="complete")
         
         mycl_samples <-cutreeDynamic(hc,distM= distc_m,deepSplit=deepsplit, method="hybrid",minClusterSize=minclustsize, pamRespectsDendro = FALSE, pamStage=FALSE,verbose=0)
         
@@ -649,7 +649,7 @@ function(feature_table_file,parentoutput_dir,class_labels_file,X=NA,Y=NA,heatmap
         
         mycl_samples<-mod_list2
         names(mycl_samples)<-hc$labels
-        hr = flashClust(distr,method="complete")
+        hr = fastcluster::hclust(distr,method="complete")
         
         mycl_metabs <-cutreeDynamic(hr,distM=distr_m,deepSplit=deepsplit, method="hybrid",minClusterSize=minclustsize, pamRespectsDendro = FALSE, pamStage=FALSE,verbose=0)
         

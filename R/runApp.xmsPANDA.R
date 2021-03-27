@@ -1,6 +1,5 @@
-
 runApp.xmsPANDA <-
-  function() {
+function() {
     
     suppressMessages(library(shiny))
     suppressMessages(library(shinyjs))

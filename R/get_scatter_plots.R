@@ -298,37 +298,37 @@ function (X = NA, Y = NA, feature_table_file, parentoutput_dir,
     
     sadj = (s1[5] - s1[3]) * ypos.adj.factor
     if (is.na(group_by_mat[1]) == TRUE) {
-      p <- ggscatter(temp_dm, y = "Class", x = "Feature", conf.int=conf.int,
+      p <- suppressMessages(ggscatter(temp_dm, y = "Class", x = "Feature", conf.int=conf.int,
                      title = mzname, xlab = xlabel, ylab = ylabel, 
                      palette = col_vec[1], col = col_vec[1], shape = 20, 
-                     size = 3, add = "reg.line", add.params = list(color = "black", 
-                                                                   fill = "lightgray")) + theme(plot.title = element_text(hjust = 0.5, 
-                                                                                                                          size = 10)) + stat_cor(method = cor.method, 
-                                                                                                                                                 label.y = max(temp_dm$Feature + (sadj)))
+                     size = 3, add = "reg.line",
+                     add.params = list(color = "black", 
+                    fill = "lightgray"))) + theme(plot.title = element_text(hjust = 0.5, size = 10)) + stat_cor(method = cor.method, 
+                    label.y = max(temp_dm$Feature + (sadj)))
     }
     else {
       temp_dm$GroupBy <- as.factor(temp_dm$GroupBy)
       
       if(multiple.facets==TRUE){
-        p <- ggscatter(temp_dm, y = "Class", x = "Feature", conf.int=conf.int,
+        p <- suppressMessages(ggscatter(temp_dm, y = "Class", x = "Feature", conf.int=conf.int,
                        title = mzname, xlab = xlabel, ylab = ylabel,
                        add = "reg.line", color = "GroupBy", facet.by="GroupBy", scales="free",
                        palette = col_vec, fullrange = TRUE, shapez = 20, 
-                       size = 3) + theme(plot.title = element_text(hjust = 0.5, 
+                       size = 3)) + theme(plot.title = element_text(hjust = 0.5, 
                                                                    size = 10)) + stat_cor(method = cor.method, aes(color = GroupBy))
       }else{
         
         #ylim=c(s1[1],s1[6]),
         
-        p <- ggscatter(temp_dm, y = "Class", x = "Feature", conf.int=conf.int,
+        p <- suppressMessages(ggscatter(temp_dm, y = "Class", x = "Feature", conf.int=conf.int,
                        title = mzname, xlab = xlabel, ylab = ylabel, 
                        add = "reg.line", color = "GroupBy", 
                        palette = col_vec, fullrange = TRUE, shape = 20, 
-                       size = 3) + theme(plot.title = element_text(hjust = 0.5, 
+                       size = 3)) + theme(plot.title = element_text(hjust = 0.5, 
                                                                    size = 10)) + stat_cor(method = cor.method, aes(color = GroupBy))
       }
     }
-    print(p)
+    suppressMessages(print(p))
   })
   if (newdevice == TRUE) {
     dev.off()

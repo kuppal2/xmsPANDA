@@ -35,6 +35,8 @@ function(Xmat=NA,Ymat=NA,Wmat=NA,Zmat=NA,feature_table,class_file,ref_list,foldc
     stop('Please double check the time column in your feature table, it is not numeric.')
   }
   
+  parallel:::setDefaultClusterOptions(setup_strategy = "sequential")
+  
   #read in sample id mapping
   if(!is.na(class_file)){
     sample.mapping<- read.table(class_file, sep= "\t", header= TRUE)

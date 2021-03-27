@@ -755,6 +755,9 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
                 }
             
             if(is.na(boxplot.col.opt)==FALSE){
+              
+              p=p+stat_boxplot(geom='errorbar',width=0.2)
+              
               if(boxplot.col.opt=="white"){
                 p<-p + geom_boxplot()
               }else{

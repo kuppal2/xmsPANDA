@@ -8,7 +8,7 @@ function(feature_table_file=NA,parentoutput_dir,class_labels_file=NA,X=NA,Y=NA,h
                   plots.width=8,plots.height=8,plots.res=600, plots.type="cairo", alphacol=1, hca_type="two-way",
                   newdevice=FALSE,input.type="intensity",mainlab="",cexRow=0.5, cexCol=0.5,plot.bycluster=FALSE,color.rows=TRUE,
                   similarity.matrix="correlation",deepsplit=4,minclustsize=2,mergeCutHeight=0.05,num_nodes=2,alphabetical.order=FALSE,
-                  pairedanalysis=FALSE,cutree.method="dynamic",study.design=c("multiclass","onewayanova","twowayanova","onewayanovarepeat",
+                  pairedanalysis=FALSE,cutree.method=c("dynamic","default"),study.design=c("multiclass","onewayanova","twowayanova","onewayanovarepeat",
                                                                                  "twowayanovarepeat"),labRow.value = FALSE,
                   labCol.value = FALSE,power_val=6,row.col.opt="journal",show.silhouette=FALSE,cexLegend=0.7,ylab_text="",xlab_text="")
 {
@@ -18,6 +18,8 @@ function(feature_table_file=NA,parentoutput_dir,class_labels_file=NA,X=NA,Y=NA,h
                                        "brewer.OrRd","brewer.GnBu","brewer.BuPu","brewer.BuGn","brewer.blues","black","grey65","terrain","rainbow","heat","topo"))
   
   match_col.opt=length(which(is.na(match_col.opt)==TRUE))
+  
+  cutree.method=cutree.method[1]
   
   if(length(match_col.opt)<1){
     

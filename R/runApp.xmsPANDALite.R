@@ -1,10 +1,10 @@
 runApp.xmsPANDALite <-
-  function() {
+function() {
     
     suppressMessages(library(shiny))
-    suppressMessages(library(shinyjs))
-    suppressMessages(library(shinyBS))
-    suppressMessages(library(DT))
+                     suppressMessages(library(shinyjs))
+                                      suppressMessages(library(shinyBS))
+                                                       suppressMessages(library(DT))
     
     appDir <- system.file("shinyappLite", package = "xmsPANDA")
     if (appDir == "") {
