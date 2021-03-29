@@ -30,8 +30,6 @@ demetabs_reslite5<-diffexp.lite(Xmat=Xmat,Ymat=Ymat,outloc=outloc,featselmethod=
                                 normalization.method = "log2transform",analysismode="regression",vcovHC.type="HC0")
 
 
-
-
 #Venn diagram showing overlap between different methods
 input.i<-list(lmreg=demetabs_reslite1$diffexp_metabs$Name,
               pls=demetabs_reslite2$diffexp_metabs$Name,

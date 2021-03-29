@@ -8952,9 +8952,9 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
            }else{
              roc_newdevice=TRUE
            }
-            roc_res<-get_roc(dataA=goodfeats_temp,classlabels=classlabels,classifier=rocclassifier,kname="radial",
+            roc_res<-try(get_roc(dataA=goodfeats_temp,classlabels=classlabels,classifier=rocclassifier,kname="radial",
                                  rocfeatlist=rocfeatlist,rocfeatincrement=rocfeatincrement,
-                             mainlabel="Training set ROC curve using top features",newdevice=roc_newdevice)
+                             mainlabel="Training set ROC curve using top features",newdevice=roc_newdevice),silent=TRUE)
             
            # print(roc_res)
             
