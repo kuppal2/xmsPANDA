@@ -1,5 +1,4 @@
-library(shiny)
-library(shinyWidgets)
+source("R/load_packages.R")
 
 workflow<-fluidRow(
   tags$div(

@@ -9506,7 +9506,8 @@ get_classification.accuracy<-function(kfold,featuretable,classlabels,kernelname=
       testclass<-y[g,]
       
       # ##save(g,temptrain,temptest,tempclass,testclass,v,classifier,num_samp,errortype,kernelname,svm.type,file="temp.Rda")
-      cv_res<-get_classification.accuracy.child(temptrain=temptrain,tempclass=tempclass,kernelname=kernelname,errortype=errortype,classifier=classifier,num_samp=num_samp,temptest=temptest,testclass=testclass,numfolds=v,plotroc=FALSE,rocfeatlist=NA,svm.cost=svm.cost,svm.gamma=svm.gamma,svm.type=svm.type,confint.auc=FALSE)
+      cv_res<-get_classification.accuracy.child(temptrain=temptrain,tempclass=tempclass,kernelname=kernelname,errortype=errortype,classifier=classifier,num_samp=num_samp,temptest=temptest,testclass=testclass,numfolds=v,plotroc=FALSE,
+                                                rocfeatlist=NA,svm.cost=svm.cost,svm.gamma=svm.gamma,svm.type=svm.type,confint.auc=FALSE)
       
       #svm_acc[i]<-cv_res$classification_acc
       
@@ -10234,7 +10235,7 @@ get_manhattanplots<-function(xvec,yvec,up_or_down,maintext="",ythresh=0.05,y2thr
 
 
 #function to generate ROC curves using SVM or logistic regression classifiers
-get_roc<-function(dataA,classlabels,classifier="svm",kname="radial",rocfeatlist=NA,rocfeatincrement=TRUE,
+get_roc<-function(dataA,classlabels,classifier="svm",kname="radial",rocfeatlist=c(1,2,3,4,5),rocfeatincrement=TRUE,
                   testset=NA,testclasslabels=NA,mainlabel=NA,
                   col_lab=c("black"),legend=TRUE,newdevice=FALSE,mz_names=NA,svm.type="C-classification"){
   
@@ -10272,6 +10273,7 @@ get_roc<-function(dataA,classlabels,classifier="svm",kname="radial",rocfeatlist=
     num_select<-length(rocfeatlist)
   }
   
+  
   if(is.na(mz_names)==TRUE){
     cnames[1]<-"mz"
     cnames[2]<-"time"
@@ -10294,8 +10296,17 @@ get_roc<-function(dataA,classlabels,classifier="svm",kname="radial",rocfeatlist=
       rocfeatlist<-seq(1,dim(d2)[2])
     }
     
+    if(max(rocfeatlist,na.rm=TRUE)>ncol(d2))
+    {
+      rocfeatlist<-rocfeatlist[-which(rocfeatlist>ncol(d2))]
+    }
+    
+    
+    
+    
     testset<-t(testset[,-c(1:2)])
     testset<-testset[,rocfeatlist]
+    
     d2<-d2[,rocfeatlist]
     d1<-d1[rocfeatlist,]
     mz_names<-paste(d1$mz,d1$time,sep="_")
@@ -10322,6 +10333,11 @@ get_roc<-function(dataA,classlabels,classifier="svm",kname="radial",rocfeatlist=
     if(is.na(rocfeatlist)==TRUE){
       
       rocfeatlist<-seq(1,dim(d2)[2])
+    }
+    
+    if(max(rocfeatlist,na.rm=TRUE)>ncol(d2))
+    {
+      rocfeatlist<-rocfeatlist[-which(rocfeatlist>ncol(d2))]
     }
     
     # testset<-unique(testset)
@@ -10377,7 +10393,7 @@ get_roc<-function(dataA,classlabels,classifier="svm",kname="radial",rocfeatlist=
   
   d3<-as.data.frame(d3)
   
-  ##saved3,file="d3.Rda")
+ # save(d3,file="d3.Rda")
   
   #featlist<-unique(featlist)
   
@@ -10420,7 +10436,6 @@ get_roc<-function(dataA,classlabels,classifier="svm",kname="radial",rocfeatlist=
   if(featincrement==TRUE){
     
     
-    
     featlist<-featlist+1
     
     alltestset<-testset
@@ -10431,7 +10446,6 @@ get_roc<-function(dataA,classlabels,classifier="svm",kname="radial",rocfeatlist=
       testset<-alltestset
       num_select<-featlist[n]
       
-    
       
       d4<-as.data.frame(d3[,c(1:num_select)])
       
@@ -10700,6 +10714,9 @@ get_roc<-function(dataA,classlabels,classifier="svm",kname="radial",rocfeatlist=
 
   if(newdevice==TRUE){
     try(dev.off(),silent=TRUE)
+  }else{
+    
+    
   }
   options(warn=0)
   return(list("roc"=roc_res)) #prediction"=pred1, #"auc"=auc_res,
@@ -16415,19 +16432,18 @@ get_boxplots<-function(X=NA,Y=NA,feature_table_file,parentoutput_dir,class_label
     boxplot.col.opt=get_hexcolors_for_palettes(color.palette=boxplot.col.opt[1],alpha.col=alphacol[1])
   }
 
-  
-  res<-get_boxplots_child(X=X,Y=Y,feature_table_file=feature_table_file,parentoutput_dir=parentoutput_dir,class_labels_file=class_labels_file,boxplot.col.opt,alphacol=alphacol,newdevice=newdevice,cex.plots=cex.plots,
+  res<-suppressWarnings(suppressMessages(get_boxplots_child(X=X,Y=Y,feature_table_file=feature_table_file,parentoutput_dir=parentoutput_dir,class_labels_file=class_labels_file,boxplot.col.opt,alphacol=alphacol,newdevice=newdevice,cex.plots=cex.plots,
                      replace.by.NA=replace.by.NA,pairedanalysis=pairedanalysis,filename=filename,ylabel=ylabel,alphabetical.order=alphabetical.order,name=name,add.jitter=add.jitter,add.pvalues=add.pvalues,class.levels=class.levels,fill.plots=fill.plots,
                      connectpairedsamples=connectpairedsamples,boxplot.type=boxplot.type,study.design=study.design,
                      multiple.figures.perpanel=multiple.figures.perpanel,ggplot.type1=ggplot.type1,
                      replace.outliers=replace.outliers,plot.height=plot.height,
                      plot.width=plot.width,extra_text=extra_text,group_by_mat=group_by_mat,
                      position_dodge_width=position_dodge_width,numnodes=numnodes,
-                     hightlight.points=hightlight.points,ref.group.val=ref.group.val,facet.nrow=facet.nrow,facet.ncol=facet.ncol,...)
+                     hightlight.points=hightlight.points,ref.group.val=ref.group.val,facet.nrow=facet.nrow,facet.ncol=facet.ncol,...)))
   
   if(newdevice==TRUE){
     
-    try(dev.off(filename),silent=TRUE)
+    try(dev.off(),silent=TRUE)
   }
   
   try(unlink("Rplots.pdf"),silent=TRUE)
@@ -16961,6 +16977,8 @@ get_boxplots_child<-function(X,Y,feature_table_file,parentoutput_dir,class_label
     
     cl<-makeCluster(numnodes)
     clusterEvalQ(cl,library(ggplot2))
+    clusterExport(cl,"replace_outliers")
+    
     #plot_res<-lapply(1:dim(goodfeats)[1],function(m)
     plot_res<-parLapply(cl,1:dim(goodfeats)[1],function(m,mzvec,timevec,check_names,name,class_labels_levels,sampleclass,col_vec,goodfeats,pairedanalysis,connectpairedsamples,boxplot.type,
                                                         ggplot.type1,group_by_mat,cex.plots,boxplot.col.opt,add.jitter,add.pvalues,fill.plots,multiple.figures.perpanel)
@@ -29907,7 +29925,7 @@ diffexp<-function(Xmat=NA,Ymat=NA,feature_table_file,parentoutput_dir=NA,class_l
                   heatmap.col.opt="brewer.RdBu",
                   manhattanplot.col.opt=c("darkblue","red3"),
                   hca_type="two-way",pls_vip_thresh=2,max_varsel=100,
-                  pls_ncomp=5,pca.stage2.eval=FALSE,scoreplot_legend=TRUE,pca.global.eval=TRUE,rocfeatlist=seq(2,6,1),rocfeatincrement=TRUE,rocclassifier="svm",
+                  pls_ncomp=5,pca.stage2.eval=FALSE,scoreplot_legend=TRUE,pca.global.eval=TRUE,rocfeatlist=seq(1,5,1),rocfeatincrement=TRUE,rocclassifier="svm",
                   foldchangethresh=1,wgcnarsdthresh=20,WGCNAmodules=FALSE,
                   optselect=TRUE,max_comp_sel=2,saveRda=FALSE,legendlocation="topleft",pcacenter=TRUE,pcascale=TRUE,pca.cex.val=6,
                   pca.ellipse=FALSE,ellipse.conf.level=0.95,pls.permut.count=NA,svm.acc.tolerance=5,limmadecideTests=FALSE,pls.vip.selection="max",globalclustering=FALSE,
@@ -30506,7 +30524,8 @@ diffexp<-function(Xmat=NA,Ymat=NA,feature_table_file,parentoutput_dir=NA,class_l
                                                            normalization.method[1],rsd.filt.list,
                                                            pairedanalysis,featselmethod[i],fdrthresh,fdrmethod,cor.method,networktype,network.label.cex,abs.cor.thresh,cor.fdrthresh,kfold,pred.eval.method,feat_weight,globalcor,
                                                            target.metab.file,target.mzmatch.diff,target.rtmatch.diff,max.cor.num,samplermindex,pcacenter,pcascale,
-                                                           numtrees,analysismode,net_node_colors,net_legend,svm_kernel,heatmap.col.opt,manhattanplot.col.opt,boxplot.col.opt,barplot.col.opt,sample.col.opt,lineplot.col.opt, scatterplot.col.opt,hca_type,alphacol,pls_vip_thresh,num_nodes,max_varsel, pls_ncomp=pls_ncomp,pca.stage2.eval=pca.stage2.eval,scoreplot_legend=scoreplot_legend,pca.global.eval=pca.global.eval,rocfeatlist=rocfeatlist,rocfeatincrement=rocfeatincrement,rocclassifier=rocclassifier,foldchangethresh=foldchangethresh,wgcnarsdthresh=wgcnarsdthresh,WGCNAmodules=WGCNAmodules,
+                                                           numtrees,analysismode,net_node_colors,net_legend,svm_kernel,heatmap.col.opt,manhattanplot.col.opt,boxplot.col.opt,barplot.col.opt,sample.col.opt,lineplot.col.opt, scatterplot.col.opt,hca_type,alphacol,pls_vip_thresh,num_nodes,max_varsel, pls_ncomp=pls_ncomp,pca.stage2.eval=pca.stage2.eval,scoreplot_legend=scoreplot_legend,pca.global.eval=pca.global.eval,
+                                        rocfeatlist=rocfeatlist,rocfeatincrement=rocfeatincrement,rocclassifier=rocclassifier,foldchangethresh=foldchangethresh,wgcnarsdthresh=wgcnarsdthresh,WGCNAmodules=WGCNAmodules,
                                                            optselect=optselect,max_comp_sel=max_comp_sel,saveRda=saveRda,legendlocation=legendlocation,degree_rank_method=degree_rank_method,pca.cex.val=pca.cex.val,pca.ellipse=pca.ellipse,ellipse.conf.level=ellipse.conf.level,pls.permut.count=pls.permut.count,
                                                            svm.acc.tolerance=svm.acc.tolerance,limmadecideTests=limmadecideTests,pls.vip.selection=pls.vip.selection,globalclustering=globalclustering,plots.res=plots.res,plots.width=plots.width,plots.height=plots.height,plots.type=plots.type,
                                                            output.device.type=output.device.type,pvalue.thresh,individualsampleplot.col.opt,pamr.threshold.select.max,mars.gcv.thresh,error.bar,cex.plots,modeltype,barplot.xaxis,lineplot.lty.option,match_class_dist=match_class_dist,
@@ -40083,9 +40102,9 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
             
             if(length(rocfeatlist)>length(goodip)){
               
-              rocfeatlist<-seq(1,(length(goodip)))
+              rocfeatlist<-rocfeatlist[-which(rocfeatlist>length(goodip))] #seq(1,(length(goodip)))
               numselect<-length(goodip)
-              rocfeatlist<-rocfeatlist+1
+              #rocfeatlist<-rocfeatlist+1
             }else{
               
               numselect<-length(rocfeatlist)
@@ -40437,7 +40456,7 @@ diffexp.child<-function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labe
             #print("Generating ROC curve using top features on training set")
             
             
-           # save(kfold,subdata,goodfeats,goodfeats_temp,classlabels,svm_kernel,pred.eval.method,match_class_dist,rocfeatlist,rocfeatincrement,file="rocdebug.Rda")
+          # save(kfold,goodfeats_temp,classlabels,svm_kernel,pred.eval.method,match_class_dist,rocfeatlist,rocfeatincrement,file="rocdebug.Rda")
             
            # roc_res<-try(get_roc(dataA=goodfeats_temp,classlabels=classlabels,classifier=rocclassifier,kname="radial",
                                #  rocfeatlist=rocfeatlist,rocfeatincrement=rocfeatincrement,mainlabel="Training set ROC curve using top features"),silent=TRUE)

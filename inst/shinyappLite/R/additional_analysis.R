@@ -1,17 +1,4 @@
-library(shiny)
-library(plotly)
-library(plyr)
-library(ggpubr)
-library(DT)
-library(shinycssloaders)
-library(colourpicker)
-library(R.utils)
-library(shinyWidgets)
-library(shinyBS)
-require(shiny)
-require(shinyjs)
-require(shinyBS)
-require(DT)
+source("R/load_packages.R")
 
 # Define UI for data upload app ----
 
@@ -135,7 +122,8 @@ bsCollapsePanel("Boxplots",column(width=12,
                                     selected="journal")),
          column(width=6,
                 id="boxplotinputarea",
-                selectInput(width="350px","boxplot.type", "Select function to generate boxplots:",c("boxplot (simple)"="simple","ggplot"="ggplot"),selected="ggplot")
+                selectInput(width="350px","boxplot.type.aa", "Select function to generate boxplots:",c("simple","ggplot"),
+                            selected="ggplot")
                 
                 
          )

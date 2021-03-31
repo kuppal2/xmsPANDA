@@ -1,4 +1,3 @@
-library(shiny)
 
 input<-fluidRow(
          tags$div(

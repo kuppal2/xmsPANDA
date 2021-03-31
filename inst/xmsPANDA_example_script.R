@@ -1,6 +1,6 @@
 
 #load xmsPANDA
-library(xmsPANDA)
+suppressPackageStartupMessages(library(xmsPANDA))
 
 #change the input and output locations
 feature_table_file<-"~/exh1n1_metabolome.txt"

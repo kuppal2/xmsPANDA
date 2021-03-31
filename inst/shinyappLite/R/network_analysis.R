@@ -1,4 +1,3 @@
-library(shiny)
 
 network_analysis<-fluidRow(
   tags$div(

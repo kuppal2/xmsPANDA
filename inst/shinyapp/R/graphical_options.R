@@ -1,4 +1,3 @@
-library(shiny)
 
 graphical_options<-fluidRow(
   tags$div(

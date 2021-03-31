@@ -1,11 +1,10 @@
-library(shiny)
 
 source("R/input.R")
 source("R/data_preprocessing.R")
 source("R/workflow.R")
 source("R/network_analysis.R")
 source("R/graphical_options.R")
-
+source("R/load_packages.R")
 # Define UI for data upload app ----
 
 statistical_analysis_page_lite <- fluidPage(

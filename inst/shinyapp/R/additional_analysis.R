@@ -1,18 +1,4 @@
-library(shiny)
-library(plotly)
-library(plyr)
-library(ggpubr)
-library(DT)
-library(shinycssloaders)
-library(colourpicker)
-library(R.utils)
-library(shinyWidgets)
-library(shinyBS)
-require(shiny)
-require(shinyjs)
-require(shinyBS)
-require(DT)
-
+source("R/load_packages.R")
 # Define UI for data upload app ----
 
 additional_analysis_page <- fluidPage(

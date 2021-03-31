@@ -1,4 +1,3 @@
-library(shiny)
 
 introduction_page <- fluidPage(
   column(12),

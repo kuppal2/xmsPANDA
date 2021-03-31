@@ -1,5 +1,5 @@
 get_roc <-
-function(dataA,classlabels,classifier="svm",kname="radial",rocfeatlist=NA,rocfeatincrement=TRUE,
+function(dataA,classlabels,classifier="svm",kname="radial",rocfeatlist=c(1,2,3,4,5),rocfeatincrement=TRUE,
                   testset=NA,testclasslabels=NA,mainlabel=NA,
                   col_lab=c("black"),legend=TRUE,newdevice=FALSE,mz_names=NA,svm.type="C-classification"){
   
@@ -37,6 +37,7 @@ function(dataA,classlabels,classifier="svm",kname="radial",rocfeatlist=NA,rocfea
     num_select<-length(rocfeatlist)
   }
   
+  
   if(is.na(mz_names)==TRUE){
     cnames[1]<-"mz"
     cnames[2]<-"time"
@@ -59,8 +60,17 @@ function(dataA,classlabels,classifier="svm",kname="radial",rocfeatlist=NA,rocfea
       rocfeatlist<-seq(1,dim(d2)[2])
     }
     
+    if(max(rocfeatlist,na.rm=TRUE)>ncol(d2))
+    {
+      rocfeatlist<-rocfeatlist[-which(rocfeatlist>ncol(d2))]
+    }
+    
+    
+    
+    
     testset<-t(testset[,-c(1:2)])
     testset<-testset[,rocfeatlist]
+    
     d2<-d2[,rocfeatlist]
     d1<-d1[rocfeatlist,]
     mz_names<-paste(d1$mz,d1$time,sep="_")
@@ -87,6 +97,11 @@ function(dataA,classlabels,classifier="svm",kname="radial",rocfeatlist=NA,rocfea
     if(is.na(rocfeatlist)==TRUE){
       
       rocfeatlist<-seq(1,dim(d2)[2])
+    }
+    
+    if(max(rocfeatlist,na.rm=TRUE)>ncol(d2))
+    {
+      rocfeatlist<-rocfeatlist[-which(rocfeatlist>ncol(d2))]
     }
     
     # testset<-unique(testset)
@@ -142,7 +157,7 @@ function(dataA,classlabels,classifier="svm",kname="radial",rocfeatlist=NA,rocfea
   
   d3<-as.data.frame(d3)
   
-  ##saved3,file="d3.Rda")
+ # save(d3,file="d3.Rda")
   
   #featlist<-unique(featlist)
   
@@ -185,7 +200,6 @@ function(dataA,classlabels,classifier="svm",kname="radial",rocfeatlist=NA,rocfea
   if(featincrement==TRUE){
     
     
-    
     featlist<-featlist+1
     
     alltestset<-testset
@@ -196,7 +210,6 @@ function(dataA,classlabels,classifier="svm",kname="radial",rocfeatlist=NA,rocfea
       testset<-alltestset
       num_select<-featlist[n]
       
-    
       
       d4<-as.data.frame(d3[,c(1:num_select)])
       
@@ -465,6 +478,9 @@ function(dataA,classlabels,classifier="svm",kname="radial",rocfeatlist=NA,rocfea
 
   if(newdevice==TRUE){
     try(dev.off(),silent=TRUE)
+  }else{
+    
+    
   }
   options(warn=0)
   return(list("roc"=roc_res)) #prediction"=pred1, #"auc"=auc_res,

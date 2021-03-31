@@ -8589,9 +8589,9 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
             
             if(length(rocfeatlist)>length(goodip)){
               
-              rocfeatlist<-seq(1,(length(goodip)))
+              rocfeatlist<-rocfeatlist[-which(rocfeatlist>length(goodip))] #seq(1,(length(goodip)))
               numselect<-length(goodip)
-              rocfeatlist<-rocfeatlist+1
+              #rocfeatlist<-rocfeatlist+1
             }else{
               
               numselect<-length(rocfeatlist)
@@ -8943,7 +8943,7 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
             #print("Generating ROC curve using top features on training set")
             
             
-           # save(kfold,subdata,goodfeats,goodfeats_temp,classlabels,svm_kernel,pred.eval.method,match_class_dist,rocfeatlist,rocfeatincrement,file="rocdebug.Rda")
+          # save(kfold,goodfeats_temp,classlabels,svm_kernel,pred.eval.method,match_class_dist,rocfeatlist,rocfeatincrement,file="rocdebug.Rda")
             
            # roc_res<-try(get_roc(dataA=goodfeats_temp,classlabels=classlabels,classifier=rocclassifier,kname="radial",
                                #  rocfeatlist=rocfeatlist,rocfeatincrement=rocfeatincrement,mainlabel="Training set ROC curve using top features"),silent=TRUE)

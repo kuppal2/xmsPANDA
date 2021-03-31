@@ -1,16 +1,17 @@
 options(shiny.maxRequestSize=100*1024^2)
 options(shiny.sanitize.errors=FALSE)
-library('xmsPANDA')
+#suppressPackageStartupMessages(library('xmsPANDA'))
+suppressMessages(library('xmsPANDA'))
 #library('lsmeans')
 #library('car')
 #library('KEGGREST')
 #.libPaths("R/source_codes/library/")
-require(shiny)
-require(shinyjs)
-require(shinyBS)
-require(DT)
+suppressMessages(require(shiny))
+suppressMessages(require(shinyjs))
+suppressMessages(require(shinyBS))
+suppressMessages(require(DT))
 
-source("R/source_codes/xmsPANDA_v1.0.9.38.R")
+suppressMessages(source("R/source_codes/xmsPANDA_v1.0.9.38.R"))
 
 # Server logic
 
@@ -1234,16 +1235,16 @@ server <- function(input, output, session) {
       boxplot_ylab=(input$boxplot.ylabel.text)
       
       #showNotification(input$boxplot_jitter_1)
-      #showNotification(input$boxplot_pvalues_1)
-      
-      boxplotres<-get_boxplots(X=boxplot_metab_data(),Y=boxplot_class_data(),feature_table_file=NA,parentoutput_dir=session_boxplotoutloc3(),class_labels_file=NA,
+   
+      boxplotres<-get_boxplots(X=boxplot_metab_data(),Y=boxplot_class_data(),feature_table_file=NA,parentoutput_dir=session_boxplotoutloc3(),
+                               class_labels_file=NA,
                                boxplot.col.opt=input$boxplot.sample.color.theme,
                                alphacol=1,newdevice=TRUE,cex.plots=0.8,replace.by.NA=FALSE,pairedanalysis=FALSE,
                                filename="boxplots",
                                ylabel=boxplot_ylab,
                                alphabetical.order=input$boxplot.alphabetical.order,name=NA,
                                add.jitter=input$boxplot_jitter_1,add.pvalues=input$boxplot_pvalues_1,class.levels=NA,fill.plots=TRUE,
-                               connectpairedsamples=FALSE,boxplot.type=input$boxplot.type,
+                               connectpairedsamples=FALSE,boxplot.type=input$boxplot.type.aa,
                                study.design=input$boxplot.analysistype,
                                multiple.figures.perpanel=FALSE,ggplot.type1=input$boxplot.ggplot.type1,replace.outliers=FALSE,
                                plot.height=input$boxplot.plots.height,plot.width=input$boxplot.plots.width,

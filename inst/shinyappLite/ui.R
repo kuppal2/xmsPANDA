@@ -1,14 +1,9 @@
-library(shiny)
-library(shinyBS)
-library(V8)
-library(BiocManager)
-options(repos = BiocManager::repositories())
-library(xmsPANDA)
 source("R/introduction_page.R")
 #source("R/statistical_analysis_page.R")
 source("R/statistical_analysis_page_lite.R")
 source("R/additional_analysis.R")
 source("R/help_page.R")
+source("R/load_packages.R")
 jsResetCode <- "shinyjs.reset = function() {history.go(0)}"
 
 ui<-fluidPage(
@@ -41,5 +36,5 @@ ui<-fluidPage(
     column(style="padding-top:0px;padding-bottom:0px;",12,tags$hr(style="margin-top:0px;margin-bottom:15px;border-top: 0.5px solid #ccccb3;")),
  column(12,  tags$div(style="margin-center",tags$footer(align="center",color="white",style="font-weight:normal;font-size:95%;color:black","Please ask questions or report any issues on the ",
                                                         tags$a(href='https://github.com/kuppal2/xmsPANDA/issues',target="_blank","GitHub"), " page"))),
-column(12,  tags$div(style="margin-center",tags$footer(align="center",color="white",style="font-weight:normal;font-size:95%;color:black","Release date: 03/29/2021"))),
+column(12,  tags$div(style="margin-center",tags$footer(align="center",color="white",style="font-weight:normal;font-size:95%;color:black","Release date: 03/30/2021"))),
 )

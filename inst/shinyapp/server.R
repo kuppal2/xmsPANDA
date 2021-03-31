@@ -1,16 +1,13 @@
 options(shiny.maxRequestSize=100*1024^2)
 options(shiny.sanitize.errors=FALSE)
-suppressMessages(library('xmsPANDA'))
-#library('lsmeans')
-#library('car')
-#library('KEGGREST')
-#.libPaths("R/source_codes/library/")
+suppressPackageStartupMessages(library('xmsPANDA'))
+
 suppressMessages(require(shiny))
                  suppressMessages(require(shinyjs))
                                   suppressMessages(require(shinyBS))
                                                    suppressMessages(require(DT))
 
-source("R/source_codes/xmsPANDA_v1.0.9.38.R")
+                                                   suppressMessages(source("R/source_codes/xmsPANDA_v1.0.9.38.R"))
 
 # Server logic
 

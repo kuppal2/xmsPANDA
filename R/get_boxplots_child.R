@@ -526,6 +526,8 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
     
     cl<-makeCluster(numnodes)
     clusterEvalQ(cl,library(ggplot2))
+    clusterExport(cl,"replace_outliers")
+    
     #plot_res<-lapply(1:dim(goodfeats)[1],function(m)
     plot_res<-parLapply(cl,1:dim(goodfeats)[1],function(m,mzvec,timevec,check_names,name,class_labels_levels,sampleclass,col_vec,goodfeats,pairedanalysis,connectpairedsamples,boxplot.type,
                                                         ggplot.type1,group_by_mat,cex.plots,boxplot.col.opt,add.jitter,add.pvalues,fill.plots,multiple.figures.perpanel)
