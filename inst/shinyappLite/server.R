@@ -563,7 +563,7 @@ server <- function(input, output, session) {
           ##3) arguments for feature seletion: c("limma","pls","pamr","spls","pls","MARS","RF","rfesvm","logitreg","ttest","wilcox","o1pls","lmreg")
           #"rfesvm","pamr","MARS","RF","logitreg","ttest","wilcox","o1pls","lmreg","lm1wayanova"
           #c("limma","pls","spls","pls","MARS","RF","rfesvm","logitreg","ttest","wilcox","o1pls","lmreg","lm1wayanova")
-          pairedanalysis = pairedanalysis, featselmethod=input$featselmethodi,
+          pairedanalysis = pairedanalysis, featselmethod=featselmethod,
           pvalue.thresh=pvalue_thresh,
           fdrthresh = fdrthresh, fdrmethod=fdr_method,
          analysismode=input$analysismode, 
