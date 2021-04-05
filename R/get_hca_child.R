@@ -866,10 +866,25 @@ function(feature_table_file,parentoutput_dir,class_labels_file,X=NA,Y=NA,heatmap
                     "#E64B3519","#4DBBD519","#631879E5","grey75")
         
        
-        col_vec2<-brewer.pal(10,"Set2")
-        colfunc <-colorRampPalette(c(col_vec2))
+        #brewer.pal(10,"Dark2")
+        #colfunc <-colorRampPalette(c(col_vec2))
         
-        col_vec2<-colfunc(length(unique(mycl_metabs)))
+        #col_vec2<-colfunc(length(unique(mycl_metabs)))
+        
+        col_vec2<-standardColors(length(mycl_metabs))
+        
+        if(length(grep(col_vec2,pattern="white$"))>0){
+          col_vec2<-col_vec2[-grep(col_vec2,pattern="white$")]
+        }
+        
+        if(length(grep(col_vec2,pattern="^ivory"))>0){
+          col_vec2<-col_vec2[-grep(col_vec2,pattern="^ivory")]
+        }
+        if(length(grep(col_vec2,pattern="^black"))>0){
+          col_vec2<-col_vec2[-grep(col_vec2,pattern="^black")]
+        }
+        
+        
         if(min(as.numeric(mycl_metabs),na.rm=TRUE)==0){
           
           rowcolors=col_vec2[as.numeric(mycl_metabs)+1] #+1]
