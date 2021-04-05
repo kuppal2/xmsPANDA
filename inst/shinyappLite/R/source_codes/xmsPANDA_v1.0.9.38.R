@@ -24283,7 +24283,7 @@ get_hca_child<-function(feature_table_file,parentoutput_dir,class_labels_file,X=
       
  # save(list=c("data_m","hr","labRow.value","labCol.value","cexLegend","hc","heatmap_cols","mainlab1","rowcolors","patientcolors","cexRow","cexCol","col_vec","class_labels_levels","labRow.value","labCol.value"),file="hcadebug.Rda")
 
-  save(rowcolors,hr,hc,file="rowcolors.Rda")
+ # save(rowcolors,hr,hc,file="rowcolors.Rda")
       if(col_samples==FALSE){
         if(is.data.znorm==FALSE){
           
