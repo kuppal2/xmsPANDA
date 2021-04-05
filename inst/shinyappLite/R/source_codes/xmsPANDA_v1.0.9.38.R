@@ -24166,7 +24166,7 @@ get_hca_child<-function(feature_table_file,parentoutput_dir,class_labels_file,X=
         }else{
           rowcolors=col_vec2[as.numeric(mycl_metabs)] #+1]
         }
-        print(rowcolors)
+        
         
       }else{
         rowcolors=NA #rep("",length(mycl_metabs))
