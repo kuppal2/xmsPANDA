@@ -865,11 +865,17 @@ function(feature_table_file,parentoutput_dir,class_labels_file,X=NA,Y=NA,heatmap
                     "#374E55FF","#8F7700FF","#5050FFFF","#6BD76BFF",
                     "#E64B3519","#4DBBD519","#631879E5","grey75")
         
+       
+        col_vec2<-brewer.pal(10,"Set2")
         colfunc <-colorRampPalette(c(col_vec2))
         
         col_vec2<-colfunc(length(unique(mycl_metabs)))
-        
-        rowcolors=col_vec2[as.numeric(mycl_metabs)+1]
+        if(min(as.numeric(mycl_metabs),na.rm=TRUE)==0){
+          
+          rowcolors=col_vec2[as.numeric(mycl_metabs)+1] #+1]
+        }else{
+          rowcolors=col_vec2[as.numeric(mycl_metabs)] #+1]
+        }
         
       }else{
         rowcolors=NA #rep("",length(mycl_metabs))
