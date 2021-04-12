@@ -15394,14 +15394,18 @@ get_partial_cornet<-function(data_m_fc_withfeats, sigfeats.index=NA,targeted.ind
   return(net4)
 }
 
-do_ridge_lasso_elasticnet<-function(X,classlabels,alpha=1,lambda=10^seq(10, -2, length = 100)){
+#alpha=1; lasso
+#alpha=0; ridge
+#alpha=0.5;elasticnet
+do_ridge_lasso_elasticnet<-function(X,classlabels,alpha.val=1){ #,lambda=10^seq(10, -2, length = 100)){
   
-  temp1<-cbind(classlabels,t(X))
-  temp1<-as.data.frame(temp1)
+  #temp1<-cbind(classlabels,t(X))
+  #temp1<-as.data.frame(temp1)
   
   x<-t(X)
-  
-  cvfit<-cv.glmnet(x,classlabels, alpha = alpha, lambda = lambda)	
+  x<-as.matrix(x)
+  classlabels=as.numeric(as.factor(classlabels))
+  cvfit<-cv.glmnet(x,classlabels, alpha = alpha.val) #, lambda = lambda)	
   
   plot(cvfit)
   res<-coef(cvfit, s = "lambda.min")	
@@ -24160,28 +24164,40 @@ get_hca_child<-function(feature_table_file,parentoutput_dir,class_labels_file,X=
         #colfunc <-colorRampPalette(c(col_vec2))
         
         #col_vec2<-colfunc(length(unique(mycl_metabs)))
+       # col_vec2<-standardColors() #length(mycl_metabs))
+        #colfunc <-colorRampPalette(c(col_vec2))
+        #col_vec2<-colfunc(length(unique(mycl_metabs)))
         
-        col_vec2<-standardColors(length(mycl_metabs))
-        
-        if(length(grep(col_vec2,pattern="white$"))>0){
-        col_vec2<-col_vec2[-grep(col_vec2,pattern="white$")]
-        }
-        
-          if(length(grep(col_vec2,pattern="^ivory"))>0){
-            col_vec2<-col_vec2[-grep(col_vec2,pattern="^ivory")]
-          }
-        
-        if(length(grep(col_vec2,pattern="^black"))>0){
-          col_vec2<-col_vec2[-grep(col_vec2,pattern="^black")]
-        }
-        
-        
-        if(min(as.numeric(mycl_metabs),na.rm=TRUE)==0){
+        if(length(unique(mycl_metabs))<100){
           
-          rowcolors=col_vec2[as.numeric(mycl_metabs)+1] #+1]
+          
+               col_vec2<-standardColors(length(mycl_metabs))
+               
+               if(length(grep(col_vec2,pattern="white$"))>0){
+                 col_vec2<-col_vec2[-grep(col_vec2,pattern="white$")]
+               }
+               
+               if(length(grep(col_vec2,pattern="^ivory"))>0){
+                 col_vec2<-col_vec2[-grep(col_vec2,pattern="^ivory")]
+               }
+               
+               if(length(grep(col_vec2,pattern="^black"))>0){
+                 col_vec2<-col_vec2[-grep(col_vec2,pattern="^black")]
+               }
+               
+               
+               if(min(as.numeric(mycl_metabs),na.rm=TRUE)==0){
+                 
+                 rowcolors=col_vec2[as.numeric(mycl_metabs)+1] #+1]
+               }else{
+                 rowcolors=col_vec2[as.numeric(mycl_metabs)] #+1]
+               }
         }else{
-          rowcolors=col_vec2[as.numeric(mycl_metabs)] #+1]
+          
+                rowcolors=NA
         }
+        
+       
         
         
       }else{
@@ -29124,7 +29140,7 @@ get_hexcolors_for_palettes<-function(color.palette=c("custom1","wong","npg","jam
 
 view_color_img<-function(color.palette=c("custom1","npg","jama","jco","lancet","nejm"),alpha.col=1){
   
-  color.palette=get_hexcolors_for_palettes(color.palette[1],alpha.col=alpha.col)
+  color.palette=get_hexcolors_for_palettes(color.palette,alpha.col=alpha.col)
   
   show_col(color.palette,ncol=1)
   
@@ -43433,7 +43449,7 @@ quant<- function(Xmat=NA,Ymat=NA,Wmat=NA,Zmat=NA,feature_table,class_file,ref_li
 
 .onLoad <- function(libname, pkgname) {
   # something to run
-  packageStartupMessage("xmsPANDA v1.3.1 (03/18/2021) successfully loaded.")
+  packageStartupMessage("xmsPANDA v1.3.1 (04/12/2021) successfully loaded.")
   suppressMessages(library(RColorBrewer))
   #suppressMessages(library(data.table))
   suppressMessages(library(plyr))

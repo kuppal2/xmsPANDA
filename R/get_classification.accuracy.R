@@ -139,7 +139,8 @@ function(kfold,featuretable,classlabels,kernelname="radial",errortype="AUC",conf
       testclass<-y[g,]
       
       # ##save(g,temptrain,temptest,tempclass,testclass,v,classifier,num_samp,errortype,kernelname,svm.type,file="temp.Rda")
-      cv_res<-get_classification.accuracy.child(temptrain=temptrain,tempclass=tempclass,kernelname=kernelname,errortype=errortype,classifier=classifier,num_samp=num_samp,temptest=temptest,testclass=testclass,numfolds=v,plotroc=FALSE,rocfeatlist=NA,svm.cost=svm.cost,svm.gamma=svm.gamma,svm.type=svm.type,confint.auc=FALSE)
+      cv_res<-get_classification.accuracy.child(temptrain=temptrain,tempclass=tempclass,kernelname=kernelname,errortype=errortype,classifier=classifier,num_samp=num_samp,temptest=temptest,testclass=testclass,numfolds=v,plotroc=FALSE,
+                                                rocfeatlist=NA,svm.cost=svm.cost,svm.gamma=svm.gamma,svm.type=svm.type,confint.auc=FALSE)
       
       #svm_acc[i]<-cv_res$classification_acc
       

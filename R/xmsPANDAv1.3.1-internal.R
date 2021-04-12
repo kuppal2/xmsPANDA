@@ -9,9 +9,7 @@ function(fit, data = NULL, complain = FALSE) {
 }
 .onAttach <-
 function(libname, pkgname) {
-  # to show a startup message
-  #packageStartupMessage("xmsPANDA v1.2 successfully loaded.")
-  
+ 
   suppressMessages(library(RColorBrewer))
   #suppressMessages(library(data.table))
   suppressMessages(library(plyr))
@@ -23,8 +21,8 @@ function(libname, pkgname) {
 }
 .onLoad <-
 function(libname, pkgname) {
-  # something to run
-  packageStartupMessage("xmsPANDA v1.3.1 (04/04/2021) successfully loaded.")
+ 
+  packageStartupMessage("xmsPANDA v1.3.1 (04/12/2021) successfully loaded.")
   suppressMessages(library(RColorBrewer))
   #suppressMessages(library(data.table))
   suppressMessages(library(plyr))
