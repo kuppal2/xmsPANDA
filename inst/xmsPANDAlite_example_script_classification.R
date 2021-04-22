@@ -16,7 +16,7 @@ demetabs_reslite1<-diffexp.lite(Xmat=Xmat,Ymat=Ymat,outloc=outloc,featselmethod=
                                 pvalue.thresh = 0.05,fdrthresh=0.1,fdrmethod="BH",foldchangethresh = 0)
 
 #pls
-demetabs_reslite2<-diffexp.lite(Xmat=Xmat,Ymat=Ymat,outloc=outloc,featselmethod="pls",normalization.method = "log2transform",vipthresh=2,foldchangethresh = 0)
+demetabs_reslite2<-diffexp.lite(Xmat=Xmat,Ymat=Ymat,outloc=outloc,featselmethod="pls",normalization.method = "log2transform",pls_vip_thresh=2,foldchangethresh = 0)
 
 
 #find common features selected by limma and pls
