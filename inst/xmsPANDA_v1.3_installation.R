@@ -22,10 +22,10 @@ library(devtools); install_github("kuppal2/xmsPANDA")
 
 
 #launch xmsPANDA
-suppressPackageStartupMessages(library(xmsPANDA))
+#suppressPackageStartupMessages(library(xmsPANDA))
 
 #run the Lite version
-runApp.xmsPANDALite()
+#runApp.xmsPANDALite()
 
 #OR run the full version
 ## runApp.xmsPANDA()
