@@ -1441,6 +1441,7 @@ server <- function(input, output, session) {
       #showNotification(input$boxplot_jitter_1)
       #showNotification(input$boxplot_pvalues_1)
       
+      if(input$boxplot.min.ylim==(-1) && input$boxplot.max.ylim==(-1)){
       boxplotres<-get_boxplots(X=boxplot_metab_data(),Y=boxplot_class_data(),feature_table_file=NA,parentoutput_dir=session_boxplotoutloc3(),class_labels_file=NA,
                              boxplot.col.opt=input$boxplot.sample.color.theme,
                              alphacol=1,newdevice=TRUE,cex.plots=0.8,replace.by.NA=FALSE,pairedanalysis=FALSE,
@@ -1454,7 +1455,22 @@ server <- function(input, output, session) {
                              plot.height=input$boxplot.plots.height,plot.width=input$boxplot.plots.width,
                              extra_text=NA,group_by_mat=NA,position_dodge_width=0.75,
                              numnodes=2,hightlight.points=FALSE,ref.group.val=FALSE,facet.nrow=1)
-      
+      }else{
+        boxplotres<-get_boxplots(X=boxplot_metab_data(),Y=boxplot_class_data(),feature_table_file=NA,parentoutput_dir=session_boxplotoutloc3(),class_labels_file=NA,
+                                 boxplot.col.opt=input$boxplot.sample.color.theme,
+                                 alphacol=1,newdevice=TRUE,cex.plots=0.8,replace.by.NA=FALSE,pairedanalysis=FALSE,
+                                 filename="boxplots",
+                                 ylabel=boxplot_ylab,
+                                 alphabetical.order=input$boxplot.alphabetical.order,name=NA,
+                                 add.jitter=input$boxplot_jitter_1,add.pvalues=input$boxplot_pvalues_1,class.levels=NA,fill.plots=TRUE,
+                                 connectpairedsamples=FALSE,boxplot.type=input$boxplot.type,
+                                 study.design=input$boxplot.analysistype,
+                                 multiple.figures.perpanel=FALSE,ggplot.type1=input$boxplot.ggplot.type1,replace.outliers=FALSE,
+                                 plot.height=input$boxplot.plots.height,plot.width=input$boxplot.plots.width,
+                                 extra_text=NA,group_by_mat=NA,position_dodge_width=0.75,
+                                 numnodes=2,hightlight.points=FALSE,ref.group.val=FALSE,facet.nrow=1,ylim.val=c(input$boxplot.min.ylim,input$boxplot.max.ylim))
+        
+      }
       boxplotdone2$count=1
       boxplotcheck2$count=0
       setwd(session_boxplotoutloc3())

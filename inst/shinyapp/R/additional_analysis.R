@@ -176,6 +176,13 @@ column(width=12,
        column(width=6,numericInput(width="350px","boxplot.plots.width", "Width of the PDF file in inches:", 8, min = 1, max = 20))
 ),
 column(width=12,
+       #column(width=6,
+       #                 id="inputarea",
+       #textInput(width="350px","ggplot.type1", "Color theme or options for boxplots (e.g. heat, rainbow, red, grey57):","journal",placeholder="Default: journal")
+       column(width=6,numericInput(width="350px","boxplot.min.ylim", "Lower limit on y-axis (set to -1 for auto-select):", -1)),
+       column(width=6,numericInput(width="350px","boxplot.max.ylim", "Upper limit on y-axis (set to -1 for auto-select):", -1))
+),
+column(width=12,
        column(width=6,
               id="boxplotinputarea",actionButton("boxplotstart","Start processing",icon=icon("play-circle")),
               downloadButton("downloadboxplotData", label = "Download results"))),

@@ -16985,7 +16985,7 @@ get_boxplots_child<-function(X,Y,feature_table_file,parentoutput_dir,class_label
     
     #plot_res<-lapply(1:dim(goodfeats)[1],function(m)
     plot_res<-parLapply(cl,1:dim(goodfeats)[1],function(m,mzvec,timevec,check_names,name,class_labels_levels,sampleclass,col_vec,goodfeats,pairedanalysis,connectpairedsamples,boxplot.type,
-                                                        ggplot.type1,group_by_mat,cex.plots,boxplot.col.opt,add.jitter,add.pvalues,fill.plots,multiple.figures.perpanel)
+                                                        ggplot.type1,group_by_mat,cex.plots,boxplot.col.opt,add.jitter,add.pvalues,fill.plots,multiple.figures.perpanel,ylim.val)
     {
       
       if(m%%9==0){
@@ -17503,7 +17503,7 @@ get_boxplots_child<-function(X,Y,feature_table_file,parentoutput_dir,class_label
            # p=p+scale_y_continuous(labels = scales::number)
             
             
-            if(is.na(ylim.val)==TRUE){
+            if(is.na(ylim.val)==FALSE){
               
               p=p+ylim(ylim.val[1], ylim.val[2])
             }
@@ -17521,7 +17521,7 @@ get_boxplots_child<-function(X,Y,feature_table_file,parentoutput_dir,class_label
       }
     },mzvec,timevec,check_names,name,class_labels_levels,sampleclass,col_vec,goodfeats,pairedanalysis,connectpairedsamples,boxplot.type,
     ggplot.type1,group_by_mat,cex.plots,boxplot.col.opt,add.jitter,add.pvalues,
-    fill.plots,multiple.figures.perpanel)
+    fill.plots,multiple.figures.perpanel,ylim.val)
     
     #save(plot_res,multiple.figures.perpanel,plot.height,plot.width,file="boxplot_plot.Rda")
       stopCluster(cl)

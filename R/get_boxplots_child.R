@@ -1,9 +1,8 @@
-get_boxplots_child <-
-function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.opt="journal",alphacol=0.3,newdevice=TRUE,cex.plots=0.8,replace.by.NA=FALSE,pairedanalysis=FALSE,filename="",ylabel="Intensity",
+get_boxplots_child<-function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.opt="journal",alphacol=0.3,newdevice=TRUE,cex.plots=0.8,replace.by.NA=FALSE,pairedanalysis=FALSE,filename="",ylabel="Intensity",
                              alphabetical.order=FALSE,name=NA,add.jitter=TRUE,add.pvalues=TRUE,class.levels=NA,fill.plots=FALSE,connectpairedsamples=FALSE,
                              boxplot.type="ggplot",
                              study.design=c("multiclass","onewayanova","twowayanova","onewayanovarepeat",
-                                                                  "twowayanovarepeat"),
+                                            "twowayanovarepeat"),
                              multiple.figures.perpanel=TRUE,
                              ggplot.type1=TRUE,replace.outliers=FALSE,plot.height=8,plot.width=8,
                              extra_text=NA,group_by_mat=NA,position_dodge_width=0.75,
@@ -20,7 +19,7 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
     suppressMessages(library(ggpubr))
   }
   
- # multiple.figures.perpanel=TRUE
+  # multiple.figures.perpanel=TRUE
   
   if(typeof(X)=="logical"){
     data_matrix<-read.table(feature_table_file,sep="\t",header=TRUE,stringsAsFactors=FALSE,check.names=FALSE)
@@ -122,7 +121,7 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
     pairedanalysis=TRUE
   }
   
- # print(head(classlabels))
+  # print(head(classlabels))
   
   if(pairedanalysis==TRUE){
     
@@ -189,7 +188,7 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
   }
   
   
- # par(mfrow=c(2,2),family="sans",cex=cex.plots)
+  # par(mfrow=c(2,2),family="sans",cex=cex.plots)
   
   if(alphabetical.order==FALSE){
     Class <- factor(Class, levels=unique(Class))
@@ -312,7 +311,7 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
                   #col_vec <-boxplot.col.opt
                   #col_vec <- rep(col_vec,length(class_labels_levels))
                   
-                 
+                  
                   
                   if(length(boxplot.col.opt)==1){
                     
@@ -323,13 +322,13 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
                     #length(boxplot.col.opt)>=length(class_labels_levels)
                     
                     #if(length(boxplot.col.opt)>=length(class_labels_levels)){
-                      
-                      col_vec <-boxplot.col.opt
-                      col_vec <- rep(col_vec,length(class_labels_levels))
-                      
-                      
+                    
+                    col_vec <-boxplot.col.opt
+                    col_vec <- rep(col_vec,length(class_labels_levels))
+                    
+                    
                     #}else{
-                     # colfunc <-colorRampPalette(boxplot.col.opt);col_vec<-colfunc(length(class_labels_levels))
+                    # colfunc <-colorRampPalette(boxplot.col.opt);col_vec<-colfunc(length(class_labels_levels))
                     #}
                     
                   }
@@ -404,10 +403,10 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
   # text(5,9,"Description:",font=2,col="blue")
   
   #text(5, 8, "This PDF includes boxplots of individual variables for each group.\n The box represents the interquartile range,
-   #    the whiskers represent the 1.5 +/- IQR range,\n and the bold horizontal line represents the median.
-    #   \n\n\n Note: The panels are grouped by factor 1 (e.g. group)\n or factor 2 (e.g. timepoint).",cex=1.5,font=2)
+  #    the whiskers represent the 1.5 +/- IQR range,\n and the bold horizontal line represents the median.
+  #   \n\n\n Note: The panels are grouped by factor 1 (e.g. group)\n or factor 2 (e.g. timepoint).",cex=1.5,font=2)
   
-    # text(5, 7, "The figures include: ")
+  # text(5, 7, "The figures include: ")
   if(is.na(extra_text)==FALSE){
     
     #plot(0:10, type = "n", xaxt="n", yaxt="n", bty="n", xlab = "", ylab = "")
@@ -496,7 +495,7 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
         cvec<-as.vector(t(goodfeats[m,c(groupwiseindex[[c]])]))
         
         if(replace.outliers==TRUE){
-           cvec<-replace_outliers(cvec,replace.by.NA)
+          cvec<-replace_outliers(cvec,replace.by.NA)
         }
         cur_d[[c]]<-cvec
         feat_vec<-c(feat_vec,cvec)
@@ -530,7 +529,7 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
     
     #plot_res<-lapply(1:dim(goodfeats)[1],function(m)
     plot_res<-parLapply(cl,1:dim(goodfeats)[1],function(m,mzvec,timevec,check_names,name,class_labels_levels,sampleclass,col_vec,goodfeats,pairedanalysis,connectpairedsamples,boxplot.type,
-                                                        ggplot.type1,group_by_mat,cex.plots,boxplot.col.opt,add.jitter,add.pvalues,fill.plots,multiple.figures.perpanel)
+                                                        ggplot.type1,group_by_mat,cex.plots,boxplot.col.opt,add.jitter,add.pvalues,fill.plots,multiple.figures.perpanel,ylim.val)
     {
       
       if(m%%9==0){
@@ -540,9 +539,9 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
         
       }
       
-     round_mzval<-mzvec[m] #sprintf("%.4f",mzvec[m])
+      round_mzval<-mzvec[m] #sprintf("%.4f",mzvec[m])
       
-     round_timeval<-timevec[m] #sprintf("%.1f",timevec[m])
+      round_timeval<-timevec[m] #sprintf("%.1f",timevec[m])
       
       if(is.na(name[1])==TRUE){            
         
@@ -574,13 +573,13 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
           sid_vec<-{}
           
           
-        # save(goodfeats,class_labels_levels,groupwiseindex,t1,file="n1.Rda")
-           for(c in 1:length(class_labels_levels))
+          # save(goodfeats,class_labels_levels,groupwiseindex,t1,file="n1.Rda")
+          for(c in 1:length(class_labels_levels))
           {
             num_samps_group[[1]]<-t1[1]
             cvec<-as.vector(t(goodfeats[m,c(groupwiseindex[[c]])]))
             if(replace.outliers==TRUE){
-            cvec<-replace_outliers(cvec,replace.by.NA)
+              cvec<-replace_outliers(cvec,replace.by.NA)
             }
             cur_d[[c]]<-cvec
             feat_vec<-c(feat_vec,cvec)
@@ -625,7 +624,7 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
             Factor1<-gsub(temp_dm2$Class,pattern=":([\\w|\\W])*",replacement="",perl=TRUE)
             Factor2<-gsub(temp_dm2$Class,pattern="([\\w|\\W])*:",replacement="",perl=TRUE)
             
-       
+            
             fname1<-paste("temp_dm2",mzname,"A.Rda")
             #save(Class,Factor1,Factor2,temp_dm2,file=fname1)
             temp_dm2<-cbind(temp_dm2,Factor1,Factor2)
@@ -641,11 +640,11 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
           }
           #save(temp_dm2,group_by_mat,file="d1.Rda")
           if(is.na(group_by_mat)==FALSE){
-          
+            
             colnames(group_by_mat)<-c("SID","GroupBy")
             
-             # save(temp_dm2,group_by_mat,file="d1.Rda")
-             temp_dm2<-merge(temp_dm2,group_by_mat,by="SID")
+            # save(temp_dm2,group_by_mat,file="d1.Rda")
+            temp_dm2<-merge(temp_dm2,group_by_mat,by="SID")
           }
           
           if(pairedanalysis==TRUE && connectpairedsamples==TRUE){
@@ -683,15 +682,15 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
           }else{
             
             fname1<-paste("temp_dm2",mzname,".Rda")
-        
+            
             if(pairedanalysis==TRUE && connectpairedsamples==TRUE){    
-            if(is.na(paireddesign)==FALSE){
-              
-              temp_dm2$SubjectID=as.numeric(as.factor(temp_dm2$SubjectID))
+              if(is.na(paireddesign)==FALSE){
+                
+                temp_dm2$SubjectID=as.numeric(as.factor(temp_dm2$SubjectID))
+              }
             }
-            }
-           
-         #   save(temp_dm2,file=fname1)
+            
+            #   save(temp_dm2,file=fname1)
             #if(add.pvalues==FALSE && fill.plots==TRUE){
             if(TRUE){
               suppressMessages(library(ggplot2))
@@ -703,86 +702,86 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
                 if(is.na(group_by_mat)==FALSE){
                   #if(ggplot.type1==TRUE){
                   p <- ggplot(temp_dm2, aes(y=as.numeric(Feature),x=Class,fill=Class)) +labs(title=mzname) + facet_wrap(~GroupBy, scale="free_x",nrow=facet.nrow,ncol=facet.ncol)  
-                    
+                  
                   #}
                 }else{
                   p <- ggplot(temp_dm2, aes(y=as.numeric(Feature),x=Class,fill=Class)) + labs(title=mzname)
                   
                 }
                 
-        
-                }else{
-                            
-                          if(is.na(group_by_mat)==TRUE){
-                            #p <- ggplot(temp_dm2, aes(y=as.numeric(Feature),x=Factor1,fill=Factor2)) + labs(title=mzname) + facet_wrap(~Factor2, scale="free")  
-                           
-                          if(is.na(ggplot.type1)==FALSE){
-                           if(ggplot.type1==TRUE){
-                             
-                             #print("DOing this")
-                             
-                            # save(temp_dm2,mzname,facet.nrow,facet.ncol,file="debugbox.Rda")
-                             
-                              p <- ggplot(temp_dm2, aes(y=as.numeric(Feature),x=Factor1,fill=Factor1)) +labs(title=mzname) + facet_wrap(~Factor2, scale="free_x",nrow=facet.nrow,ncol=facet.ncol)  
-                            }else{
-                              
-                              p <- ggplot(temp_dm2, aes(y=as.numeric(Feature),x=Factor2,fill=Factor2)) +labs(title=mzname) + facet_wrap(~Factor1, scale="free_x",nrow=facet.nrow,ncol=facet.ncol)  
-                              
-                              
-                            }
-                          }else{
-                            p <- ggplot(temp_dm2, aes(y=as.numeric(Feature),x=Factor1,fill=Factor2)) +labs(title=mzname)
-                          }
-                            
-                          }else{
-                              
-                              if(is.na(ggplot.type1)==FALSE){
-                              if(ggplot.type1==TRUE){
-                                #fill=factor(GroupBy)#aes(color=factor(GroupBy)) geom_point(aes(group=SubjectID))+geom_line(aes(group=SubjectID))+
-                                p <- ggplot(temp_dm2, aes(y=as.numeric(Feature),x=Factor1,fill=GroupBy)) +labs(title=mzname) + facet_wrap(~Factor2, scale="free_x",nrow=facet.nrow,ncol=facet.ncol)  
-                                
-                              }else{
-                                 
-                                p <- ggplot(temp_dm2, aes(y=as.numeric(Feature),x=Factor2,fill=GroupBy)) +labs(title=mzname) + facet_wrap(~Factor1, scale="free_x",nrow=facet.nrow,ncol=facet.ncol)  
-                                
-                              }
-                              }else{
-                                
-                                p <- ggplot(temp_dm2, aes(y=as.numeric(Feature),x=Factor1,fill=GroupBy)) +labs(title=mzname)
-                              }
-                            
-                         }
                 
-                
-                }
-            
-            if(is.na(boxplot.col.opt)==FALSE){
-              
-              p=p+stat_boxplot(geom='errorbar',width=0.2)
-              
-              if(boxplot.col.opt=="white"){
-                p<-p + geom_boxplot()
               }else{
-                geom_col_vec=(col_vec[1:length(class_labels_levels)])
                 
-                p<-p + geom_boxplot(alpha=alphacol,outlier.shape=NA) #,colour=geom_col_vec)
+                if(is.na(group_by_mat)==TRUE){
+                  #p <- ggplot(temp_dm2, aes(y=as.numeric(Feature),x=Factor1,fill=Factor2)) + labs(title=mzname) + facet_wrap(~Factor2, scale="free")  
+                  
+                  if(is.na(ggplot.type1)==FALSE){
+                    if(ggplot.type1==TRUE){
+                      
+                      #print("DOing this")
+                      
+                      # save(temp_dm2,mzname,facet.nrow,facet.ncol,file="debugbox.Rda")
+                      
+                      p <- ggplot(temp_dm2, aes(y=as.numeric(Feature),x=Factor1,fill=Factor1)) +labs(title=mzname) + facet_wrap(~Factor2, scale="free_x",nrow=facet.nrow,ncol=facet.ncol)  
+                    }else{
+                      
+                      p <- ggplot(temp_dm2, aes(y=as.numeric(Feature),x=Factor2,fill=Factor2)) +labs(title=mzname) + facet_wrap(~Factor1, scale="free_x",nrow=facet.nrow,ncol=facet.ncol)  
+                      
+                      
+                    }
+                  }else{
+                    p <- ggplot(temp_dm2, aes(y=as.numeric(Feature),x=Factor1,fill=Factor2)) +labs(title=mzname)
+                  }
+                  
+                }else{
+                  
+                  if(is.na(ggplot.type1)==FALSE){
+                    if(ggplot.type1==TRUE){
+                      #fill=factor(GroupBy)#aes(color=factor(GroupBy)) geom_point(aes(group=SubjectID))+geom_line(aes(group=SubjectID))+
+                      p <- ggplot(temp_dm2, aes(y=as.numeric(Feature),x=Factor1,fill=GroupBy)) +labs(title=mzname) + facet_wrap(~Factor2, scale="free_x",nrow=facet.nrow,ncol=facet.ncol)  
+                      
+                    }else{
+                      
+                      p <- ggplot(temp_dm2, aes(y=as.numeric(Feature),x=Factor2,fill=GroupBy)) +labs(title=mzname) + facet_wrap(~Factor1, scale="free_x",nrow=facet.nrow,ncol=facet.ncol)  
+                      
+                    }
+                  }else{
+                    
+                    p <- ggplot(temp_dm2, aes(y=as.numeric(Feature),x=Factor1,fill=GroupBy)) +labs(title=mzname)
+                  }
+                  
+                }
+                
                 
               }
-            }
+              
+              if(is.na(boxplot.col.opt)==FALSE){
+                
+                p=p+stat_boxplot(geom='errorbar',width=0.2)
+                
+                if(boxplot.col.opt=="white"){
+                  p<-p + geom_boxplot()
+                }else{
+                  geom_col_vec=(col_vec[1:length(class_labels_levels)])
+                  
+                  p<-p + geom_boxplot(alpha=alphacol,outlier.shape=NA) #,colour=geom_col_vec)
+                  
+                }
+              }
               
               
-           fname_c<-paste("d2",m,".Rda",sep="")
-           #save(p,temp_dm2,file=fname_c)
+              fname_c<-paste("d2",m,".Rda",sep="")
+              #save(p,temp_dm2,file=fname_c)
               
               if(pairedanalysis==TRUE)
-                {
+              {
                 
                 if(connectpairedsamples==TRUE){
                   
                   if(is.na(ggplot.type1)==FALSE){
                     if(ggplot.type1==TRUE){
-                    p=p+geom_line(aes(Factor1, as.numeric(Feature),fill=factor(GroupBy),group=SubjectID),
-                              position = position_dodge2(position_dodge_width))
+                      p=p+geom_line(aes(Factor1, as.numeric(Feature),fill=factor(GroupBy),group=SubjectID),
+                                    position = position_dodge2(position_dodge_width))
                     }else{
                       p=p+geom_line(aes(Factor2, as.numeric(Feature),fill=factor(GroupBy),group=SubjectID),
                                     position = position_dodge2(position_dodge_width))
@@ -794,52 +793,52 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
                     
                   }
                 }
-        
-        #         p<-p+geom_line(aes(y  = as.numeric(Feature), x = Factor1)) #, group = SubjectID))
+                
+                #         p<-p+geom_line(aes(y  = as.numeric(Feature), x = Factor1)) #, group = SubjectID))
+                
+                if(add.jitter==TRUE){
                   
-                       if(add.jitter==TRUE){
-                         
-                         #p<-p+geom_jitter(aes(colour=factor(GroupBy)))
-                         #position = position_jitterdodge(),
-                        if(is.na(ggplot.type1)==FALSE){
-                               if(ggplot.type1==TRUE){
-                                          p=p+ geom_point(aes(Factor1, as.numeric(Feature),fill=GroupBy),
-                                          shape=21, #factor(gsub(temp_dm2$SID,pattern="[a-z|A-Z|0-9]*_",replacement="")),
-                                          position = position_dodge(position_dodge_width))
-                               }else{
-                                           p=p+ geom_point(aes(Factor2, as.numeric(Feature),fill=GroupBy),
-                                                 shape=21, #factor(gsub(temp_dm2$SID,pattern="[a-z|A-Z|0-9]*_",replacement="")),
-                                                 position = position_dodge(position_dodge_width))
-                                 
-                               }
-                        }else{
-                          p=p+ geom_point(aes(Factor1, as.numeric(Feature),fill=GroupBy),
-                                          shape=21, #factor(gsub(temp_dm2$SID,pattern="[a-z|A-Z|0-9]*_",replacement="")),
-                                          position = position_dodge(position_dodge_width))
-                          
-                        }
-                         
-                         if(highlight.points==TRUE){
-                           #p=p+geom_point(data=subset(df.2, highlight),aes(x=variable, y=value), color="red", size=5)
-                         }
+                  #p<-p+geom_jitter(aes(colour=factor(GroupBy)))
+                  #position = position_jitterdodge(),
+                  if(is.na(ggplot.type1)==FALSE){
+                    if(ggplot.type1==TRUE){
+                      p=p+ geom_point(aes(Factor1, as.numeric(Feature),fill=GroupBy),
+                                      shape=21, #factor(gsub(temp_dm2$SID,pattern="[a-z|A-Z|0-9]*_",replacement="")),
+                                      position = position_dodge(position_dodge_width))
+                    }else{
+                      p=p+ geom_point(aes(Factor2, as.numeric(Feature),fill=GroupBy),
+                                      shape=21, #factor(gsub(temp_dm2$SID,pattern="[a-z|A-Z|0-9]*_",replacement="")),
+                                      position = position_dodge(position_dodge_width))
+                      
+                    }
+                  }else{
+                    p=p+ geom_point(aes(Factor1, as.numeric(Feature),fill=GroupBy),
+                                    shape=21, #factor(gsub(temp_dm2$SID,pattern="[a-z|A-Z|0-9]*_",replacement="")),
+                                    position = position_dodge(position_dodge_width))
                     
-                      }
+                  }
+                  
+                  if(highlight.points==TRUE){
+                    #p=p+geom_point(data=subset(df.2, highlight),aes(x=variable, y=value), color="red", size=5)
+                  }
+                  
+                }
                 #  p <- ggplot(temp_dm2, aes(y=as.numeric(Feature),x=Factor1,fill=Factor1)) +
               }
               else
-                {
-                  
-                 # print("DOING THIS")
-              if(add.jitter==TRUE){
+              {
                 
-                if(multiple.groups==FALSE){
+                # print("DOING THIS")
+                if(add.jitter==TRUE){
                   
-                      p=p+ geom_point(aes(Class, as.numeric(Feature),fill=Class),
-                                      shape=21, #factor(gsub(temp_dm2$SID,pattern="[a-z|A-Z|0-9]*_",replacement="")),
-                                      position = position_dodge(position_dodge_width))
-                }else{
-                #p<-p+geom_jitter()
-                if(is.na(ggplot.type1)==FALSE){
+                  if(multiple.groups==FALSE){
+                    
+                    p=p+ geom_point(aes(Class, as.numeric(Feature),fill=Class),
+                                    shape=21, #factor(gsub(temp_dm2$SID,pattern="[a-z|A-Z|0-9]*_",replacement="")),
+                                    position = position_dodge(position_dodge_width))
+                  }else{
+                    #p<-p+geom_jitter()
+                    if(is.na(ggplot.type1)==FALSE){
                       if(ggplot.type1==TRUE){
                         p=p+ geom_point(aes(Factor1, as.numeric(Feature),fill=Factor1),
                                         shape=21, #factor(gsub(temp_dm2$SID,pattern="[a-z|A-Z|0-9]*_",replacement="")),
@@ -850,26 +849,26 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
                                         position = position_dodge(position_dodge_width))
                         
                       }
-                }else{
-                  p=p+ geom_point(aes(Factor1, as.numeric(Feature),fill=Factor1),
-                                  shape=21, #factor(gsub(temp_dm2$SID,pattern="[a-z|A-Z|0-9]*_",replacement="")),
-                                  position = position_dodge(position_dodge_width))
-                  
+                    }else{
+                      p=p+ geom_point(aes(Factor1, as.numeric(Feature),fill=Factor1),
+                                      shape=21, #factor(gsub(temp_dm2$SID,pattern="[a-z|A-Z|0-9]*_",replacement="")),
+                                      position = position_dodge(position_dodge_width))
+                      
+                    }
+                    
+                  }
                 }
                 
-                }
               }
-              
-                }
               
               
               if(add.pvalues==TRUE){
                 
-               # save(temp_dm2,file="temp_dmpvalues.Rda")
+                # save(temp_dm2,file="temp_dmpvalues.Rda")
                 
                 suppressMessages(library(ggpubr))
-              
-               # max_yval1=max_yval1*0.5
+                
+                # max_yval1=max_yval1*0.5
                 if(multiple.groups==FALSE){
                   p<-p + stat_compare_means(data=temp_dm2,aes(group = Class),size = 5*cex.plots,label = "p.format",
                                             label.x = 0.5, label.y = max_yval1,size = 5*cex.plots)
@@ -879,7 +878,7 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
                     if(ggplot.type1==TRUE){
                       
                       if(is.na(ref.group.val)==TRUE){
-                       ref.group.val<-unique(temp_dm2$Factor1)[1] 
+                        ref.group.val<-unique(temp_dm2$Factor1)[1] 
                       }else{
                         if(ref.group.val==FALSE){
                           
@@ -887,7 +886,7 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
                                                     size = 5*cex.plots)
                         }else{
                           p<-p + stat_compare_means(data=temp_dm2,aes(group = Factor1),label = "p.format",
-                                                size = 5*cex.plots,ref.group = ref.group.val)
+                                                    size = 5*cex.plots,ref.group = ref.group.val)
                         }
                       }
                     }else{
@@ -903,22 +902,22 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
                                                     size = 5*cex.plots,ref.group = ref.group.val)
                         }
                       }
-                    p<-p + stat_compare_means(data=temp_dm2,aes(group = Factor2),label = "p.format",
-                                              size = 5*cex.plots,ref.group = ref.group.val)
+                      p<-p + stat_compare_means(data=temp_dm2,aes(group = Factor2),label = "p.format",
+                                                size = 5*cex.plots,ref.group = ref.group.val)
                     }
                   }else{
                     
                     if(ggplot.type1==TRUE){
-                    p<-p + stat_compare_means(data=temp_dm2,aes(group = Factor1),label = "p.format",
-                                              size = 5*cex.plots)
+                      p<-p + stat_compare_means(data=temp_dm2,aes(group = Factor1),label = "p.format",
+                                                size = 5*cex.plots)
                     }else{
-                    p<-p + stat_compare_means(data=temp_dm2,aes(group = Factor2),paired=TRUE,label = "p.format",
-                                              size = 5*cex.plots)
+                      p<-p + stat_compare_means(data=temp_dm2,aes(group = Factor2),paired=TRUE,label = "p.format",
+                                                size = 5*cex.plots)
                     }
                   }
                 }
               }
-            #  p=p+geom_line(aes(group=SubjectID))
+              #  p=p+geom_line(aes(group=SubjectID))
               
               p<-p+ labs(y=ylabel) + theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),
                                                         panel.grid.minor = element_blank(),
@@ -931,12 +930,12 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
                                                         legend.background = element_rect(color = "black", fill = "white"),
                                                         strip.background=element_rect(colour="#f0f0f0",fill="#f0f0f0"),
                                                         strip.text.x = element_text(size = 14*cex.plots, colour = "black"), 
-                                                       strip.text = element_text(face="bold")) + scale_fill_manual(values=(col_vec[1:length(class_labels_levels)])) + scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) + theme(axis.text.x = element_text(angle = 45, hjust = 1))
-            
-              p=p + theme(legend.title = element_text(size = 13*cex.plots),
-                        legend.text = element_text(size=13*cex.plots))
+                                                        strip.text = element_text(face="bold")) + scale_fill_manual(values=(col_vec[1:length(class_labels_levels)])) + scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) + theme(axis.text.x = element_text(angle = 45, hjust = 1))
               
-        #      save(p,file="p1.Rda")
+              p=p + theme(legend.title = element_text(size = 13*cex.plots),
+                          legend.text = element_text(size=13*cex.plots))
+              
+              #      save(p,file="p1.Rda")
               
               
             }
@@ -996,7 +995,7 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
                   }else{
                     
                     if(pairedanalysis==TRUE && connectpairedsamples==TRUE){
-       #               print(head(temp_dm2))
+                      #               print(head(temp_dm2))
                       
                       if(add.jitter==TRUE){
                         p<-ggpaired(temp_dm2,x="Factor1",y="Feature",color="Factor2",palette=geom_col_vec,add="jitter",title=mzname,line.color = "gray", line.size = 0.4)
@@ -1045,10 +1044,10 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
             } 
             
             
-           # p=p+scale_y_continuous(labels = scales::number)
+            # p=p+scale_y_continuous(labels = scales::number)
             
             
-            if(is.na(ylim.val)==TRUE){
+            if(is.na(ylim.val)==FALSE){
               
               p=p+ylim(ylim.val[1], ylim.val[2])
             }
@@ -1066,76 +1065,76 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
       }
     },mzvec,timevec,check_names,name,class_labels_levels,sampleclass,col_vec,goodfeats,pairedanalysis,connectpairedsamples,boxplot.type,
     ggplot.type1,group_by_mat,cex.plots,boxplot.col.opt,add.jitter,add.pvalues,
-    fill.plots,multiple.figures.perpanel)
+    fill.plots,multiple.figures.perpanel,ylim.val)
     
     #save(plot_res,multiple.figures.perpanel,plot.height,plot.width,file="boxplot_plot.Rda")
-      stopCluster(cl)
-      
+    stopCluster(cl)
+    
     if(boxplot.type=="ggplot"){
       
       suppressMessages(library(ggpubr))
       
-        if(length(plot_res)>0){
-          if(multiple.figures.perpanel==FALSE){
-           
+      if(length(plot_res)>0){
+        if(multiple.figures.perpanel==FALSE){
+          
           res<-lapply(seq(1,length(plot_res),1),function(i){
             p1=plot_res[[i]]
             figure<-ggpubr::ggarrange(p1,ncol = 1, nrow = 1,heights=c(plot.height),width=c(plot.width),legend=TRUE,align = c("hv"))
-               return(figure)
+            return(figure)
           })
-          }else{
-            res<-lapply(seq(1,length(plot_res),4),function(i){
-              p1=plot_res[[i]]
-              p1=plot_res[[i]]
-              p2={}
-              p3={}
-              p4={}
-              
-              if((i+1)<length(plot_res)){
-                p2=plot_res[[i+1]]
-              }
-              if((i+2)<length(plot_res)){
-                p3=plot_res[[i+2]]
-              }
-              if((i+3)<length(plot_res)){
-                
-                p4=plot_res[[i+3]]
-              }
-              figure<-ggarrange(p1,p2,p3,p4,ncol = 2, nrow = 2,heights=c(4,4),width=c(6,6),legend=FALSE,align = c("hv"))
-              # gg##save(res,file="t.pdf")
-              #figure<-ggarrange(p1,ncol = 2, nrow = 2,heights=c(4,4),width=c(6,6),legend=FALSE,align = c("hv"))
-              return(figure)
-            })
+        }else{
+          res<-lapply(seq(1,length(plot_res),4),function(i){
+            p1=plot_res[[i]]
+            p1=plot_res[[i]]
+            p2={}
+            p3={}
+            p4={}
             
-          }
+            if((i+1)<length(plot_res)){
+              p2=plot_res[[i+1]]
+            }
+            if((i+2)<length(plot_res)){
+              p3=plot_res[[i+2]]
+            }
+            if((i+3)<length(plot_res)){
+              
+              p4=plot_res[[i+3]]
+            }
+            figure<-ggarrange(p1,p2,p3,p4,ncol = 2, nrow = 2,heights=c(4,4),width=c(6,6),legend=FALSE,align = c("hv"))
+            # gg##save(res,file="t.pdf")
+            #figure<-ggarrange(p1,ncol = 2, nrow = 2,heights=c(4,4),width=c(6,6),legend=FALSE,align = c("hv"))
+            return(figure)
+          })
           
         }
-          
+        
+      }
+      
       
       library(ggpubr)
-     # library(cowplot)
+      # library(cowplot)
       
-    #save(res,plot.width,plot.height,plot_res,file="res.Rda")
-        
-    
-    res<-lapply(1:length(res),function(x){
-      return(res[[x]][[1]])
-     # print(res[[x]][[1]])
+      #save(res,plot.width,plot.height,plot_res,file="res.Rda")
+      
+      
+      res<-lapply(1:length(res),function(x){
+        return(res[[x]][[1]])
+        # print(res[[x]][[1]])
       })
-    
-     #res<-append(res, ggpubr::get_legend(plot_res[[1]]))
-       # res[[length(res)+1]][[1]] <- ggpubr::get_legend(plot_res[[i]])
-        
-        ggpubr::ggexport(res,filename =boxplots_fname,width=unit(plot.width-0.5, "in"),
-        height=unit(plot.height-0.5, "in"))
-        
-   # ggpubr::ggexport(res,filename =boxplots_fname)
-        
+      
+      #res<-append(res, ggpubr::get_legend(plot_res[[1]]))
+      # res[[length(res)+1]][[1]] <- ggpubr::get_legend(plot_res[[i]])
+      
+      ggpubr::ggexport(res,filename =boxplots_fname,width=unit(plot.width-0.5, "in"),
+                       height=unit(plot.height-0.5, "in"))
+      
+      # ggpubr::ggexport(res,filename =boxplots_fname)
+      
       
     }
-      
+    
   }
- 
+  
   if(newdevice==TRUE){
     try(dev.off(boxplots_fname),silent=TRUE)
   }
