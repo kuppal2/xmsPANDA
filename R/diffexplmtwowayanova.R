@@ -33,7 +33,7 @@ function(dataA,covar.matrix=NA,plot.tukeyhsd=FALSE,var.name=NA){
   
   #plot(p1,cex.axis=0.5,las=2)
   
-  plot_res<-plotTukeyHSD1(tukey.res=p1,x.axis.label = "",y.axis.label=ref_groups,var.name=var.name)
+  plot_res<-try(plotTukeyHSD1(tukey.res=p1,x.axis.label = "",y.axis.label=ref_groups,var.name=var.name),silent=TRUE)
   
  # print(plot_res)
   num_rows<-dim(anova_res)[1]

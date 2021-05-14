@@ -952,7 +952,7 @@ function(Xmat,Ymat,feature_table_file,parentoutput_dir,class_labels_file,num_rep
               
               classlabels_response_mat<-as.data.frame(classlabels_response_mat)
               
-              colnames(classlabels_response_mat)<-as.character(classlabels_orig)
+              #colnames(classlabels_response_mat)<-as.character(classlabels_orig)
               
               
               

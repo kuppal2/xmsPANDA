@@ -7,7 +7,7 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
                              multiple.figures.perpanel=TRUE,
                              ggplot.type1=TRUE,replace.outliers=FALSE,plot.height=8,plot.width=8,
                              extra_text=NA,group_by_mat=NA,position_dodge_width=0.75,
-                             numnodes=2,hightlight.points=FALSE,ref.group.val=FALSE,facet.nrow=NULL,facet.ncol=NULL,...)
+                             numnodes=2,hightlight.points=FALSE,ref.group.val=FALSE,facet.nrow=NULL,facet.ncol=NULL,ylim.val=NA,...)
 {
   options(warn=-1)
   analysistype=study.design[1]
@@ -1047,6 +1047,12 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
             
            # p=p+scale_y_continuous(labels = scales::number)
             
+            
+            if(is.na(ylim.val)==TRUE){
+              
+              p=p+ylim(ylim.val[1], ylim.val[2])
+            }
+            
             return(p)
             #print(p)
           }
@@ -1058,7 +1064,8 @@ function(X,Y,feature_table_file,parentoutput_dir,class_labels_file,boxplot.col.o
         
         
       }
-    },mzvec,timevec,check_names,name,class_labels_levels,sampleclass,col_vec,goodfeats,pairedanalysis,connectpairedsamples,boxplot.type,ggplot.type1,group_by_mat,cex.plots,boxplot.col.opt,add.jitter,add.pvalues,
+    },mzvec,timevec,check_names,name,class_labels_levels,sampleclass,col_vec,goodfeats,pairedanalysis,connectpairedsamples,boxplot.type,
+    ggplot.type1,group_by_mat,cex.plots,boxplot.col.opt,add.jitter,add.pvalues,
     fill.plots,multiple.figures.perpanel)
     
     #save(plot_res,multiple.figures.perpanel,plot.height,plot.width,file="boxplot_plot.Rda")

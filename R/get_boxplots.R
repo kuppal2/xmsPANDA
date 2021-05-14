@@ -13,7 +13,7 @@ function(X=NA,Y=NA,feature_table_file,parentoutput_dir,class_labels_file,
                        multiple.figures.perpanel=FALSE,ggplot.type1=TRUE,replace.outliers=FALSE,
                        plot.height=8,plot.width=8,
                        extra_text=NA,group_by_mat=NA,position_dodge_width=0.75,
-                       numnodes=2,hightlight.points=FALSE,ref.group.val=FALSE,facet.nrow=1,facet.ncol=NULL,...)
+                       numnodes=2,hightlight.points=FALSE,ref.group.val=FALSE,facet.nrow=1,facet.ncol=NULL,ylim.val=NA,...)
 {
   
   parallel:::setDefaultClusterOptions(setup_strategy = "sequential")
@@ -49,7 +49,7 @@ function(X=NA,Y=NA,feature_table_file,parentoutput_dir,class_labels_file,
                      replace.outliers=replace.outliers,plot.height=plot.height,
                      plot.width=plot.width,extra_text=extra_text,group_by_mat=group_by_mat,
                      position_dodge_width=position_dodge_width,numnodes=numnodes,
-                     hightlight.points=hightlight.points,ref.group.val=ref.group.val,facet.nrow=facet.nrow,facet.ncol=facet.ncol,...)))
+                     hightlight.points=hightlight.points,ref.group.val=ref.group.val,facet.nrow=facet.nrow,facet.ncol=facet.ncol,ylim.val=ylim.val,...)))
   
   if(newdevice==TRUE){
     
